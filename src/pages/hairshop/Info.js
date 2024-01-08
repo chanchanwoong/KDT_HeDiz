@@ -1,7 +1,16 @@
+import { BreadCrumb } from 'primereact/breadcrumb';
+
 function Info() {
+  const items = [{ label: '미용실 관리' }, { label: '미용실 정보' }];
+  const home = { icon: 'pi pi-home', url: '/hairshop' };
+
   return (
     <>
-      <h1>미용실 정보</h1>
+      <BreadCrumb
+        model={items}
+        home={home}
+      />
+      <section></section>
     </>
   );
 }
