@@ -11,6 +11,7 @@ import SignUp from 'pages/auth/SIgnUp';
 import Find from 'pages/auth/Find';
 
 // home__바로가기
+import Test from 'pages/home/Test';
 import Dashboard from 'pages/home/Dashboard';
 import RealtimeReservation from 'pages/home/RealtimeReservation';
 import Mypage from 'pages/home/Mypage';
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
       {
         path: '/home',
         children: [
+          { path: 'test', element: <Test /> },
           { path: 'dashboard', element: <Dashboard /> },
           { path: 'realtime-reservation', element: <RealtimeReservation /> },
           { path: 'mypage', element: <Mypage /> },
