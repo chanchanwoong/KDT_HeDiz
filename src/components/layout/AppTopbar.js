@@ -1,93 +1,82 @@
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
-import Logo from 'components/common/Logo';
-import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Badge } from 'primereact/badge';
 import { Avatar } from 'primereact/avatar';
-import styles from './AppTopbar.module.css';
+import Logo from 'components/common/Logo';
 
 export default function AppTopbar() {
+  const itemRenderer = (item) => (
+    <a className='flex align-items-center p-menuitem-link'>
+      <span className={item.icon} />
+      <span className='mx-2'>{item.label}</span>
+      {item.badge && (
+        <Badge
+          className='ml-auto'
+          value={item.badge}
+        />
+      )}
+      {item.shortcut && (
+        <span className='ml-auto border-1 surface-border border-round surface-100 text-xs p-1'>
+          {item.shortcut}
+        </span>
+      )}
+    </a>
+  );
   const items = [
     {
-      icon: 'pi pi-home',
+      // label: 'Contact',
+      icon: 'pi pi-bell',
+      badge: 2,
+      template: itemRenderer,
     },
     {
-      label: '실시간 예약',
-      icon: 'pi pi-star',
+      // label: 'Features',
+      icon: 'pi pi-window-maximize',
     },
     {
-      label: '마이페이지',
-      icon: 'pi pi-search',
-      items: [
-        {
-          label: 'Components',
-          icon: 'pi pi-bolt',
-        },
-        {
-          label: 'Blocks',
-          icon: 'pi pi-server',
-        },
-        {
-          label: 'UI Kit',
-          icon: 'pi pi-pencil',
-        },
-        {
-          label: 'Templates',
-          icon: 'pi pi-palette',
-          items: [
-            {
-              label: 'Apollo',
-              icon: 'pi pi-palette',
-            },
-            {
-              label: 'Ultima',
-              icon: 'pi pi-palette',
-            },
-          ],
-        },
-      ],
+      // label: 'Home',
+      icon: 'pi pi-language',
     },
+    {
+      // label: 'Home',
+      icon: 'pi pi-ellipsis-v',
+    },
+    // {
+    //   label: 'Projects',
+    //   icon: 'pi pi-ellipsis-v',
+    //   items: [
+    //     {
+    //       label: 'Core',
+    //       icon: 'pi pi-bolt',
+    //       shortcut: '⌘+S',
+    //       template: itemRenderer,
+    //     },
+    //     {
+    //       label: 'Blocks',
+    //       icon: 'pi pi-server',
+    //       shortcut: '⌘+B',
+    //       template: itemRenderer,
+    //     },
+    //     {
+    //       label: 'UI Kit',
+    //       icon: 'pi pi-pencil',
+    //       shortcut: '⌘+U',
+    //       template: itemRenderer,
+    //     },
+    //   ],
+    // },
   ];
 
+  const start = <Logo />;
+
   return (
-    <header className='px-4 py-2 mb-3 flex align-items-center'>
-      <Logo />
-      {/* <Menubar
+    <div className='card'>
+      <Menubar
+        className='bg-white mb-3 flex justify-content-between'
         model={items}
-        className='ml-auto'
-      /> */}
-      <>
-        <nav className='flex flex-wrap justify-content-center align-items-center gap-2 ml-auto'>
-          <Avatar
-            image='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
-            shape='circle'
-          />
-          <span>이가희</span>님, 안녕하세요
-          <Button
-            icon='pi pi-bell'
-            rounded
-            text
-            severity='warning'
-            aria-label='Notification'
-          />
-          <Button
-            icon='pi pi-window-maximize'
-            rounded
-            text
-          />
-          <Button
-            icon='pi pi-language'
-            rounded
-            text
-            severity='success'
-          />
-          <Button
-            icon='pi pi-ellipsis-v'
-            rounded
-            text
-            severity='secondary'
-          />
-        </nav>
-      </>
-    </header>
+        start={start}
+      />
+    </div>
   );
 }

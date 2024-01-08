@@ -78,6 +78,12 @@ function AppSidebar() {
       label: '바로가기',
       items: [
         {
+          label: '테스트 페이지',
+          icon: 'pi pi-home',
+          url: 'home/test',
+          template: itemRenderer,
+        },
+        {
           label: '대시보드',
           icon: 'pi pi-th-large',
           url: 'home/dashboard',
