@@ -1,11 +1,13 @@
 import { Outlet } from 'react-router-dom';
+import styles from './AuthLayout.module.css';
 
 function AuthLayout() {
   return (
-    <>
-      <h1>인증 레이아웃</h1>
+    <div
+      className={`flex justify-content-center align-items-center ${styles.wrap}`}
+    >
       <Outlet />
-    </>
+    </div>
   );
 }
 
