@@ -32,8 +32,13 @@ import Management from 'pages/customer/Management';
 
 // sales__매출 관리
 import Summary from 'pages/sales/Summary';
+import KakaoLoginResult from 'components/common/KakaoLoginResult';
 
 const router = createBrowserRouter([
+  {
+    path: '/KakaoLoginResult',
+    element: <KakaoLoginResult />,
+  },
   {
     path: '/auth',
     element: <AuthLayout />,

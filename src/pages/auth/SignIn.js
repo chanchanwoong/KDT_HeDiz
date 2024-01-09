@@ -7,6 +7,7 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
+import KakaoLogin from '../../components/common/KakaoLogin';
 
 function SignIn() {
   const [checked, setChecked] = useState(false);
@@ -58,6 +59,7 @@ function SignIn() {
           label='로그인'
           type='submit'
         />
+        <KakaoLogin />
         <Link
           to='/auth/sign-up'
           className='font-medium no-underline text-black-500 text-left cursor-pointer'
