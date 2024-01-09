@@ -11,7 +11,7 @@ function MainLayout() {
       <AppTopbar />
       <div className='flex'>
         <AppSidebar />
-        <main className='flex-grow-1 '>
+        <main className='flex flex-grow-1 flex-column '>
           <Outlet />
         </main>
       </div>
