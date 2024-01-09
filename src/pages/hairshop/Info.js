@@ -1,16 +1,64 @@
-import { useEffect, useState } from 'react';
-import { Form } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { Form, redirect } from 'react-router-dom';
 import axios from 'axios';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { MultiSelect } from 'primereact/multiselect';
+import { Calendar } from 'primereact/calendar';
 import { Divider } from 'primereact/divider';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
+import { Panel } from 'primereact/panel';
 
 function Info() {
   const items = [{ label: '미용실 관리' }, { label: '미용실 정보' }];
   const home = { icon: 'pi pi-home', url: '/hairshop' };
 
   const [info, setInfo] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(null);
+  const [time, setTime] = useState(null);
+  const [selectClosedDay, setSelectClosedDay] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const toast = useRef(null);
+
+  const accept = () => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Confirmed',
+      detail: 'You have accepted',
+      life: 3000,
+    });
+  };
+
+  const reject = () => {
+    toast.current.show({
+      severity: 'warn',
+      summary: 'Rejected',
+      detail: 'You have rejected',
+      life: 3000,
+    });
+  };
+
+  const hashTag = [
+    { name: 'Wifi' },
+    { name: '간식' },
+    { name: '1인샵' },
+    { name: '바버샵' },
+    { name: '메이크업 가능' },
+    { name: '반려견 동반 가능' },
+  ];
+
+  const closedDay = [
+    { name: '일요일', code: 1 },
+    { name: '월요일', code: 2 },
+    { name: '화요일', code: 3 },
+    { name: '수요일', code: 4 },
+    { name: '목요일', code: 5 },
+    { name: '금요일', code: 6 },
+    { name: '토요일', code: 7 },
+  ];
 
   useEffect(() => {
     axios
@@ -29,17 +77,18 @@ function Info() {
       <BreadCrumb
         model={items}
         home={home}
-        className='mb-2'
       />
-      <section className='flex flex-column bg-white w-auto p-4 border-round-lg'>
-        <h2>{info.shop_name}</h2>
+      <Panel
+        header={info.shop_name}
+        toggleable
+      >
         <div className='card flex flex-column md:flex-row gap-3'>
           <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
-              <i className='pi pi-user mr-2'></i> 사업자 등록 번호
+              <i className='pi pi-user mr-2'></i> 사업자 등록번호
             </span>
             <InputText
-              placeholder='Username'
+              placeholder='사업자 등록번호'
               value={info.shop_register}
               disabled
             />
@@ -50,7 +99,7 @@ function Info() {
               <i className='pi pi-code mr-2'></i> 미용실 고유코드
             </span>
             <InputText
-              placeholder='Price'
+              placeholder='미용실 고유코드'
               value={info.shop_code}
               disabled
             />
@@ -59,15 +108,29 @@ function Info() {
             </span>
           </div>
         </div>
+      </Panel>
 
-        <Divider />
-        <Form method="post  className='flex flex-column flex-wrap gap-4'">
+      <Panel
+        header='미용실 정보 수정'
+        toggleable
+      >
+        <Form
+          method='post'
+          className='flex flex-column flex-wrap gap-4'
+        >
           <div className='card flex flex-column gap-3'>
             <div className='p-inputgroup flex-1'>
               <span className='p-inputgroup-addon'>
                 <i className='pi pi-calendar-minus'></i>
               </span>
-              <InputText placeholder='정기 휴무일' />
+              <MultiSelect
+                value={selectClosedDay}
+                onChange={(e) => setSelectClosedDay(e.value)}
+                options={closedDay}
+                optionLabel='name'
+                placeholder='정기 휴무일'
+                className='w-full md:w-20rem'
+              />
             </div>
 
             <div className='p-inputgroup flex-1'>
@@ -77,6 +140,7 @@ function Info() {
               <InputText
                 placeholder='주소'
                 defaultValue={info.shop_address}
+                name='shop_address'
               />
             </div>
 
@@ -90,56 +154,110 @@ function Info() {
               />
             </div>
 
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-comment'></i>
-              </span>
-              <InputText
-                placeholder='미용실 소개글'
-                defaultValue={info.shop_intro}
-              />
-            </div>
+            <div className='flex gap-3'>
+              <div className='p-inputgroup flex-1'>
+                <span className='p-inputgroup-addon'>
+                  <i className='pi pi-clock'></i>
+                </span>
+                <Calendar
+                  id='calendar-timeonly'
+                  defaultValue={info.shop_start}
+                  onChange={(e) => setTime(e.value)}
+                  placeholder='영업 시작 시간'
+                  timeOnly
+                />
+              </div>
 
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-clock'></i>
-              </span>
-              <InputText
-                placeholder='영업 시작 시간'
-                defaultValue={info.shop_start}
-                // value={info.shop_code}
-              />
-            </div>
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-clock'></i>
-              </span>
-              <InputText
-                placeholder='영업 종료 시간'
-                defaultValue={info.shop_end}
-                // value={info.shop_code}
-              />
+              <div className='p-inputgroup flex-1'>
+                <span className='p-inputgroup-addon'>
+                  <i className='pi pi-clock'></i>
+                </span>
+                <Calendar
+                  id='calendar-timeonly'
+                  defaultValue={info.shop_start}
+                  onChange={(e) => setTime(e.value)}
+                  placeholder='영업 종료 시간'
+                  timeOnly
+                />
+              </div>
             </div>
 
             <div className='p-inputgroup flex-1'>
               <span className='p-inputgroup-addon'>
                 <i className='pi pi-code'></i>
               </span>
-              <InputText
+              {/* <InputText
                 placeholder='해시태그'
                 // value={info.shop_code}
+              /> */}
+              <MultiSelect
+                value={selectedTags}
+                onChange={(e) => setSelectedTags(e.value)}
+                options={hashTag}
+                optionLabel='name'
+                display='chip'
+                placeholder='해시태그'
+                // maxSelectedLabels={3}
+                className='w-full md:w-20rem'
+                filter
+              />
+            </div>
+
+            <div className='p-inputgroup flex-1'>
+              <span className='p-inputgroup-addon'>
+                <i className='pi pi-comment'></i>
+              </span>
+              <InputTextarea
+                placeholder='미용실 소개글'
+                defaultValue={info.shop_intro}
+                rows={10}
               />
             </div>
           </div>
 
-          <Button
+          <Toast ref={toast} />
+          <ConfirmDialog
+            group='declarative'
+            visible={visible}
+            onHide={() => setVisible(false)}
+            message='정말 수정하시겠습니까?'
+            header='수정하기'
+            icon='pi pi-exclamation-triangle'
+            accept={accept}
+            reject={reject}
+          />
+          <div className='card flex justify-content-center'>
+            <Button
+              onClick={() => setVisible(true)}
+              icon='pi pi-check'
+              label='수정하기'
+              type='submit'
+            />
+          </div>
+          {/* <Button
             label='수정하기'
             type='submit'
-          />
+          /> */}
         </Form>
-      </section>
+      </Panel>
     </>
   );
 }
 
 export default Info;
+
+export async function action({ request }) {
+  console.log('수정');
+  const formData = await request.formData();
+  const postData = Object.fromEntries(formData); // { body: '...', author: '...' }
+  console.log(postData);
+  await fetch('http://localhost:8080/hairshop/info', {
+    method: 'PUT',
+    body: JSON.stringify(postData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return redirect('/hairshop/info');
+}
