@@ -1,7 +1,1 @@
-<<<<<<< HEAD
-test 11123123123123asdasdasdas
-=======
-test 11
-
-가희 수정asdasd
->>>>>>> 43792d4b001e8f5c83366ae9b56f70d47a9b20ab
+명진 테스트
