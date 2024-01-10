@@ -2,30 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { ProductService } from '../../service/ProduectService';
 import { Toast } from 'primereact/toast';
+import axios from 'axios';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
-import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Tag } from 'primereact/tag';
+import { Dialog } from 'primereact/dialog';
+import { InputTextarea } from 'primereact/inputtextarea';
 
 export default function Staff() {
   let emptyProduct = {
-    id: null,
-    name: '',
-    image: null,
-    description: '',
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: 'INSTOCK',
+    staff_seq: 0,
+    staff_nickname: '',
+    staff_name: '',
+    staff_role: '',
+    staff_phone: '',
+    staff_intro: '',
   };
 
   const [products, setProducts] = useState(null);
@@ -40,15 +32,16 @@ export default function Staff() {
   const dt = useRef(null);
 
   useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
+    axios
+      .get('http://localhost:8080/hairshop/staff')
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
-
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
 
   const openNew = () => {
     setProduct(emptyProduct);
@@ -56,28 +49,28 @@ export default function Staff() {
     setProductDialog(true);
   };
 
-  const hideDialog = () => {
+  const hstaff_seqeDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
   };
 
-  const hideDeleteProductDialog = () => {
+  const hstaff_seqeDeleteProductDialog = () => {
     setDeleteProductDialog(false);
   };
 
-  const hideDeleteProductsDialog = () => {
+  const hstaff_seqeDeleteProductsDialog = () => {
     setDeleteProductsDialog(false);
   };
 
   const saveProduct = () => {
     setSubmitted(true);
 
-    if (product.name.trim()) {
+    if (product.style_name.trim()) {
       let _products = [...products];
       let _product = { ...product };
 
-      if (product.id) {
-        const index = findIndexById(product.id);
+      if (product.staff_seq) {
+        const index = findIndexBystaff_seq(product.staff_seq);
 
         _products[index] = _product;
         toast.current.show({
@@ -87,8 +80,8 @@ export default function Staff() {
           life: 3000,
         });
       } else {
-        _product.id = createId();
-        _product.image = 'product-placeholder.svg';
+        _product.staff_seq = createstaff_seq();
+        _product.style_image = 'product-placeholder.svg'; // Use 'style_image' instead of 'style_'
         _products.push(_product);
         toast.current.show({
           severity: 'success',
@@ -115,7 +108,9 @@ export default function Staff() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = products.filter(
+      (val) => val.staff_seq !== product.staff_seq
+    );
 
     setProducts(_products);
     setDeleteProductDialog(false);
@@ -128,140 +123,24 @@ export default function Staff() {
     });
   };
 
-  const findIndexById = (id) => {
-    let index = -1;
-
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
+  const findIndexBystaff_seq = (staff_seq) => {
+    return products.findIndex((product) => product.staff_seq === staff_seq);
   };
 
-  const createId = () => {
-    let id = '';
-    let chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Products Deleted',
-      life: 3000,
-    });
-  };
-
-  const onCategoryChange = (e) => {
-    let _product = { ...product };
-
-    _product['category'] = e.value;
-    setProduct(_product);
-  };
-
-  const onInputChange = (e, name) => {
+  const onInputChange = (e, style_name) => {
     const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
-  const leftToolbarTemplate = () => {
-    return (
-      <div className='flex flex-wrap gap-2'>
-        <Button
-          label='New'
-          icon='pi pi-plus'
-          severity='success'
-          onClick={openNew}
-        />
-        <Button
-          label='Delete'
-          icon='pi pi-trash'
-          severity='danger'
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
-        />
-      </div>
-    );
-  };
-
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label='Export'
-        icon='pi pi-upload'
-        className='p-button-help'
-        onClick={exportCSV}
-      />
-    );
+    // Use spread operator for immutability
+    setProduct({ ...product, [style_name]: val });
   };
 
   const imageBodyTemplate = (rowData) => {
     return (
       <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`}
-        alt={rowData.image}
+        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.style_image}`} // Use 'style_image' instead of 'style_'
+        alt={rowData.style_image} // Use 'style_image' instead of 'style_'
         className='shadow-2 border-round'
         style={{ width: '64px' }}
       />
-    );
-  };
-
-  const priceBodyTemplate = (rowData) => {
-    return formatCurrency(rowData.price);
-  };
-
-  const ratingBodyTemplate = (rowData) => {
-    return (
-      <Rating
-        value={rowData.rating}
-        readOnly
-        cancel={false}
-      />
-    );
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.inventoryStatus}
-        severity={getSeverity(rowData)}
-      ></Tag>
     );
   };
 
@@ -286,22 +165,6 @@ export default function Staff() {
     );
   };
 
-  const getSeverity = (product) => {
-    switch (product.inventoryStatus) {
-      case 'INSTOCK':
-        return 'success';
-
-      case 'LOWSTOCK':
-        return 'warning';
-
-      case 'OUTOFSTOCK':
-        return 'danger';
-
-      default:
-        return null;
-    }
-  };
-
   const header = (
     <div className='flex flex-wrap gap-2 align-items-center justify-content-between'>
       <h4 className='m-0'>직원 관리</h4>
@@ -315,13 +178,14 @@ export default function Staff() {
       </span>
     </div>
   );
+
   const productDialogFooter = (
     <React.Fragment>
       <Button
         label='Cancel'
         icon='pi pi-times'
         outlined
-        onClick={hideDialog}
+        onClick={hstaff_seqeDialog}
       />
       <Button
         label='Save'
@@ -330,13 +194,14 @@ export default function Staff() {
       />
     </React.Fragment>
   );
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
         label='No'
         icon='pi pi-times'
         outlined
-        onClick={hideDeleteProductDialog}
+        onClick={hstaff_seqeDeleteProductDialog}
       />
       <Button
         label='Yes'
@@ -346,39 +211,17 @@ export default function Staff() {
       />
     </React.Fragment>
   );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label='No'
-        icon='pi pi-times'
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label='Yes'
-        icon='pi pi-check'
-        severity='danger'
-        onClick={deleteSelectedProducts}
-      />
-    </React.Fragment>
-  );
 
   return (
     <div>
       <Toast ref={toast} />
       <div className='card'>
-        <Toolbar
-          className='mb-4'
-          left={leftToolbarTemplate}
-          right={rightToolbarTemplate}
-        ></Toolbar>
-
         <DataTable
           ref={dt}
           value={products}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey='id'
+          dataKey='staff_seq'
           paginator
           rows={10}
           rowsPerPageOptions={[5, 10, 25]}
@@ -392,30 +235,36 @@ export default function Staff() {
             exportable={false}
           ></Column>
           <Column
-            field='image'
+            field='staff_image'
             header='프로필 사진'
             body={imageBodyTemplate}
           ></Column>
           <Column
-            field='name'
+            field='staff_nickname'
             header='닉네임'
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
           <Column
-            field='name'
+            field='staff_name'
+            header='이름'
+            sortable
+            style={{ minWidth: '8rem' }}
+          ></Column>
+          <Column
+            field='staff_role'
             header='권한'
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
           <Column
-            field='name'
+            field='staff_phone'
             header='전화번호'
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
           <Column
-            field='name'
+            field='staff_intro'
             header='소개'
             sortable
             style={{ minWidth: '8rem' }}
@@ -424,7 +273,6 @@ export default function Staff() {
           <Column
             field='price'
             header='근무시작시간'
-            body={priceBodyTemplate}
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
@@ -440,7 +288,6 @@ export default function Staff() {
             sortable
             style={{ minWidth: '10rem' }}
           ></Column>
-
           <Column
             body={actionBodyTemplate}
             exportable={false}
@@ -457,127 +304,101 @@ export default function Staff() {
         modal
         className='p-fluid'
         footer={productDialogFooter}
-        onHide={hideDialog}
+        onHide={hstaff_seqeDialog}
       >
-        {product.image && (
+        {product.style_image && (
           <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.image}
-            className='product-image block m-auto pb-3'
+            src={`https://primefaces.org/cdn/primereact/images/product/${product.style_image}`}
+            alt={product.style_image}
+            className='product-style block m-auto pb-3'
           />
         )}
         <div className='field'>
           <label
-            htmlFor='name'
+            htmlFor='style_name'
             className='font-bold'
           >
-            Name
+            닉네임
           </label>
           <InputText
-            id='name'
-            value={product.name}
-            onChange={(e) => onInputChange(e, 'name')}
+            id='staff_nickname'
+            value={product.staff_nickname}
+            onChange={(e) => onInputChange(e, 'staff_nickname')}
             required
             autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.name })}
+            className={classNames({
+              'p-invalid': submitted && !product.staff_nickname,
+            })}
           />
-          {submitted && !product.name && (
+          {submitted && !product.staff_nickname && (
             <small className='p-error'>Name is required.</small>
           )}
         </div>
         <div className='field'>
           <label
-            htmlFor='description'
+            htmlFor='staff_role'
             className='font-bold'
           >
-            Description
+            권한
+          </label>
+          <InputText
+            id='staff_role'
+            value={product.staff_role}
+            onChange={(e) => onInputChange(e, 'staff_role')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.staff_role,
+            })}
+          />
+          {submitted && !product.staff_role && (
+            <small className='p-error'>role is required.</small>
+          )}
+        </div>
+        <div className='field'>
+          <label
+            htmlFor='staff_phone'
+            className='font-bold'
+          >
+            전화번호
+          </label>
+          <InputText
+            id='staff_phone'
+            value={product.staff_phone}
+            onChange={(e) => onInputChange(e, 'staff_phone')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.staff_phone,
+            })}
+          />
+          {submitted && !product.staff_phone && (
+            <small className='p-error'>phone is required.</small>
+          )}
+        </div>
+        <div className='field'>
+          <label
+            htmlFor='style_time'
+            className='font-bold'
+          >
+            소개
           </label>
           <InputTextarea
-            id='description'
-            value={product.description}
-            onChange={(e) => onInputChange(e, 'description')}
+            autoResize
+            rows={5}
+            cols={30}
+            id='staff_intro'
+            value={product.staff_intro}
+            onChange={(e) => onInputChange(e, 'staff_intro')}
             required
-            rows={3}
-            cols={20}
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.staff_intro,
+            })}
           />
-        </div>
-
-        <div className='field'>
-          <label className='mb-3 font-bold'>Category</label>
-          <div className='formgrid grid'>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category1'
-                name='category'
-                value='Accessories'
-                onChange={onCategoryChange}
-                checked={product.category === 'Accessories'}
-              />
-              <label htmlFor='category1'>Accessories</label>
-            </div>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category2'
-                name='category'
-                value='Clothing'
-                onChange={onCategoryChange}
-                checked={product.category === 'Clothing'}
-              />
-              <label htmlFor='category2'>Clothing</label>
-            </div>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category3'
-                name='category'
-                value='Electronics'
-                onChange={onCategoryChange}
-                checked={product.category === 'Electronics'}
-              />
-              <label htmlFor='category3'>Electronics</label>
-            </div>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category4'
-                name='category'
-                value='Fitness'
-                onChange={onCategoryChange}
-                checked={product.category === 'Fitness'}
-              />
-              <label htmlFor='category4'>Fitness</label>
-            </div>
-          </div>
-        </div>
-
-        <div className='formgrid grid'>
-          <div className='field col'>
-            <label
-              htmlFor='price'
-              className='font-bold'
-            >
-              Price
-            </label>
-            <InputNumber
-              id='price'
-              value={product.price}
-              onValueChange={(e) => onInputNumberChange(e, 'price')}
-              mode='currency'
-              currency='USD'
-              locale='en-US'
-            />
-          </div>
-          <div className='field col'>
-            <label
-              htmlFor='quantity'
-              className='font-bold'
-            >
-              Quantity
-            </label>
-            <InputNumber
-              id='quantity'
-              value={product.quantity}
-              onValueChange={(e) => onInputNumberChange(e, 'quantity')}
-            />
-          </div>
+          {submitted && !product.staff_intro && (
+            <small className='p-error'>intro is required.</small>
+          )}
         </div>
       </Dialog>
 
@@ -588,7 +409,7 @@ export default function Staff() {
         header='Confirm'
         modal
         footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
+        onHide={hstaff_seqeDeleteProductDialog}
       >
         <div className='confirmation-content'>
           <i
@@ -597,28 +418,8 @@ export default function Staff() {
           />
           {product && (
             <span>
-              Are you sure you want to delete <b>{product.name}</b>?
+              Are you sure you want to delete <b>{product.style_name}</b>?
             </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header='Confirm'
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
-      >
-        <div className='confirmation-content'>
-          <i
-            className='pi pi-exclamation-triangle mr-3'
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
           )}
         </div>
       </Dialog>
