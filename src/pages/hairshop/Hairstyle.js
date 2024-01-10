@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { ProductService } from './service/ProductService';
+import { ProductService } from '../../service/ProduectService';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -304,7 +304,7 @@ export default function Hairstyle() {
 
   const header = (
     <div className='flex flex-wrap gap-2 align-items-center justify-content-between'>
-      <h4 className='m-0'>Manage Products</h4>
+      <h4 className='m-0'>헤어스타일 목록</h4>
       <span className='p-input-icon-left'>
         <i className='pi pi-search' />
         <InputText
@@ -392,49 +392,43 @@ export default function Hairstyle() {
             exportable={false}
           ></Column>
           <Column
-            field='code'
-            header='Code'
-            sortable
-            style={{ minWidth: '12rem' }}
-          ></Column>
-          <Column
-            field='name'
-            header='Name'
-            sortable
-            style={{ minWidth: '16rem' }}
-          ></Column>
-          <Column
             field='image'
-            header='Image'
+            header='이미지'
             body={imageBodyTemplate}
           ></Column>
           <Column
+            field='name'
+            header='헤어스타일 명'
+            sortable
+            style={{ minWidth: '16rem' }}
+          ></Column>
+
+          <Column
             field='price'
-            header='Price'
+            header='가격'
             body={priceBodyTemplate}
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
           <Column
             field='category'
-            header='Category'
+            header='시술대상'
             sortable
             style={{ minWidth: '10rem' }}
           ></Column>
           <Column
-            field='rating'
-            header='Reviews'
-            body={ratingBodyTemplate}
+            field='category'
+            header='작업시간'
             sortable
-            style={{ minWidth: '12rem' }}
+            style={{ minWidth: '10rem' }}
           ></Column>
           <Column
-            field='inventoryStatus'
-            header='Status'
-            body={statusBodyTemplate}
+            field='category'
+            header='카테고리'
             sortable
-            style={{ minWidth: '12rem' }}
+            style={{ minWidth: '10rem' }}
           ></Column>
+
           <Column
             body={actionBodyTemplate}
             exportable={false}
