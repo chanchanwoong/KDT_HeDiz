@@ -1,19 +1,48 @@
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
-import { InputText } from 'primereact/inputtext';
 import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { ProductService } from '../../service/ProduectService';
 import { Calendar } from 'primereact/calendar';
 import MyCalendar from 'service/MyCalender';
+import axios from 'axios';
 
 function ClosedDay() {
   const [dates, setDates] = useState(null);
-  const [products, setProducts] = useState([]);
+  const [parsedDate, setParsedDate] = useState(null);
+  const [products, setProducts] = useState(null);
+
+  function checkDate() {
+    if (dates) {
+      const startDate = new Date(dates[0]);
+      const endDate = new Date(dates[1]);
+
+      const parsedStartDate = `${startDate.getFullYear()}-${(
+        startDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, '0')}-${startDate.getDate().toString().padStart(2, '0')}`;
+
+      const parsedEndDate = `${endDate.getFullYear()}-${(endDate.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
+
+      console.log({ parsedStartDate, parsedEndDate });
+
+      setParsedDate({ parsedStartDate, parsedEndDate });
+    }
+  }
 
   useEffect(() => {
-    ProductService.getProductsMini().then((data) => setProducts(data));
+    axios
+      .get('http://localhost:8080/hairshop/staff')
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
   return (
     <>
@@ -31,7 +60,11 @@ function ClosedDay() {
                 selectionMode='range'
                 readOnlyInput
               />
-              <Button label='Submit' />
+              <Button
+                type='submit'
+                onClick={checkDate}
+                label='Submit'
+              />
             </div>
           </Panel>
           <Panel
@@ -44,7 +77,7 @@ function ClosedDay() {
                 tableStyle={{ minWidth: '50rem' }}
               >
                 <Column
-                  field='code'
+                  field='staff_nickname'
                   header='디자이너'
                 ></Column>
                 <Column
@@ -56,7 +89,7 @@ function ClosedDay() {
           </Panel>
         </div>
         <div className='col-6'>
-          <MyCalendar />
+          <MyCalendar parsedDate={parsedDate} />
         </div>
       </div>
       <div className='col-6'></div>
