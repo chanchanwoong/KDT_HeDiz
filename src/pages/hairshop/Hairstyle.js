@@ -2,30 +2,26 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { ProductService } from '../../service/ProduectService';
 import { Toast } from 'primereact/toast';
+import axios from 'axios';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
-import { InputTextarea } from 'primereact/inputtextarea';
+import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Tag } from 'primereact/tag';
 
 export default function Hairstyle() {
   let emptyProduct = {
-    id: null,
-    name: '',
-    image: null,
-    description: '',
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: 'INSTOCK',
+    style_seq: 0,
+    style_name: '',
+    style_gender: '',
+    style_time: '',
+    style_price: null,
+    style_intro: '',
+    style_image: null,
+    cate_seq: null,
+    shop_seq: null,
   };
 
   const [products, setProducts] = useState(null);
@@ -40,15 +36,16 @@ export default function Hairstyle() {
   const dt = useRef(null);
 
   useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
+    axios
+      .get('http://localhost:8080/hairshop/hairstyle')
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
-
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
 
   const openNew = () => {
     setProduct(emptyProduct);
@@ -56,28 +53,28 @@ export default function Hairstyle() {
     setProductDialog(true);
   };
 
-  const hideDialog = () => {
+  const hshop_seqeDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
   };
 
-  const hideDeleteProductDialog = () => {
+  const hshop_seqeDeleteProductDialog = () => {
     setDeleteProductDialog(false);
   };
 
-  const hideDeleteProductsDialog = () => {
+  const hshop_seqeDeleteProductsDialog = () => {
     setDeleteProductsDialog(false);
   };
 
   const saveProduct = () => {
     setSubmitted(true);
 
-    if (product.name.trim()) {
+    if (product.style_name.trim()) {
       let _products = [...products];
       let _product = { ...product };
 
-      if (product.id) {
-        const index = findIndexById(product.id);
+      if (product.shop_seq) {
+        const index = findIndexByshop_seq(product.shop_seq);
 
         _products[index] = _product;
         toast.current.show({
@@ -87,8 +84,8 @@ export default function Hairstyle() {
           life: 3000,
         });
       } else {
-        _product.id = createId();
-        _product.image = 'product-placeholder.svg';
+        _product.shop_seq = createshop_seq();
+        _product.style_image = 'product-placeholder.svg'; // Use 'style_image' instead of 'style_'
         _products.push(_product);
         toast.current.show({
           severity: 'success',
@@ -115,7 +112,7 @@ export default function Hairstyle() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = products.filter((val) => val.shop_seq !== product.shop_seq);
 
     setProducts(_products);
     setDeleteProductDialog(false);
@@ -128,33 +125,8 @@ export default function Hairstyle() {
     });
   };
 
-  const findIndexById = (id) => {
-    let index = -1;
-
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
-  };
-
-  const createId = () => {
-    let id = '';
-    let chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
+  const findIndexByshop_seq = (shop_seq) => {
+    return products.findIndex((product) => product.shop_seq === shop_seq);
   };
 
   const confirmDeleteSelected = () => {
@@ -162,7 +134,10 @@ export default function Hairstyle() {
   };
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
+    // Use Array.filter to create a new array without selectedProducts
+    let _products = products.filter(
+      (product) => !selectedProducts.includes(product.shop_seq)
+    );
 
     setProducts(_products);
     setDeleteProductsDialog(false);
@@ -175,29 +150,10 @@ export default function Hairstyle() {
     });
   };
 
-  const onCategoryChange = (e) => {
-    let _product = { ...product };
-
-    _product['category'] = e.value;
-    setProduct(_product);
-  };
-
-  const onInputChange = (e, name) => {
+  const onInputChange = (e, style_name) => {
     const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
+    // Use spread operator for immutability
+    setProduct({ ...product, [style_name]: val });
   };
 
   const leftToolbarTemplate = () => {
@@ -220,48 +176,14 @@ export default function Hairstyle() {
     );
   };
 
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label='Export'
-        icon='pi pi-upload'
-        className='p-button-help'
-        onClick={exportCSV}
-      />
-    );
-  };
-
   const imageBodyTemplate = (rowData) => {
     return (
       <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`}
-        alt={rowData.image}
+        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.style_image}`} // Use 'style_image' instead of 'style_'
+        alt={rowData.style_image} // Use 'style_image' instead of 'style_'
         className='shadow-2 border-round'
         style={{ width: '64px' }}
       />
-    );
-  };
-
-  const priceBodyTemplate = (rowData) => {
-    return formatCurrency(rowData.price);
-  };
-
-  const ratingBodyTemplate = (rowData) => {
-    return (
-      <Rating
-        value={rowData.rating}
-        readOnly
-        cancel={false}
-      />
-    );
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.inventoryStatus}
-        severity={getSeverity(rowData)}
-      ></Tag>
     );
   };
 
@@ -286,22 +208,6 @@ export default function Hairstyle() {
     );
   };
 
-  const getSeverity = (product) => {
-    switch (product.inventoryStatus) {
-      case 'INSTOCK':
-        return 'success';
-
-      case 'LOWSTOCK':
-        return 'warning';
-
-      case 'OUTOFSTOCK':
-        return 'danger';
-
-      default:
-        return null;
-    }
-  };
-
   const header = (
     <div className='flex flex-wrap gap-2 align-items-center justify-content-between'>
       <h4 className='m-0'>헤어스타일 목록</h4>
@@ -315,13 +221,14 @@ export default function Hairstyle() {
       </span>
     </div>
   );
+
   const productDialogFooter = (
     <React.Fragment>
       <Button
         label='Cancel'
         icon='pi pi-times'
         outlined
-        onClick={hideDialog}
+        onClick={hshop_seqeDialog}
       />
       <Button
         label='Save'
@@ -330,13 +237,14 @@ export default function Hairstyle() {
       />
     </React.Fragment>
   );
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
         label='No'
         icon='pi pi-times'
         outlined
-        onClick={hideDeleteProductDialog}
+        onClick={hshop_seqeDeleteProductDialog}
       />
       <Button
         label='Yes'
@@ -346,13 +254,14 @@ export default function Hairstyle() {
       />
     </React.Fragment>
   );
+
   const deleteProductsDialogFooter = (
     <React.Fragment>
       <Button
         label='No'
         icon='pi pi-times'
         outlined
-        onClick={hideDeleteProductsDialog}
+        onClick={hshop_seqeDeleteProductsDialog}
       />
       <Button
         label='Yes'
@@ -370,7 +279,6 @@ export default function Hairstyle() {
         <Toolbar
           className='mb-4'
           left={leftToolbarTemplate}
-          right={rightToolbarTemplate}
         ></Toolbar>
 
         <DataTable
@@ -378,7 +286,7 @@ export default function Hairstyle() {
           value={products}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey='id'
+          dataKey='style_seq'
           paginator
           rows={10}
           rowsPerPageOptions={[5, 10, 25]}
@@ -392,43 +300,40 @@ export default function Hairstyle() {
             exportable={false}
           ></Column>
           <Column
-            field='image'
+            field='style_image'
             header='이미지'
             body={imageBodyTemplate}
           ></Column>
           <Column
-            field='name'
+            field='style_name'
             header='헤어스타일 명'
             sortable
             style={{ minWidth: '16rem' }}
           ></Column>
-
           <Column
-            field='price'
+            field='style_price'
             header='가격'
-            body={priceBodyTemplate}
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
           <Column
-            field='category'
+            field='style_gender'
             header='시술대상'
             sortable
             style={{ minWidth: '10rem' }}
           ></Column>
           <Column
-            field='category'
+            field='style_time'
             header='작업시간'
             sortable
             style={{ minWidth: '10rem' }}
           ></Column>
           <Column
-            field='category'
+            field='cate_seq'
             header='카테고리'
             sortable
             style={{ minWidth: '10rem' }}
           ></Column>
-
           <Column
             body={actionBodyTemplate}
             exportable={false}
@@ -445,127 +350,119 @@ export default function Hairstyle() {
         modal
         className='p-fluid'
         footer={productDialogFooter}
-        onHide={hideDialog}
+        onHide={hshop_seqeDialog}
       >
-        {product.image && (
+        {product.style_image && (
           <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.image}
-            className='product-image block m-auto pb-3'
+            src={`https://primefaces.org/cdn/primereact/images/product/${product.style_image}`}
+            alt={product.style_image}
+            className='product-style block m-auto pb-3'
           />
         )}
         <div className='field'>
           <label
-            htmlFor='name'
+            htmlFor='style_name'
             className='font-bold'
           >
-            Name
+            이름
           </label>
           <InputText
-            id='name'
-            value={product.name}
-            onChange={(e) => onInputChange(e, 'name')}
+            id='style_name'
+            value={product.style_name}
+            onChange={(e) => onInputChange(e, 'style_name')}
             required
             autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.name })}
+            className={classNames({
+              'p-invalid': submitted && !product.style_name,
+            })}
           />
-          {submitted && !product.name && (
+          {submitted && !product.style_name && (
             <small className='p-error'>Name is required.</small>
           )}
         </div>
         <div className='field'>
           <label
-            htmlFor='description'
+            htmlFor='style_price'
             className='font-bold'
           >
-            Description
+            가격
           </label>
-          <InputTextarea
-            id='description'
-            value={product.description}
-            onChange={(e) => onInputChange(e, 'description')}
+          <InputText
+            id='style_price'
+            value={product.style_price}
+            onChange={(e) => onInputChange(e, 'style_price')}
             required
-            rows={3}
-            cols={20}
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.style_price,
+            })}
           />
+          {submitted && !product.style_price && (
+            <small className='p-error'>price is required.</small>
+          )}
         </div>
-
         <div className='field'>
-          <label className='mb-3 font-bold'>Category</label>
-          <div className='formgrid grid'>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category1'
-                name='category'
-                value='Accessories'
-                onChange={onCategoryChange}
-                checked={product.category === 'Accessories'}
-              />
-              <label htmlFor='category1'>Accessories</label>
-            </div>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category2'
-                name='category'
-                value='Clothing'
-                onChange={onCategoryChange}
-                checked={product.category === 'Clothing'}
-              />
-              <label htmlFor='category2'>Clothing</label>
-            </div>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category3'
-                name='category'
-                value='Electronics'
-                onChange={onCategoryChange}
-                checked={product.category === 'Electronics'}
-              />
-              <label htmlFor='category3'>Electronics</label>
-            </div>
-            <div className='field-radiobutton col-6'>
-              <RadioButton
-                inputId='category4'
-                name='category'
-                value='Fitness'
-                onChange={onCategoryChange}
-                checked={product.category === 'Fitness'}
-              />
-              <label htmlFor='category4'>Fitness</label>
-            </div>
-          </div>
+          <label
+            htmlFor='style_gender'
+            className='font-bold'
+          >
+            시술대상
+          </label>
+          <InputText
+            id='style_gender'
+            value={product.style_gender}
+            onChange={(e) => onInputChange(e, 'style_gender')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.style_gender,
+            })}
+          />
+          {submitted && !product.style_gender && (
+            <small className='p-error'>gender is required.</small>
+          )}
         </div>
-
-        <div className='formgrid grid'>
-          <div className='field col'>
-            <label
-              htmlFor='price'
-              className='font-bold'
-            >
-              Price
-            </label>
-            <InputNumber
-              id='price'
-              value={product.price}
-              onValueChange={(e) => onInputNumberChange(e, 'price')}
-              mode='currency'
-              currency='USD'
-              locale='en-US'
-            />
-          </div>
-          <div className='field col'>
-            <label
-              htmlFor='quantity'
-              className='font-bold'
-            >
-              Quantity
-            </label>
-            <InputNumber
-              id='quantity'
-              value={product.quantity}
-              onValueChange={(e) => onInputNumberChange(e, 'quantity')}
-            />
-          </div>
+        <div className='field'>
+          <label
+            htmlFor='style_time'
+            className='font-bold'
+          >
+            작업시간
+          </label>
+          <InputText
+            id='style_time'
+            value={product.style_price}
+            onChange={(e) => onInputChange(e, 'style_time')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.style_time,
+            })}
+          />
+          {submitted && !product.style_time && (
+            <small className='p-error'>price is required.</small>
+          )}
+        </div>
+        <div className='field'>
+          <label
+            htmlFor='cate_seq'
+            className='font-bold'
+          >
+            카테고리
+          </label>
+          <InputText
+            id='cate_seq'
+            value={product.cate_seq}
+            onChange={(e) => onInputChange(e, 'cate_seq')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.cate_seq,
+            })}
+          />
+          {submitted && !product.cate_seq && (
+            <small className='p-error'>카테고리 is required.</small>
+          )}
         </div>
       </Dialog>
 
@@ -576,7 +473,7 @@ export default function Hairstyle() {
         header='Confirm'
         modal
         footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
+        onHide={hshop_seqeDeleteProductDialog}
       >
         <div className='confirmation-content'>
           <i
@@ -585,7 +482,7 @@ export default function Hairstyle() {
           />
           {product && (
             <span>
-              Are you sure you want to delete <b>{product.name}</b>?
+              Are you sure you want to delete <b>{product.style_name}</b>?
             </span>
           )}
         </div>
@@ -598,14 +495,14 @@ export default function Hairstyle() {
         header='Confirm'
         modal
         footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
+        onHide={hshop_seqeDeleteProductsDialog}
       >
         <div className='confirmation-content'>
           <i
             className='pi pi-exclamation-triangle mr-3'
             style={{ fontSize: '2rem' }}
           />
-          {product && (
+          {selectedProducts && (
             <span>Are you sure you want to delete the selected products?</span>
           )}
         </div>
