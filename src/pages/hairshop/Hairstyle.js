@@ -7,8 +7,6 @@ import axios from 'axios';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 
 export default function Hairstyle() {
@@ -74,7 +72,7 @@ export default function Hairstyle() {
       let _product = { ...product };
 
       if (product.shop_seq) {
-        const index = findIndexByshop_seq(product.shop_seq);
+        const index = findIndexByshop_seq(product.style_seq);
 
         _products[index] = _product;
         toast.current.show({
@@ -112,7 +110,9 @@ export default function Hairstyle() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.shop_seq !== product.shop_seq);
+    let _products = products.filter(
+      (val) => val.style_seq !== product.style_seq
+    );
 
     setProducts(_products);
     setDeleteProductDialog(false);
@@ -125,8 +125,8 @@ export default function Hairstyle() {
     });
   };
 
-  const findIndexByshop_seq = (shop_seq) => {
-    return products.findIndex((product) => product.shop_seq === shop_seq);
+  const findIndexByshop_seq = (style_seq) => {
+    return products.findIndex((product) => product.style_seq === style_seq);
   };
 
   const confirmDeleteSelected = () => {
@@ -134,10 +134,7 @@ export default function Hairstyle() {
   };
 
   const deleteSelectedProducts = () => {
-    // Use Array.filter to create a new array without selectedProducts
-    let _products = products.filter(
-      (product) => !selectedProducts.includes(product.shop_seq)
-    );
+    let _products = products.filter((val) => !selectedProducts.includes(val));
 
     setProducts(_products);
     setDeleteProductsDialog(false);
@@ -308,7 +305,7 @@ export default function Hairstyle() {
             field='style_name'
             header='헤어스타일 명'
             sortable
-            style={{ minWidth: '16rem' }}
+            style={{ minWidth: '10rem' }}
           ></Column>
           <Column
             field='style_price'
@@ -325,6 +322,12 @@ export default function Hairstyle() {
           <Column
             field='style_time'
             header='작업시간'
+            sortable
+            style={{ minWidth: '10rem' }}
+          ></Column>
+          <Column
+            field='style_intro'
+            header='소개'
             sortable
             style={{ minWidth: '10rem' }}
           ></Column>
@@ -431,7 +434,7 @@ export default function Hairstyle() {
           </label>
           <InputText
             id='style_time'
-            value={product.style_price}
+            value={product.style_time}
             onChange={(e) => onInputChange(e, 'style_time')}
             required
             autoFocus
