@@ -1,14 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { Form, redirect } from 'react-router-dom';
 import axios from 'axios';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { MultiSelect } from 'primereact/multiselect';
-import { Calendar } from 'primereact/calendar';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
-import { Avatar } from 'primereact/avatar';
 import { InputText } from 'primereact/inputtext';
 import { Image } from 'primereact/image';
 import img from '../../assets/img.jpg';
