@@ -1,21 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { Form, redirect } from 'react-router-dom';
 import axios from 'axios';
-import { BreadCrumb } from 'primereact/breadcrumb';
+
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import { Calendar } from 'primereact/calendar';
-import { Divider } from 'primereact/divider';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
 
 function Info() {
-  const items = [{ label: '미용실 관리' }, { label: '미용실 정보' }];
-  const home = { icon: 'pi pi-home', url: '/hairshop' };
-
   const [info, setInfo] = useState([]);
   const [selectedTags, setSelectedTags] = useState(null);
   const [time, setTime] = useState(null);
@@ -26,8 +22,8 @@ function Info() {
   const accept = () => {
     toast.current.show({
       severity: 'info',
-      summary: 'Confirmed',
-      detail: 'You have accepted',
+      summary: '수정 성공',
+      detail: '수정 성공하였습니다.',
       life: 3000,
     });
   };
@@ -35,8 +31,8 @@ function Info() {
   const reject = () => {
     toast.current.show({
       severity: 'warn',
-      summary: 'Rejected',
-      detail: 'You have rejected',
+      summary: '수정 실패',
+      detail: '수정에 실패했습니다. 다시 시도해주세요.',
       life: 3000,
     });
   };
@@ -74,10 +70,6 @@ function Info() {
 
   return (
     <>
-      <BreadCrumb
-        model={items}
-        home={home}
-      />
       <Panel
         header={info.shop_name}
         toggleable
@@ -138,9 +130,9 @@ function Info() {
                 <i className='pi pi-map'></i>
               </span>
               <InputText
+                name='shop_address'
                 placeholder='주소'
                 defaultValue={info.shop_address}
-                name='shop_address'
               />
             </div>
 
@@ -149,6 +141,7 @@ function Info() {
                 <i className='pi pi-phone'></i>
               </span>
               <InputText
+                name='shop_phone'
                 placeholder='미용실 전화번호'
                 defaultValue={info.shop_phone}
               />
@@ -159,26 +152,39 @@ function Info() {
                 <span className='p-inputgroup-addon'>
                   <i className='pi pi-clock'></i>
                 </span>
-                <Calendar
+                <InputText
+                  name='shop_start'
+                  placeholder='영업 시작시간'
+                  defaultValue={info.shop_start}
+                />
+                {/* <Calendar
                   id='calendar-timeonly'
+                  name={info.shop_start}
                   defaultValue={info.shop_start}
                   onChange={(e) => setTime(e.value)}
-                  placeholder='영업 시작 시간'
+                  placeholder='영업 시작 시간 test'
                   timeOnly
-                />
+                  type='time'
+                /> */}
               </div>
 
               <div className='p-inputgroup flex-1'>
                 <span className='p-inputgroup-addon'>
                   <i className='pi pi-clock'></i>
                 </span>
-                <Calendar
+                <InputText
+                  name='shop_end'
+                  placeholder='영업 종료시간'
+                  defaultValue={info.shop_end}
+                />
+                {/* <Calendar
                   id='calendar-timeonly'
+                  name={info.shop_end}
                   defaultValue={info.shop_start}
                   onChange={(e) => setTime(e.value)}
                   placeholder='영업 종료 시간'
                   timeOnly
-                />
+                />*/}
               </div>
             </div>
 
