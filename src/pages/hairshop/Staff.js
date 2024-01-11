@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import axios from 'axios';
 import { Button } from 'primereact/button';
-import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
-import { InputTextarea } from 'primereact/inputtextarea';
+import callAxios from '../../service/CallAxios';
 
 export default function Staff() {
   let emptyProduct = {
@@ -21,12 +19,9 @@ export default function Staff() {
   };
 
   const [products, setProducts] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
@@ -43,63 +38,8 @@ export default function Staff() {
       });
   }, []);
 
-  const openNew = () => {
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setProductDialog(true);
-  };
-
-  const hstaff_seqeDialog = () => {
-    setSubmitted(false);
-    setProductDialog(false);
-  };
-
   const hstaff_seqeDeleteProductDialog = () => {
     setDeleteProductDialog(false);
-  };
-
-  const hstaff_seqeDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
-
-  const saveProduct = () => {
-    setSubmitted(true);
-
-    if (product.style_name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
-
-      if (product.staff_seq) {
-        const index = findIndexBystaff_seq(product.staff_seq);
-
-        _products[index] = _product;
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Updated',
-          life: 3000,
-        });
-      } else {
-        _product.staff_seq = createstaff_seq();
-        _product.style_image = 'product-placeholder.svg'; // Use 'style_image' instead of 'style_'
-        _products.push(_product);
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Created',
-          life: 3000,
-        });
-      }
-
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
-    }
-  };
-
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
   };
 
   const confirmDeleteProduct = (product) => {
@@ -121,16 +61,10 @@ export default function Staff() {
       detail: 'Product Deleted',
       life: 3000,
     });
-  };
-
-  const findIndexBystaff_seq = (staff_seq) => {
-    return products.findIndex((product) => product.staff_seq === staff_seq);
-  };
-
-  const onInputChange = (e, style_name) => {
-    const val = (e.target && e.target.value) || '';
-    // Use spread operator for immutability
-    setProduct({ ...product, [style_name]: val });
+    callAxios({
+      method: 'delete',
+      url: 'http://localhost:8080/hairshop/staff/' + product.staff_seq,
+    });
   };
 
   const imageBodyTemplate = (rowData) => {
@@ -147,13 +81,6 @@ export default function Staff() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Button
-          icon='pi pi-pencil'
-          rounded
-          outlined
-          className='mr-2'
-          onClick={() => editProduct(rowData)}
-        />
         <Button
           icon='pi pi-trash'
           rounded
@@ -177,22 +104,6 @@ export default function Staff() {
         />
       </span>
     </div>
-  );
-
-  const productDialogFooter = (
-    <React.Fragment>
-      <Button
-        label='Cancel'
-        icon='pi pi-times'
-        outlined
-        onClick={hstaff_seqeDialog}
-      />
-      <Button
-        label='Save'
-        icon='pi pi-check'
-        onClick={saveProduct}
-      />
-    </React.Fragment>
   );
 
   const deleteProductDialogFooter = (
@@ -278,112 +189,6 @@ export default function Staff() {
       </div>
 
       <Dialog
-        visible={productDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header='Product Details'
-        modal
-        className='p-fluid'
-        footer={productDialogFooter}
-        onHide={hstaff_seqeDialog}
-      >
-        {product.style_image && (
-          <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.style_image}`}
-            alt={product.style_image}
-            className='product-style block m-auto pb-3'
-          />
-        )}
-        <div className='field'>
-          <label
-            htmlFor='style_name'
-            className='font-bold'
-          >
-            닉네임
-          </label>
-          <InputText
-            id='staff_nickname'
-            value={product.staff_nickname}
-            onChange={(e) => onInputChange(e, 'staff_nickname')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_nickname,
-            })}
-          />
-          {submitted && !product.staff_nickname && (
-            <small className='p-error'>Name is required.</small>
-          )}
-        </div>
-        <div className='field'>
-          <label
-            htmlFor='staff_role'
-            className='font-bold'
-          >
-            권한
-          </label>
-          <InputText
-            id='staff_role'
-            value={product.staff_role}
-            onChange={(e) => onInputChange(e, 'staff_role')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_role,
-            })}
-          />
-          {submitted && !product.staff_role && (
-            <small className='p-error'>role is required.</small>
-          )}
-        </div>
-        <div className='field'>
-          <label
-            htmlFor='staff_phone'
-            className='font-bold'
-          >
-            전화번호
-          </label>
-          <InputText
-            id='staff_phone'
-            value={product.staff_phone}
-            onChange={(e) => onInputChange(e, 'staff_phone')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_phone,
-            })}
-          />
-          {submitted && !product.staff_phone && (
-            <small className='p-error'>phone is required.</small>
-          )}
-        </div>
-        <div className='field'>
-          <label
-            htmlFor='style_time'
-            className='font-bold'
-          >
-            소개
-          </label>
-          <InputTextarea
-            autoResize
-            rows={5}
-            cols={30}
-            id='staff_intro'
-            value={product.staff_intro}
-            onChange={(e) => onInputChange(e, 'staff_intro')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_intro,
-            })}
-          />
-          {submitted && !product.staff_intro && (
-            <small className='p-error'>intro is required.</small>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
         visible={deleteProductDialog}
         style={{ width: '32rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
@@ -397,11 +202,7 @@ export default function Staff() {
             className='pi pi-exclamation-triangle mr-3'
             style={{ fontSize: '2rem' }}
           />
-          {product && (
-            <span>
-              Are you sure you want to delete <b>{product.style_name}</b>?
-            </span>
-          )}
+          {product && <span>정말로 삭제하시겠습니까?</span>}
         </div>
       </Dialog>
     </div>

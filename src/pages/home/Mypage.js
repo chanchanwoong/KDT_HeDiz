@@ -49,25 +49,6 @@ function Mypage() {
                 placeholder='소개'
               />
             </div>
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-clock'></i>
-              </span>
-              <InputText
-                name='shop_start'
-                placeholder='근무 시작시간'
-              />
-            </div>
-
-            <div className='p-inputgroup flex-1 mb-5'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-clock'></i>
-              </span>
-              <InputText
-                name='shop_end'
-                placeholder='근무 종료시간'
-              />
-            </div>
             <Button label='수정하기' />
           </div>
         </div>
