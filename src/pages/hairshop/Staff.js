@@ -202,11 +202,7 @@ export default function Staff() {
             className='pi pi-exclamation-triangle mr-3'
             style={{ fontSize: '2rem' }}
           />
-          {product && (
-            <span>
-              Are you sure you want to delete <b>{product.style_name}</b>?
-            </span>
-          )}
+          {product && <span>정말로 삭제하시겠습니까?</span>}
         </div>
       </Dialog>
     </div>
