@@ -6,9 +6,14 @@ import AuthLayout from 'components/layout/AuthLayout';
 import MainLayout from 'components/layout/MainLayout';
 
 // auth__인증
+<<<<<<< HEAD
 import SignIn from 'pages/auth/SignIn';
 import SignUp from 'pages/auth/SignUp';
 import Register from 'pages/auth/Register';
+=======
+import SignIn, { action as LoginAction } from 'pages/auth/SignIn';
+import SignUp from 'pages/auth/SIgnUp';
+>>>>>>> MJ
 import Find from 'pages/auth/Find';
 
 // home__바로가기
@@ -44,7 +49,7 @@ const router = createBrowserRouter([
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      { path: 'sign-in', element: <SignIn /> },
+      { path: 'sign-in', element: <SignIn />, action: LoginAction },
       { path: 'sign-up', element: <SignUp /> },
       { path: 'register', element: <Register /> },
       { path: 'find', element: <Find /> },

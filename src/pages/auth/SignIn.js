@@ -1,39 +1,39 @@
 import { useState } from 'react';
-// import { Form, useNavigate, json, redirect, Link } from 'react-router-dom';
+
 // import Logo from 'components/common/Logo';
 
-import { Form, Link } from 'react-router-dom';
+import { Form, Link, redirect } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import KakaoLogin from '../../components/common/KakaoLogin';
+import Logo from 'components/common/Logo';
+import axios from 'axios';
 
 function SignIn() {
   const [checked, setChecked] = useState(false);
 
   return (
     <main className='flex flex-column bg-white p-6 w-auto border-round-lg'>
-      {/* 로고 컴포넌트 분리 필요 */}
-      <span className='flex align-items-center justify-content-center gap-1 mb-4'>
-        <span className='font-medium text-4xl font-bold'>
-          He<span className='text-primary'>Diz</span>
-        </span>
-      </span>
+      <Logo />
 
       <Form
-        // method='post'
-        action='/'
+        method='post'
         className='flex flex-column flex-wrap gap-4'
       >
         <div className='flex flex-column gap-2'>
-          <label htmlFor='userid'>아이디</label>
-          <InputText id='userid' />
+          <label htmlFor='staff_id'>아이디</label>
+          <InputText
+            id='staff_id'
+            name='staff_id'
+          />
         </div>
         <div className='flex flex-column gap-2'>
-          <label htmlFor='passwd'>비밀번호</label>
+          <label htmlFor='staff_pw'>비밀번호</label>
           <Password
-            id='passwd'
+            id='staff_pw'
+            name='staff_pw'
             feedback={false}
             toggleMask
           />
@@ -64,7 +64,7 @@ function SignIn() {
           to='/auth/sign-up'
           className='font-medium no-underline text-black-500 text-left cursor-pointer'
         >
-          아직 회원이 아니신가요?
+          미용실 등록(점주 회원가입)
         </Link>
       </Form>
     </main>
@@ -72,3 +72,35 @@ function SignIn() {
 }
 
 export default SignIn;
+
+export async function action({ request }) {
+  const data = await request.formData();
+  const authData = {
+    staff_id: data.get('staff_id'),
+    staff_pw: data.get('staff_pw'),
+  };
+  console.log('authData>>', authData);
+  let resData = '';
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: 'http://localhost:8080/auth/sign-in',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(authData),
+    });
+
+    console.log('response>>>>>>', response);
+    resData = response.data;
+
+    const token = resData.jwtauthtoken;
+    localStorage.setItem('jwtauthtoken', token);
+    localStorage.setItem('email', authData.email);
+  } catch (error) {
+    console.log('error:', error);
+    throw new Error('error 발생되었습니다');
+  }
+
+  return redirect('/');
+}
