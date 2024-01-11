@@ -1,14 +1,23 @@
 import { useState } from 'react';
+import Logo from 'components/common/Logo';
 
 import { Steps } from 'primereact/steps';
 import { Form, Link } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { InputNumber } from 'primereact/inputnumber';
+import { MultiSelect } from 'primereact/multiselect';
+import { InputMask } from 'primereact/inputmask';
+
+import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 
 function Register() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedTags, setSelectedTags] = useState(null);
+  const [selectClosedDay, setSelectClosedDay] = useState(null);
+  const [value, setValue] = useState();
+  const [time, setTime] = useState(null);
 
   const stepItems = [
     { label: '사업자등록번호 인증' },
@@ -16,29 +25,40 @@ function Register() {
     { label: '회원가입 정보' },
   ];
 
-  const firstTemplate = () => {
-    return <div>첫번째</div>;
-  };
+  const hashTag = [
+    { name: 'Wifi' },
+    { name: '간식' },
+    { name: '1인샵' },
+    { name: '바버샵' },
+    { name: '메이크업 가능' },
+    { name: '반려견 동반 가능' },
+  ];
 
-  const secondTemplate = () => {
-    return <div>두번째</div>;
-  };
-
-  const thirdTemplate = () => {
-    return <div>세번째</div>;
-  };
+  const closedDay = [
+    { name: '일요일', code: 1 },
+    { name: '월요일', code: 2 },
+    { name: '화요일', code: 3 },
+    { name: '수요일', code: 4 },
+    { name: '목요일', code: 5 },
+    { name: '금요일', code: 6 },
+    { name: '토요일', code: 7 },
+  ];
 
   return (
-    <main className='flex flex-column bg-white p-6 w-auto border-round-lg'>
+    <main className='flex flex-column bg-white p-6 w-auto border-round-lg w-4'>
       {/* 로고 컴포넌트 분리 필요 */}
-      <span className='flex align-items-center justify-content-center gap-1 mb-4'>
+      <span className='flex align-items-center justify-content-center gap-1 mb-2'>
         <span className='font-medium text-4xl font-bold'>
-          He<span className='text-primary'>Diz</span> - 미용실 등록
+          He<span className='text-primary'>Diz</span>
         </span>
       </span>
 
-      <div className='card mb-6'>
-        <div className='flex flex-wrap justify-content-end gap-2 mb-3'>
+      <p className='font-medium font-bold text-center'>
+        미용실 등록(점주 회원가입)
+      </p>
+
+      <div className='card my-4'>
+        <div className='flex flex-wrap justify-content-end gap-2 mb-6'>
           <Button
             outlined={activeIndex !== 0}
             rounded
@@ -72,104 +92,108 @@ function Register() {
         action='/'
         className='flex flex-row flex-wrap gap-6 col-md-12'
       >
-        <div className='flex flex-column gap-4'>
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>사업자 등록번호</label>
-            <div className='p-inputgroup flex-1'>
-              <InputNumber />
+        {/* {activeIndex === 0 ? (
+          <h1>1번</h1>
+        ) : activeIndex === 1 ? (
+          <h2>2번</h2>
+        ) : (
+          <h2>3번</h2>
+        )} */}
+        {activeIndex === 0 ? (
+          <>
+            <div className='flex flex-column gap-4 min-w-full'>
+              <div className='p-inputgroup flex-1'>
+                <InputMask
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  mask='999-99-99999'
+                  placeholder='사업자등록번호'
+                  name='shop_register'
+                />
+                <Button
+                  label='인증하기'
+                  type='button'
+                />
+              </div>
+
+              <InputText
+                name='shop_code'
+                placeholder='미용실 고유코드'
+                disabled
+              />
+
               <Button
-                label='인증하기'
+                label='다음 단계'
                 type='button'
+                className='mt-4'
               />
             </div>
-          </div>
+          </>
+        ) : activeIndex === 1 ? (
+          <>
+            <div className='flex flex-row gap-4 min-w-full'>
+              <div className='col-md-6 flex flex-column gap-4'>
+                <InputText
+                  name='shop_name'
+                  placeholder='상호명'
+                />
+                <InputText
+                  name='shop_address'
+                  placeholder='주소'
+                />
+                <InputText
+                  name='shop_phone'
+                  placeholder='전화번호'
+                />
 
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>미용실 고유코드</label>
-            <InputText
-              id='userid'
-              disabled
+                <MultiSelect
+                  value={selectedTags}
+                  onChange={(e) => setSelectedTags(e.value)}
+                  options={hashTag}
+                  optionLabel='name'
+                  display='chip'
+                  placeholder='해시태그'
+                  className='w-full'
+                  filter
+                />
+              </div>
+              <div className='col-md-6 flex flex-column gap-4'>
+                <Calendar
+                  name='shop_start'
+                  placeholder='영업 시작 시간'
+                  timeOnly
+                />
+                <Calendar
+                  name='shop_end'
+                  placeholder='영업 종료 시간'
+                  timeOnly
+                />
+                <MultiSelect
+                  value={selectClosedDay}
+                  onChange={(e) => setSelectClosedDay(e.value)}
+                  options={closedDay}
+                  optionLabel='name'
+                  placeholder='정기 휴무일'
+                  className='w-full'
+                />
+                <InputTextarea
+                  name='shop_intro'
+                  placeholder='미용실 소개글'
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            <Button
+              label='다음 단계'
+              type='button'
+              className='mt-4'
             />
-          </div>
-
-          <Button
-            label='다음 단계'
-            type='submit'
-          />
-        </div>
+          </>
+        ) : (
+          <h2>3번</h2>
+        )}
       </Form>
-
-      {/* <Form
-        // method='post'
-        action='/'
-        className='flex flex-row flex-wrap gap-6 col-md-12'
-      >
-        <div className='col-md-6 flex flex-column gap-4'>
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>사업자 등록번호</label>
-            <div className='p-inputgroup flex-1'>
-              <InputNumber />
-              <Button
-                label='인증하기'
-                type='button'
-              />
-            </div>
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>미용실 고유코드</label>
-            <InputText
-              id='userid'
-              disabled
-            />
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>상호명</label>
-            <InputText
-              id='userid'
-              disabled
-            />
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>주소</label>
-            <InputText id='userid' />
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>전화번호</label>
-            <InputText id='userid' />
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>미용실 소개</label>
-            <InputTextarea rows={5} />
-          </div>
-        </div>
-
-        <div className='col-md-6 flex flex-column gap-2'>
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>정기 휴무</label>
-            <InputText id='userid' />
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>영업 시간</label>
-            <InputText id='userid' />
-          </div>
-
-          <div className='flex flex-column gap-2'>
-            <label htmlFor='userid'>미용실 해시태그</label>
-            <InputText id='userid' />
-          </div>
-
-          <Button
-            label='다음 단계'
-            type='submit'
-          />
-        </div>
-      </Form> */}
     </main>
   );
 }
