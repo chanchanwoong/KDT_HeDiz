@@ -6,14 +6,9 @@ import AuthLayout from 'components/layout/AuthLayout';
 import MainLayout from 'components/layout/MainLayout';
 
 // auth__인증
-<<<<<<< HEAD
-import SignIn from 'pages/auth/SignIn';
+import SignIn, { action as LoginAction } from 'pages/auth/SignIn';
 import SignUp from 'pages/auth/SignUp';
 import Register from 'pages/auth/Register';
-=======
-import SignIn, { action as LoginAction } from 'pages/auth/SignIn';
-import SignUp from 'pages/auth/SIgnUp';
->>>>>>> MJ
 import Find from 'pages/auth/Find';
 
 // home__바로가기
