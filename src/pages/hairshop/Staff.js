@@ -269,25 +269,6 @@ export default function Staff() {
             sortable
             style={{ minWidth: '8rem' }}
           ></Column>
-
-          <Column
-            field='price'
-            header='근무시작시간'
-            sortable
-            style={{ minWidth: '8rem' }}
-          ></Column>
-          <Column
-            field='category'
-            header='근무종료시간'
-            sortable
-            style={{ minWidth: '8rem' }}
-          ></Column>
-          <Column
-            field='category'
-            header='정기 휴무일'
-            sortable
-            style={{ minWidth: '10rem' }}
-          ></Column>
           <Column
             body={actionBodyTemplate}
             exportable={false}

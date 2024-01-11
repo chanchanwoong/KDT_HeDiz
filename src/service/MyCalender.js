@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import './MyCalender.css';
 
 class MyCalendar extends Component {
   render() {
@@ -21,6 +22,7 @@ class MyCalendar extends Component {
         title: '미용실 휴무',
         start: start,
         end: end,
+        color: '#fc4e4e',
       });
       console.log(start, end);
     }
