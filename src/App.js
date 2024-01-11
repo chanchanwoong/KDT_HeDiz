@@ -6,7 +6,7 @@ import AuthLayout from 'components/layout/AuthLayout';
 import MainLayout from 'components/layout/MainLayout';
 
 // auth__인증
-import SignIn from 'pages/auth/SignIn';
+import SignIn, { action as LoginAction } from 'pages/auth/SignIn';
 import SignUp from 'pages/auth/SIgnUp';
 import Find from 'pages/auth/Find';
 
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      { path: 'sign-in', element: <SignIn /> },
+      { path: 'sign-in', element: <SignIn />, action: LoginAction },
       { path: 'sign-up', element: <SignUp /> },
       { path: 'find', element: <Find /> },
     ],
