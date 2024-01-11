@@ -122,6 +122,7 @@ export default function Hairstyle() {
       summary: 'Successful',
       detail: 'Product Deleted',
       life: 3000,
+
     });
   };
 

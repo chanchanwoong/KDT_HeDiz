@@ -253,7 +253,6 @@ function Info() {
 export default Info;
 
 export async function action({ request }) {
-  console.log('수정');
   const formData = await request.formData();
   const postData = Object.fromEntries(formData); // { body: '...', author: '...' }
   console.log(postData);

@@ -9,6 +9,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
+import callAxios from '../../service/CallAxios';
 
 export default function Staff() {
   let emptyProduct = {
@@ -23,7 +24,6 @@ export default function Staff() {
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -43,12 +43,6 @@ export default function Staff() {
       });
   }, []);
 
-  const openNew = () => {
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setProductDialog(true);
-  };
-
   const hstaff_seqeDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
@@ -56,10 +50,6 @@ export default function Staff() {
 
   const hstaff_seqeDeleteProductDialog = () => {
     setDeleteProductDialog(false);
-  };
-
-  const hstaff_seqeDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
   };
 
   const saveProduct = () => {
@@ -120,6 +110,10 @@ export default function Staff() {
       summary: 'Successful',
       detail: 'Product Deleted',
       life: 3000,
+    });
+    callAxios({
+      method: 'delete',
+      url: 'http://localhost:8080/hairshop/staff/' + product.staff_seq,
     });
   };
 
