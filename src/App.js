@@ -6,8 +6,8 @@ import AuthLayout from 'components/layout/AuthLayout';
 import MainLayout from 'components/layout/MainLayout';
 
 // auth__인증
-import SignIn, { action as LoginAction } from 'pages/auth/SignIn';
-import SignUp from 'pages/auth/SignUp';
+import SignIn, { action as SignInAction } from 'pages/auth/SignIn';
+import SignUp, { action as SignUpAction } from 'pages/auth/SignUp';
 import Register from 'pages/auth/Register';
 import Find from 'pages/auth/Find';
 
@@ -44,8 +44,8 @@ const router = createBrowserRouter([
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      { path: 'sign-in', element: <SignIn />, action: LoginAction },
-      { path: 'sign-up', element: <SignUp /> },
+      { path: 'sign-in', element: <SignIn />, action: SignInAction },
+      { path: 'sign-up', element: <SignUp />, aciton: SignUpAction },
       { path: 'register', element: <Register /> },
       { path: 'find', element: <Find /> },
     ],
