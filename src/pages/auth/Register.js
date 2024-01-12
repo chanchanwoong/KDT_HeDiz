@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Logo from 'components/common/Logo';
+import SignUp from './SignUp';
 
 import { Steps } from 'primereact/steps';
 import { Form, Link } from 'react-router-dom';
@@ -191,7 +192,7 @@ function Register() {
             />
           </>
         ) : (
-          <h2>3번</h2>
+          <SignUp />
         )}
       </Form>
     </main>
