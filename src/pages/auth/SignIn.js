@@ -61,7 +61,7 @@ function SignIn() {
         />
         <KakaoLogin />
         <Link
-          to='/auth/sign-up'
+          to='/auth/register'
           className='font-medium no-underline text-black-500 text-left cursor-pointer'
         >
           미용실 등록(점주 회원가입)
@@ -93,10 +93,10 @@ export async function action({ request }) {
 
     console.log('response>>>>>>', response);
     resData = response.data;
-
+    console.log(resData);
     const token = resData.jwtauthtoken;
     localStorage.setItem('jwtauthtoken', token);
-    localStorage.setItem('email', authData.email);
+    localStorage.setItem('staff_id', authData.staff_id);
   } catch (error) {
     console.log('error:', error);
     throw new Error('error 발생되었습니다');

@@ -1,20 +1,34 @@
 import { useState, useEffect } from 'react';
 
-import { InputText } from 'primereact/inputtext';
 import { Panel } from 'primereact/panel';
 
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
-import { ProductService } from '../../service/ProduectService';
+import axios from 'axios';
 
 function Review() {
   const [products, setProducts] = useState([]);
   const [layout, setLayout] = useState('grid');
+  const [averageScore, setAverageScore] = useState();
 
   useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data.slice(0, 12)));
+    axios
+      .get('http://localhost:8080/reservation/review')
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data);
+        const totalScore = response.data.reduce(
+          (sum, product) => sum + product.review_score,
+          0
+        );
+        const averageScore = totalScore / response.data.length;
+        setAverageScore(averageScore);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
 
   const getSeverity = (product) => {
@@ -40,34 +54,30 @@ function Review() {
           <img
             className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
             src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.name}
+            alt={product.review_photo}
           />
           <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
             <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
-              <div className='text-2xl font-bold text-900'>{product.name}</div>
+              <div className='text-2xl font-bold text-900'>
+                {product.reserv_name}
+              </div>
               <Rating
-                value={product.rating}
+                value={product.review_score}
                 readOnly
                 cancel={false}
               ></Rating>
               <div className='flex align-items-center gap-3'>
                 <span className='flex align-items-center gap-2'>
                   <i className='pi pi-tag'></i>
-                  <span className='font-semibold'>{product.category}</span>
+                  <span className='font-semibold'>
+                    {product.review_content}
+                  </span>
                 </span>
                 <Tag
-                  value={product.inventoryStatus}
+                  value={product.review_date}
                   severity={getSeverity(product)}
                 ></Tag>
               </div>
-            </div>
-            <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'>
-              <span className='text-2xl font-semibold'>${product.price}</span>
-              <Button
-                icon='pi pi-shopping-cart'
-                className='p-button-rounded'
-                disabled={product.inventoryStatus === 'OUTOFSTOCK'}
-              ></Button>
             </div>
           </div>
         </div>
@@ -81,11 +91,10 @@ function Review() {
         <div className='p-4 border-1 surface-border surface-card border-round'>
           <div className='flex flex-wrap align-items-center justify-content-between gap-2'>
             <div className='flex align-items-center gap-2'>
-              <i className='pi pi-tag'></i>
               <span className='font-semibold'>{product.category}</span>
             </div>
             <Tag
-              value={product.inventoryStatus}
+              value={product.review_date}
               severity={getSeverity(product)}
             ></Tag>
           </div>
@@ -95,20 +104,17 @@ function Review() {
               src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
               alt={product.name}
             />
-            <div className='text-2xl font-bold'>{product.name}</div>
+            <div className='text-2xl font-bold'>{product.reserv_name}</div>
             <Rating
-              value={product.rating}
+              value={product.review_score}
               readOnly
               cancel={false}
             ></Rating>
           </div>
           <div className='flex align-items-center justify-content-between'>
-            <span className='text-2xl font-semibold'>${product.price}</span>
-            <Button
-              icon='pi pi-shopping-cart'
-              className='p-button-rounded'
-              disabled={product.inventoryStatus === 'OUTOFSTOCK'}
-            ></Button>
+            <span className='text-2xl font-semibold'>
+              ${product.review_content}
+            </span>
           </div>
         </div>
       </div>
@@ -138,7 +144,7 @@ function Review() {
   return (
     <>
       <Panel
-        header='{미용실 이름} 전체 별점'
+        header='token에 담은 헤어샵 시퀀스로 이름 찾아서 출력'
         toggleable
       >
         <div className='col-6 p-0'>
@@ -152,18 +158,22 @@ function Review() {
               <div className='flex flex-column align-items-center sm:align-items-start gap-4'>
                 <div className='text-2xl font-bold text-900'>
                   <span className='flex align-items-end gap-2 font-normal vertical-align-baseline'>
-                    <span className='font-bold text-primary text-4xl'>4.2</span>{' '}
+                    <span className='font-bold text-primary text-4xl'>
+                      {averageScore && averageScore.toFixed(1)}
+                    </span>{' '}
                     / 5
                   </span>
                 </div>
                 <Rating
-                  value={4.2}
+                  value={averageScore || 0}
                   readOnly
                   cancel={false}
                 ></Rating>
               </div>
               <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'>
-                <span className='text-2xl font-semibold'>[00,000개]</span>
+                <span className='text-2xl font-semibold'>
+                  {products.length} 개의 리뷰가 있습니다.
+                </span>
               </div>
             </div>
           </div>

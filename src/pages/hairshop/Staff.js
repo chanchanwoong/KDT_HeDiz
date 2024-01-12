@@ -21,7 +21,6 @@ export default function Staff() {
   const [products, setProducts] = useState(null);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
@@ -130,8 +129,6 @@ export default function Staff() {
         <DataTable
           ref={dt}
           value={products}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey='staff_seq'
           paginator
           rows={10}
@@ -141,10 +138,6 @@ export default function Staff() {
           globalFilter={globalFilter}
           header={header}
         >
-          <Column
-            selectionMode='multiple'
-            exportable={false}
-          ></Column>
           <Column
             field='staff_image'
             header='프로필 사진'
