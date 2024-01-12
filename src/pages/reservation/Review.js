@@ -113,7 +113,7 @@ function Review() {
           </div>
           <div className='flex align-items-center justify-content-between'>
             <span className='text-2xl font-semibold'>
-              ${product.review_content}
+              {product.review_content}
             </span>
           </div>
         </div>

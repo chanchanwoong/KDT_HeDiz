@@ -136,20 +136,6 @@ export default function Total() {
     );
   };
 
-  const countryBodyTemplate = (rowData) => {
-    return (
-      <div className='flex align-items-center gap-2'>
-        <img
-          alt='flag'
-          src='https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png'
-          className={`flag flag-${rowData.country.code}`}
-          style={{ width: '24px' }}
-        />
-        <span>{rowData.country.name}</span>
-      </div>
-    );
-  };
-
   const representativeBodyTemplate = (rowData) => {
     const representative = rowData.representative;
 
@@ -259,33 +245,6 @@ export default function Total() {
     );
   };
 
-  const activityBodyTemplate = (rowData) => {
-    return (
-      <ProgressBar
-        value={rowData.activity}
-        showValue={false}
-        style={{ height: '6px' }}
-      ></ProgressBar>
-    );
-  };
-
-  const activityFilterTemplate = (options) => {
-    return (
-      <>
-        <Slider
-          value={options.value}
-          onChange={(e) => options.filterCallback(e.value)}
-          range
-          className='m-3'
-        ></Slider>
-        <div className='flex align-items-center justify-content-between px-2'>
-          <span>{options.value ? options.value[0] : 0}</span>
-          <span>{options.value ? options.value[1] : 100}</span>
-        </div>
-      </>
-    );
-  };
-
   const actionBodyTemplate = () => {
     return (
       <Button
@@ -335,16 +294,6 @@ export default function Total() {
           filterPlaceholder='Search by name'
           style={{ minWidth: '14rem' }}
         />
-        {/* <Column
-          field='country.name'
-          header='Country'
-          sortable
-          filterField='country.name'
-          style={{ minWidth: '14rem' }}
-          body={countryBodyTemplate}
-          filter
-          filterPlaceholder='Search by country'
-        /> */}
         <Column
           header='담당 디자이너'
           sortable
@@ -399,16 +348,6 @@ export default function Total() {
           filter
           filterElement={statusFilterTemplate}
         />
-        {/* <Column
-          field='activity'
-          header='Activity'
-          sortable
-          showFilterMatchModes={false}
-          style={{ minWidth: '12rem' }}
-          body={activityBodyTemplate}
-          filter
-          filterElement={activityFilterTemplate}
-        /> */}
         <Column header='헤어스타일' />
         <Column header='요청사항' />
         <Column

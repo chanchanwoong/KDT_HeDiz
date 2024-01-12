@@ -18,8 +18,7 @@ export default function Hairstyle() {
     style_price: null,
     style_intro: '',
     style_image: null,
-    cate_seq: null,
-    shop_seq: null,
+    cate_name: '',
   };
 
   const [products, setProducts] = useState(null);
@@ -122,7 +121,6 @@ export default function Hairstyle() {
       summary: 'Successful',
       detail: 'Product Deleted',
       life: 3000,
-
     });
   };
 
@@ -333,7 +331,7 @@ export default function Hairstyle() {
             style={{ minWidth: '10rem' }}
           ></Column>
           <Column
-            field='cate_seq'
+            field='cate_name'
             header='카테고리'
             sortable
             style={{ minWidth: '10rem' }}
@@ -449,22 +447,22 @@ export default function Hairstyle() {
         </div>
         <div className='field'>
           <label
-            htmlFor='cate_seq'
+            htmlFor='cate_name'
             className='font-bold'
           >
             카테고리
           </label>
           <InputText
-            id='cate_seq'
-            value={product.cate_seq}
-            onChange={(e) => onInputChange(e, 'cate_seq')}
+            id='cate_name'
+            value={product.cate_name}
+            onChange={(e) => onInputChange(e, 'cate_name')}
             required
             autoFocus
             className={classNames({
-              'p-invalid': submitted && !product.cate_seq,
+              'p-invalid': submitted && !product.cate_name,
             })}
           />
-          {submitted && !product.cate_seq && (
+          {submitted && !product.cate_name && (
             <small className='p-error'>카테고리 is required.</small>
           )}
         </div>
