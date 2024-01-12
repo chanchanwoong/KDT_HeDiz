@@ -34,11 +34,14 @@ function SignIn() {
 
   return (
     <main className='flex flex-column bg-white p-6 w-auto border-round-lg'>
-      <Logo />
+      <Logo
+        size='text-4xl'
+        margin='mb-6'
+      />
 
       <Form
         method='post'
-        className='flex flex-column flex-wrap gap-4 mt-6'
+        className='flex flex-column flex-wrap gap-4'
       >
         <div className='flex flex-column gap-2'>
           <InputText
@@ -76,19 +79,19 @@ function SignIn() {
 
         <Link
           to='/auth/sign-up'
-          className='font-medium no-underline text-blue-500 text-left cursor-pointer'
+          className='text-blue-500 cursor-pointer'
         >
           일반 회원가입
         </Link>
         <Link
           to='/auth/register'
-          className='font-medium no-underline text-blue-500 text-left cursor-pointer'
+          className='text-blue-500 cursor-pointer'
         >
           점주 회원가입(미용실 등록)
         </Link>
         <Link
           to='/auth/find'
-          className='font-medium no-underline text-blue-500 text-left cursor-pointer'
+          className='text-blue-500 cursor-pointer'
         >
           아이디/비밀번호 찾기
         </Link>

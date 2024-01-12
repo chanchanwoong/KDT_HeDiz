@@ -1,13 +1,13 @@
 // HeDiz 로고
-function Logo() {
+function Logo(props) {
   return (
-    <>
-      <h1 className='flex justify-content-center align-items-center gap-1 m-0'>
-        <span className='font-medium text-xl font-semibold'>
-          He<span className='text-primary'>Diz</span>
-        </span>
-      </h1>
-    </>
+    <div
+      className={`flex justify-content-center align-items-center ${props.margin}`}
+    >
+      <span className={`font-medium text-xl font-semibold ${props.size}`}>
+        He<span className='text-primary font-bold'>Diz</span>
+      </span>
+    </div>
   );
 }
 
