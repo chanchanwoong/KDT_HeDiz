@@ -8,6 +8,8 @@ import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { FileUpload } from 'primereact/fileupload';
 
 export default function Hairstyle() {
   let emptyProduct = {
@@ -29,9 +31,16 @@ export default function Hairstyle() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const toast = useRef(null);
   const dt = useRef(null);
+  const toast = useRef(null);
 
+  const onUpload = () => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Success',
+      detail: 'File Uploaded',
+    });
+  };
   useEffect(() => {
     axios
       .get('http://localhost:8080/hairshop/hairstyle')
@@ -63,38 +72,53 @@ export default function Hairstyle() {
     setDeleteProductsDialog(false);
   };
 
-  const saveProduct = () => {
+  const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.style_name.trim()) {
       let _products = [...products];
       let _product = { ...product };
 
-      if (product.shop_seq) {
-        const index = findIndexByshop_seq(product.style_seq);
+      try {
+        if (product.shop_seq) {
+          const index = findIndexByshop_seq(product.style_seq);
 
-        _products[index] = _product;
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Updated',
-          life: 3000,
-        });
-      } else {
-        _product.shop_seq = createshop_seq();
-        _product.style_image = 'product-placeholder.svg'; // Use 'style_image' instead of 'style_'
-        _products.push(_product);
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Created',
-          life: 3000,
-        });
+          _products[index] = _product;
+          await axios.put(
+            `http://localhost:8080/hairshop/hairstyle/${product.style_seq}`,
+            _product
+          );
+
+          toast.current.show({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Product Updated',
+            life: 3000,
+          });
+        } else {
+          _product.style_seq = _products.length + 1;
+          _product.style_image = 'product-placeholder.svg'; // Use 'style_image' instead of 'style_'
+          _products.push(_product);
+          await axios.post(
+            'http://localhost:8080/hairshop/hairstyle/',
+            _product
+          );
+          console.log(_product);
+          toast.current.show({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Product Created',
+            life: 3000,
+          });
+        }
+
+        setProducts(_products);
+        setProductDialog(false);
+        setProduct(emptyProduct);
+      } catch (error) {
+        console.error('Error saving product:', error);
+        // Handle error as needed
       }
-
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
     }
   };
 
@@ -121,6 +145,10 @@ export default function Hairstyle() {
       summary: 'Successful',
       detail: 'Product Deleted',
       life: 3000,
+    });
+    callAxios({
+      method: 'delete',
+      url: 'http://localhost:8080/hairshop/hairstyle/' + product.style_seq,
     });
   };
 
@@ -348,7 +376,7 @@ export default function Hairstyle() {
         visible={productDialog}
         style={{ width: '32rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header='Product Details'
+        header='헤어스타일 등록'
         modal
         className='p-fluid'
         footer={productDialogFooter}
@@ -366,7 +394,7 @@ export default function Hairstyle() {
             htmlFor='style_name'
             className='font-bold'
           >
-            이름
+            헤어스타일 명
           </label>
           <InputText
             id='style_name'
@@ -382,27 +410,7 @@ export default function Hairstyle() {
             <small className='p-error'>Name is required.</small>
           )}
         </div>
-        <div className='field'>
-          <label
-            htmlFor='style_price'
-            className='font-bold'
-          >
-            가격
-          </label>
-          <InputText
-            id='style_price'
-            value={product.style_price}
-            onChange={(e) => onInputChange(e, 'style_price')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.style_price,
-            })}
-          />
-          {submitted && !product.style_price && (
-            <small className='p-error'>price is required.</small>
-          )}
-        </div>
+
         <div className='field'>
           <label
             htmlFor='style_gender'
@@ -424,6 +432,7 @@ export default function Hairstyle() {
             <small className='p-error'>gender is required.</small>
           )}
         </div>
+
         <div className='field'>
           <label
             htmlFor='style_time'
@@ -442,9 +451,73 @@ export default function Hairstyle() {
             })}
           />
           {submitted && !product.style_time && (
+            <small className='p-error'>time is required.</small>
+          )}
+        </div>
+
+        <div className='field'>
+          <label
+            htmlFor='style_price'
+            className='font-bold'
+          >
+            가격
+          </label>
+          <InputText
+            id='style_price'
+            value={product.style_price}
+            onChange={(e) => onInputChange(e, 'style_price')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.style_price,
+            })}
+          />
+          {submitted && !product.style_price && (
             <small className='p-error'>price is required.</small>
           )}
         </div>
+
+        <div className='field'>
+          <label
+            htmlFor='style_intro'
+            className='font-bold'
+          >
+            스타일 소개
+          </label>
+          <InputTextarea
+            id='style_intro'
+            autoResize
+            rows={5}
+            cols={30}
+            value={product.style_intro}
+            onChange={(e) => onInputChange(e, 'style_intro')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.style_intro,
+            })}
+          />
+          {submitted && !product.style_intro && (
+            <small className='p-error'>소개 is required.</small>
+          )}
+        </div>
+        <div className='field'>
+          <label
+            htmlFor='style_intro'
+            className='font-bold'
+          >
+            스타일 이미지
+          </label>
+          <FileUpload
+            mode='basic'
+            name='demo[]'
+            url='/api/upload'
+            accept='image/*'
+            maxFileSize={1000000}
+            onUpload={onUpload}
+          />
+        </div>
+
         <div className='field'>
           <label
             htmlFor='cate_name'

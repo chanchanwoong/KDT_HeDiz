@@ -10,7 +10,7 @@ class MyCalendar extends Component {
 
     const events = [
       { title: '이주 휴무일', date: '2024-01-25' },
-      { title: '루하 휴무일', start: '2024-01-22', end: '2024-01-23' },
+      { title: '루하 휴무일', start: '2024-01-22', end: '2024-01-26' },
     ];
 
     if (parsedDate) {
