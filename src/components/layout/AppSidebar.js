@@ -52,22 +52,23 @@ function AppSidebar() {
       // },
       template: (item, options) => {
         return (
-          <button
-            onClick={(e) => options.onClick(e)}
-            className={
-              'w-full p-link flex align-items-center p-2 pl-4 text-color hover:surface-200 border-noround'
-            }
-          >
-            <Avatar
-              image='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
-              className='mr-3'
-              shape='circle'
-            />
-            <div className='flex flex-column align'>
-              <span className='font-bold'>이가희</span>
-              <span className='text-sm'>디자이너</span>
-            </div>
-          </button>
+          <a href='/home/mypage'>
+            <button
+              className={
+                'w-full p-link flex align-items-center p-2 pl-4 text-color hover:surface-200 border-noround'
+              }
+            >
+              <Avatar
+                image='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
+                className='mr-3'
+                shape='circle'
+              />
+              <div className='flex flex-column align'>
+                <span className='font-bold'>이가희</span>
+                <span className='text-sm'>디자이너</span>
+              </div>
+            </button>
+          </a>
         );
       },
     },
