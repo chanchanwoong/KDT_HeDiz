@@ -53,15 +53,14 @@ function Info() {
       .then((res) => {
         console.log(res.data);
         setInfo(res.data);
+        setSelectClosedDay(
+          res.data.shop_off ? res.data.shop_off.split(',') : []
+        );
       })
-      .catch((Error) => {
-        console.log(Error);
+      .catch((error) => {
+        console.log(error);
       });
   }, []);
-
-  useEffect(() => {
-    setSelectClosedDay(info.shop_off ? info.shop_off.split(',') : []);
-  }, [info.shop_off]);
   return (
     <>
       <Panel

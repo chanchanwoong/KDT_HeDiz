@@ -497,7 +497,7 @@ export default function Hairstyle() {
               setProduct({
                 ...product,
                 cate_seq: e.value,
-                cate_name: selectedOption ? selectedOption.cate_name : '', // Ensure to handle undefined
+                cate_name: selectedOption ? selectedOption.cate_name : '',
               });
             }}
             options={categoryOptions}
@@ -513,27 +513,6 @@ export default function Hairstyle() {
             <small className='p-error'>카테고리는 필수 항목입니다.</small>
           )}
         </div>
-        {/* <div className='field'>
-          <label
-            htmlFor='cate_name'
-            className='font-bold'
-          >
-            카테고리
-          </label>
-          <InputText
-            id='cate_name'
-            value={product.cate_name}
-            onChange={(e) => onInputChange(e, 'cate_name')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.cate_name,
-            })}
-          />
-          {submitted && !product.cate_name && (
-            <small className='p-error'>price is required.</small>
-          )}
-        </div> */}
       </Dialog>
 
       <Dialog

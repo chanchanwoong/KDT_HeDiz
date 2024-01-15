@@ -28,7 +28,6 @@ function ClosedDay() {
         .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
 
       console.log({ parsedStartDate, parsedEndDate });
-
       setParsedDate({ parsedStartDate, parsedEndDate });
     }
   }
@@ -44,6 +43,7 @@ function ClosedDay() {
         console.error('Error fetching data:', error);
       });
   }, []);
+
   return (
     <>
       <div className='flex col-12'>
