@@ -3,7 +3,6 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import Logo from 'components/common/Logo';
-import SignUpForm from 'components/common/SignUpForm';
 
 import { Steps } from 'primereact/steps';
 import { Form, Link } from 'react-router-dom';
@@ -11,32 +10,22 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import { InputMask } from 'primereact/inputmask';
-import uuid from 'react-uuid';
+import { Password } from 'primereact/password';
 
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 
 function SignUp() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedTags, setSelectedTags] = useState(null);
+  const [registerCode, setRegisterCode] = useState('');
   const [selectClosedDay, setSelectClosedDay] = useState(null);
-  const [value, setValue] = useState('');
   const [message, setMessage] = useState('');
   const [shopCode, setShopCode] = useState('');
 
   const stepItems = [
     { label: '사업자등록번호 인증' },
     { label: '미용실 정보' },
-    { label: '회원가입 정보' },
-  ];
-
-  const hashTag = [
-    { name: 'Wifi' },
-    { name: '간식' },
-    { name: '1인샵' },
-    { name: '바버샵' },
-    { name: '메이크업 가능' },
-    { name: '반려견 동반 가능' },
+    // { label: '회원가입 정보' },
   ];
 
   const closedDay = [
@@ -55,7 +44,7 @@ function SignUp() {
       const serviceKey =
         'Tc3kxw1IJXKsD2iZOLqJ76tSdzHILwnTQoMdB%2Bj5040SHBDDspm3lwJZVv2Ll8R60OuoK8oT%2F6zh6r63iQ96UQ%3D%3D';
 
-      const cleanedValue = value.replace(/-/g, '');
+      const cleanedValue = registerCode.replace(/-/g, '');
       const data = {
         b_no: [cleanedValue],
       };
@@ -88,7 +77,7 @@ function SignUp() {
   }
 
   return (
-    <main className='flex flex-column bg-white p-6 w-auto border-round-lg gap-4 w-7'>
+    <main className='flex flex-column bg-white p-6 w-auto border-round-lg gap-4 w-4'>
       <Logo size='text-4xl' />
 
       <div className='card my-4'>
@@ -99,7 +88,7 @@ function SignUp() {
       </div>
 
       <Form
-        // method='post'
+        method='post'
         className='flex flex-row flex-wrap gap-6 col-md-12'
       >
         {activeIndex === 0 ? (
@@ -107,8 +96,9 @@ function SignUp() {
             <div className='flex flex-column gap-4 min-w-full'>
               <div className='p-inputgroup flex-1'>
                 <InputMask
-                  value={value}
-                  onChange={(e) => setValue(e.value)}
+                  name='shop_register'
+                  value={registerCode}
+                  onChange={(e) => setRegisterCode(e.value)}
                   mask='999-99-99999'
                   placeholder='사업자등록번호'
                 />
@@ -124,6 +114,30 @@ function SignUp() {
                 placeholder='미용실 고유코드'
                 value={shopCode}
                 disabled
+              />
+              <div className='p-inputgroup'>
+                <InputText
+                  name='shop_id'
+                  placeholder='아이디'
+                />
+                <Button
+                  label='중복확인'
+                  type='button'
+                />
+              </div>
+
+              <Password
+                name='shop_pw'
+                placeholder='비밀번호'
+                feedback={false}
+                toggleMask
+              />
+
+              <Password
+                name='shop_pw_check'
+                placeholder='비밀번호 확인'
+                feedback={false}
+                toggleMask
               />
 
               <div className='flex justify-content-between mt-4'>
@@ -148,7 +162,7 @@ function SignUp() {
               </div>
             </div>
           </>
-        ) : activeIndex === 1 ? (
+        ) : (
           <>
             <div className='flex flex-column gap-4 min-w-full'>
               <div className='col-md-6 flex flex-column gap-4'>
@@ -164,19 +178,6 @@ function SignUp() {
                   name='shop_phone'
                   placeholder='전화번호'
                 />
-
-                <MultiSelect
-                  value={selectedTags}
-                  onChange={(e) => setSelectedTags(e.value)}
-                  options={hashTag}
-                  optionLabel='name'
-                  display='chip'
-                  placeholder='해시태그'
-                  className='w-full'
-                  filter
-                />
-              </div>
-              <div className='col-md-6 flex flex-column gap-4'>
                 <Calendar
                   name='shop_start'
                   placeholder='영업 시작 시간'
@@ -188,6 +189,7 @@ function SignUp() {
                   timeOnly
                 />
                 <MultiSelect
+                  name='shop_off'
                   value={selectClosedDay}
                   onChange={(e) => setSelectClosedDay(e.value)}
                   options={closedDay}
@@ -195,10 +197,15 @@ function SignUp() {
                   placeholder='정기 휴무일'
                   className='w-full'
                 />
+                <InputText
+                  name='shop_tag'
+                  placeholder='해시태그'
+                />
                 <InputTextarea
                   name='shop_intro'
                   placeholder='미용실 소개글'
-                  rows={3}
+                  rows={5}
+                  autoResize
                 />
               </div>
               <div className='flex justify-content-between mt-4'>
@@ -207,25 +214,12 @@ function SignUp() {
                   onClick={() => setActiveIndex(0)}
                 />
                 <Button
-                  label='다음 단계'
-                  onClick={() => setActiveIndex(2)}
+                  label='회원가입'
+                  type='submit'
                 />
               </div>
             </div>
-
-            {/* <Button
-              label='이전 단계'
-              type='button'
-              className='mt-4'
-            />
-            <Button
-              label='다음 단계'
-              type='button'
-              className='mt-4'
-            /> */}
           </>
-        ) : (
-          <SignUpForm />
         )}
       </Form>
     </main>
@@ -233,3 +227,46 @@ function SignUp() {
 }
 
 export default SignUp;
+
+export async function action({ request }) {
+  const data = await request.formData();
+  console.log(data);
+  const authData = {
+    shop_register: data.get('shop_register'),
+    shop_code: data.get('shop_code'),
+    shop_id: data.get('shop_id'),
+    shop_pw: data.get('shop_pw'),
+    shop_name: data.get('shop_name'),
+    shop_address: data.get('shop_address'),
+    shop_phone: data.get('shop_phone'),
+    // shop_start: data.get('shop_start'),
+    // shop_end: data.get('shop_end'),
+    shop_off: data.get('shop_off'),
+    shop_tag: data.get('shop_tag'),
+    shop_intro: data.get('shop_intro'),
+  };
+  console.log('authData>>', authData);
+  let resData = '';
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: 'http://localhost:8080/auth/sign-up',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(authData),
+    });
+
+    console.log('response>>>>>>', response);
+    resData = response.data;
+    console.log(resData);
+    const token = resData.jwtauthtoken;
+    localStorage.setItem('jwtauthtoken', token);
+    localStorage.setItem('staff_id', authData.staff_id);
+  } catch (error) {
+    console.log('error:', error);
+    throw new Error('error 발생되었습니다');
+  }
+
+  return redirect('/');
+}

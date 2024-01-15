@@ -8,7 +8,6 @@ import MainLayout from 'components/layout/MainLayout';
 // auth__인증
 import SignIn, { action as SignInAction } from 'pages/auth/SignIn';
 import SignUp, { action as SignUpAction } from 'pages/auth/SignUp';
-import Register from 'pages/auth/Register';
 import Find from 'pages/auth/Find';
 
 // home__바로가기
@@ -45,7 +44,7 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: 'sign-in', element: <SignIn />, action: SignInAction },
-      { path: 'sign-up', element: <SignUp /> },
+      { path: 'sign-up', element: <SignUp />, action: SignUpAction },
       { path: 'find', element: <Find /> },
     ],
   },
@@ -84,11 +83,6 @@ const router = createBrowserRouter([
         element: <Management />,
         children: [{ path: 'management', element: <Management /> }],
       },
-      // {
-      //   path: '/sales',
-      //   element: <Summary />,
-      //   children: [{ path: 'summary', element: <Summary /> }],
-      // },
     ],
   },
 ]);
