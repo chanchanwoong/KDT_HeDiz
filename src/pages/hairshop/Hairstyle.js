@@ -153,6 +153,7 @@ export default function Hairstyle() {
       detail: 'Product Deleted',
       life: 3000,
     });
+
     callAxios({
       method: 'delete',
       url: 'http://localhost:8080/hairshop/hairstyle/' + product.style_seq,
@@ -165,7 +166,6 @@ export default function Hairstyle() {
 
   const onInputChange = (e, style_name) => {
     const val = (e.target && e.target.value) || '';
-    // Use spread operator for immutability
     setProduct({ ...product, [style_name]: val });
   };
 

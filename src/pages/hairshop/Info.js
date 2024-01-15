@@ -1,11 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Form, redirect } from 'react-router-dom';
 import axios from 'axios';
-
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
-import { Calendar } from 'primereact/calendar';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
@@ -13,11 +11,13 @@ import { Panel } from 'primereact/panel';
 
 function Info() {
   const [info, setInfo] = useState([]);
-  const [selectedTags, setSelectedTags] = useState(null);
-  const [time, setTime] = useState(null);
-  const [selectClosedDay, setSelectClosedDay] = useState(null);
+  const [selectClosedDay, setSelectClosedDay] = useState();
   const [visible, setVisible] = useState(false);
   const toast = useRef(null);
+
+  const convertArrayToString = (array) => {
+    return array.join(',');
+  };
 
   const accept = () => {
     toast.current.show({
@@ -37,23 +37,14 @@ function Info() {
     });
   };
 
-  const hashTag = [
-    { name: 'Wifi' },
-    { name: '간식' },
-    { name: '1인샵' },
-    { name: '바버샵' },
-    { name: '메이크업 가능' },
-    { name: '반려견 동반 가능' },
-  ];
-
   const closedDay = [
-    { name: '일요일', code: 1 },
-    { name: '월요일', code: 2 },
-    { name: '화요일', code: 3 },
-    { name: '수요일', code: 4 },
-    { name: '목요일', code: 5 },
-    { name: '금요일', code: 6 },
-    { name: '토요일', code: 7 },
+    { shop_offday: '일요일', shop_off: '1' },
+    { shop_offday: '월요일', shop_off: '2' },
+    { shop_offday: '화요일', shop_off: '3' },
+    { shop_offday: '수요일', shop_off: '4' },
+    { shop_offday: '목요일', shop_off: '5' },
+    { shop_offday: '금요일', shop_off: '6' },
+    { shop_offday: '토요일', shop_off: '7' },
   ];
 
   useEffect(() => {
@@ -68,6 +59,9 @@ function Info() {
       });
   }, []);
 
+  useEffect(() => {
+    setSelectClosedDay(info.shop_off ? info.shop_off.split(',') : []);
+  }, [info.shop_off]);
   return (
     <>
       <Panel
@@ -86,7 +80,7 @@ function Info() {
             />
           </div>
 
-          <div className='p-inputgroup flex-1'>
+          {/* <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
               <i className='pi pi-code mr-2'></i> 미용실 고유코드
             </span>
@@ -98,7 +92,7 @@ function Info() {
             <span className='p-inputgroup-addon'>
               <i className='pi pi-clone'></i>
             </span>
-          </div>
+          </div> */}
         </div>
       </Panel>
 
@@ -115,11 +109,25 @@ function Info() {
               <span className='p-inputgroup-addon'>
                 <i className='pi pi-calendar-minus'></i>
               </span>
+              <InputText
+                hidden='true'
+                name='shop_seq'
+                placeholder='미용실 번호'
+                defaultValue={info.shop_seq}
+              />
+
               <MultiSelect
+                name='shop_off'
                 value={selectClosedDay}
-                onChange={(e) => setSelectClosedDay(e.value)}
+                onChange={(e) => {
+                  setSelectClosedDay(e.value);
+                  const selectedDaysString = convertArrayToString(e.value);
+                  setInfo({ ...info, shop_off: selectedDaysString });
+                  console.log(info);
+                }}
                 options={closedDay}
-                optionLabel='name'
+                optionLabel='shop_offday'
+                optionValue='shop_off'
                 placeholder='정기 휴무일'
                 className='w-full md:w-20rem'
               />
@@ -135,6 +143,13 @@ function Info() {
                 defaultValue={info.shop_address}
               />
             </div>
+
+            <InputText
+              hidden='true'
+              name='shop_off'
+              placeholder='휴무일'
+              defaultValue={info.shop_off}
+            />
 
             <div className='p-inputgroup flex-1'>
               <span className='p-inputgroup-addon'>
@@ -157,15 +172,6 @@ function Info() {
                   placeholder='영업 시작시간'
                   defaultValue={info.shop_start}
                 />
-                {/* <Calendar
-                  id='calendar-timeonly'
-                  name={info.shop_start}
-                  defaultValue={info.shop_start}
-                  onChange={(e) => setTime(e.value)}
-                  placeholder='영업 시작 시간 test'
-                  timeOnly
-                  type='time'
-                /> */}
               </div>
 
               <div className='p-inputgroup flex-1'>
@@ -177,35 +183,17 @@ function Info() {
                   placeholder='영업 종료시간'
                   defaultValue={info.shop_end}
                 />
-                {/* <Calendar
-                  id='calendar-timeonly'
-                  name={info.shop_end}
-                  defaultValue={info.shop_start}
-                  onChange={(e) => setTime(e.value)}
-                  placeholder='영업 종료 시간'
-                  timeOnly
-                />*/}
               </div>
             </div>
 
             <div className='p-inputgroup flex-1'>
               <span className='p-inputgroup-addon'>
-                <i className='pi pi-code'></i>
+                <i className='pi pi-hashtag'></i>
               </span>
-              {/* <InputText
-                placeholder='해시태그'
-                // value={info.shop_code}
-              /> */}
-              <MultiSelect
-                value={selectedTags}
-                onChange={(e) => setSelectedTags(e.value)}
-                options={hashTag}
-                optionLabel='name'
-                display='chip'
-                placeholder='해시태그'
-                // maxSelectedLabels={3}
-                className='w-full md:w-20rem'
-                filter
+              <InputText
+                name='shop_tag'
+                placeholder='태그'
+                defaultValue={info.shop_tag}
               />
             </div>
 
@@ -214,6 +202,7 @@ function Info() {
                 <i className='pi pi-comment'></i>
               </span>
               <InputTextarea
+                name='shop_intro'
                 placeholder='미용실 소개글'
                 defaultValue={info.shop_intro}
                 rows={10}
@@ -240,10 +229,6 @@ function Info() {
               type='submit'
             />
           </div>
-          {/* <Button
-            label='수정하기'
-            type='submit'
-          /> */}
         </Form>
       </Panel>
     </>
@@ -255,7 +240,7 @@ export default Info;
 export async function action({ request }) {
   const formData = await request.formData();
   const postData = Object.fromEntries(formData); // { body: '...', author: '...' }
-  console.log(postData);
+  console.log('postData >>>>>', postData);
   await fetch('http://localhost:8080/hairshop/info', {
     method: 'PUT',
     body: JSON.stringify(postData),
