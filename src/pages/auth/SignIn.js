@@ -28,6 +28,7 @@ function SignIn() {
     if (!e.target.checked) {
       removeCookie('rememberUserId');
     } else {
+      // 5일 저장
       setCookie('rememberUserId', userid, { maxAge: 5 * (60 * 60 * 24) });
     }
   };
@@ -41,7 +42,7 @@ function SignIn() {
 
       <Form
         method='post'
-        className='flex flex-column flex-wrap gap-4'
+        className='flex flex-column flex-wrap gap-4 mb-4'
       >
         <div className='flex flex-column gap-2'>
           <InputText
@@ -71,31 +72,33 @@ function SignIn() {
             />
             <label htmlFor='saveId'>아이디 저장</label>
           </div>
+          <div>
+            <Link
+              to='/auth/find'
+              className='text-purple-500 cursor-pointer no-underline'
+            >
+              아이디/비밀번호 찾기
+            </Link>
+          </div>
         </div>
         <Button
           label='로그인'
           type='submit'
         />
+      </Form>
 
+      <Button
+        type='button'
+        severity='help'
+        outlined
+      >
         <Link
           to='/auth/sign-up'
-          className='text-blue-500 cursor-pointer'
+          className='text-purple-500 font-semibold cursor-pointer no-underline w-full'
         >
-          일반 회원가입
+          회원가입
         </Link>
-        <Link
-          to='/auth/register'
-          className='text-blue-500 cursor-pointer'
-        >
-          점주 회원가입(미용실 등록)
-        </Link>
-        <Link
-          to='/auth/find'
-          className='text-blue-500 cursor-pointer'
-        >
-          아이디/비밀번호 찾기
-        </Link>
-      </Form>
+      </Button>
     </main>
   );
 }

@@ -45,8 +45,7 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: 'sign-in', element: <SignIn />, action: SignInAction },
-      { path: 'sign-up', element: <SignUp />, aciton: SignUpAction },
-      { path: 'register', element: <Register /> },
+      { path: 'sign-up', element: <SignUp /> },
       { path: 'find', element: <Find /> },
     ],
   },
@@ -85,11 +84,11 @@ const router = createBrowserRouter([
         element: <Management />,
         children: [{ path: 'management', element: <Management /> }],
       },
-      {
-        path: '/sales',
-        element: <Summary />,
-        children: [{ path: 'summary', element: <Summary /> }],
-      },
+      // {
+      //   path: '/sales',
+      //   element: <Summary />,
+      //   children: [{ path: 'summary', element: <Summary /> }],
+      // },
     ],
   },
 ]);

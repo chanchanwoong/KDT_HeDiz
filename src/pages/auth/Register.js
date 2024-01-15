@@ -46,7 +46,7 @@ function Register() {
   ];
 
   return (
-    <main className='flex flex-column bg-white p-6 w-auto border-round-lg w-4'>
+    <main className='flex flex-column bg-white p-6 w-auto border-round-lg'>
       {/* 로고 컴포넌트 분리 필요 */}
       <span className='flex align-items-center justify-content-center gap-1 mb-2'>
         <span className='font-medium text-4xl font-bold'>
@@ -54,12 +54,8 @@ function Register() {
         </span>
       </span>
 
-      <p className='font-medium font-bold text-center'>
-        미용실 등록(점주 회원가입)
-      </p>
-
       <div className='card my-4'>
-        <div className='flex flex-wrap justify-content-end gap-2 mb-6'>
+        {/* <div className='flex flex-wrap justify-content-end gap-2 mb-6'>
           <Button
             outlined={activeIndex !== 0}
             rounded
@@ -81,7 +77,7 @@ function Register() {
             onClick={() => setActiveIndex(2)}
             className='w-2rem h-2rem p-0'
           />
-        </div>
+        </div> */}
         <Steps
           model={stepItems}
           activeIndex={activeIndex}
@@ -123,16 +119,21 @@ function Register() {
                 disabled
               />
 
-              <Button
-                label='다음 단계'
-                type='button'
-                className='mt-4'
-              />
+              <div className='flex justify-content-between'>
+                <Button
+                  label='이전 단계'
+                  onClick={() => (location.href = 'sign-in')}
+                />
+                <Button
+                  label='다음 단계'
+                  onClick={() => setActiveIndex(1)}
+                />
+              </div>
             </div>
           </>
         ) : activeIndex === 1 ? (
           <>
-            <div className='flex flex-row gap-4 min-w-full'>
+            <div className='flex gap-4 min-w-full'>
               <div className='col-md-6 flex flex-column gap-4'>
                 <InputText
                   name='shop_name'
@@ -185,6 +186,11 @@ function Register() {
               </div>
             </div>
 
+            <Button
+              label='이전 단계'
+              type='button'
+              className='mt-4'
+            />
             <Button
               label='다음 단계'
               type='button'

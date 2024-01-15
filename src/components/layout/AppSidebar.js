@@ -77,12 +77,12 @@ function AppSidebar() {
     {
       label: '바로가기',
       items: [
-        {
-          label: '테스트 페이지',
-          icon: 'pi pi-home',
-          url: 'home/test',
-          template: itemRenderer,
-        },
+        // {
+        //   label: '테스트 페이지',
+        //   icon: 'pi pi-home',
+        //   url: 'home/test',
+        //   template: itemRenderer,
+        // },
         {
           label: '대시보드',
           icon: 'pi pi-th-large',
@@ -96,12 +96,35 @@ function AppSidebar() {
           badge: 2,
           template: itemRenderer,
         },
+        // {
+        //   label: '마이페이지',
+        //   icon: 'pi pi-user-edit',
+        //   url: 'home/mypage',
+        //   template: itemRenderer,
+        // },
+      ],
+    },
+    {
+      label: '예약 관리',
+      items: [
         {
-          label: '마이페이지',
-          icon: 'pi pi-user-edit',
-          url: 'home/mypage',
+          label: '전체 예약',
+          icon: 'pi pi-calendar',
+          url: 'reservation/total',
           template: itemRenderer,
         },
+        {
+          label: '리뷰 관리',
+          icon: 'pi pi-star',
+          url: 'reservation/review',
+          template: itemRenderer,
+        },
+        // {
+        //   label: '알림 서비스',
+        //   icon: 'pi pi-bell',
+        //   url: 'reservation/alarm',
+        //   template: itemRenderer,
+        // },
       ],
     },
     {
@@ -133,29 +156,7 @@ function AppSidebar() {
         },
       ],
     },
-    {
-      label: '예약 관리',
-      items: [
-        {
-          label: '전체 예약',
-          icon: 'pi pi-calendar',
-          url: 'reservation/total',
-          template: itemRenderer,
-        },
-        {
-          label: '리뷰 관리',
-          icon: 'pi pi-star',
-          url: 'reservation/review',
-          template: itemRenderer,
-        },
-        {
-          label: '알림 서비스',
-          icon: 'pi pi-bell',
-          url: 'reservation/alarm',
-          template: itemRenderer,
-        },
-      ],
-    },
+
     {
       label: '고객 관리',
       items: [
@@ -165,19 +166,25 @@ function AppSidebar() {
           url: 'customer/management',
           template: itemRenderer,
         },
-      ],
-    },
-    {
-      label: '매출 관리',
-      items: [
         {
-          label: '매출 요약',
-          icon: 'pi pi-chart-line',
-          url: 'sales/summary',
+          label: '쿠폰 발급',
+          icon: 'pi pi-gift',
+          url: 'customer/coupon',
           template: itemRenderer,
         },
       ],
     },
+    // {
+    //   label: '매출 관리',
+    //   items: [
+    //     {
+    //       label: '매출 요약',
+    //       icon: 'pi pi-chart-line',
+    //       url: 'sales/summary',
+    //       template: itemRenderer,
+    //     },
+    //   ],
+    // },
   ];
 
   return (
