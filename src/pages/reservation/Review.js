@@ -59,7 +59,7 @@ function Review() {
           <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
             <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
               <div className='text-2xl font-bold text-900'>
-                {product.reserv_name}
+                {product.cust_name}
               </div>
               <Rating
                 value={product.review_score}
@@ -104,7 +104,7 @@ function Review() {
               src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
               alt={product.name}
             />
-            <div className='text-2xl font-bold'>{product.reserv_name}</div>
+            <div className='text-2xl font-bold'>{product.cust_name}</div>
             <Rating
               value={product.review_score}
               readOnly

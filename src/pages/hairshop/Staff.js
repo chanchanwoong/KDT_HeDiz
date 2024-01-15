@@ -341,7 +341,28 @@ export default function staff() {
         )}
         <div className='field'>
           <label
-            htmlFor='staff_nickname'
+            htmlFor='staff_name'
+            className='font-bold'
+          >
+            직원 이름
+          </label>
+          <InputText
+            id='staff_name'
+            value={product.staff_name}
+            onChange={(e) => onInputChange(e, 'staff_name')}
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.staff_name,
+            })}
+          />
+          {submitted && !product.staff_name && (
+            <small className='p-error'>Name is required.</small>
+          )}
+        </div>
+        <div className='field'>
+          <label
+            htmlFor='staff_name'
             className='font-bold'
           >
             직원 닉네임
