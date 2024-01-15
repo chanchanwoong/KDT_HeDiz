@@ -10,9 +10,13 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { FileUpload } from 'primereact/fileupload';
+import { SelectButton } from 'primereact/selectbutton';
+import { Dropdown } from 'primereact/dropdown';
+import callAxios from 'service/CallAxios';
 
 export default function Hairstyle() {
   let emptyProduct = {
+    shop_seq: 0,
     style_seq: 0,
     style_name: '',
     style_gender: '',
@@ -20,20 +24,27 @@ export default function Hairstyle() {
     style_price: null,
     style_intro: '',
     style_image: null,
+    cate_seq: 0,
     cate_name: '',
   };
 
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const dt = useRef(null);
   const toast = useRef(null);
 
+  const categoryOptions = [
+    { cate_name: '커트', cate_seq: 1 },
+    { cate_name: '펌', cate_seq: 2 },
+    { cate_name: '염색', cate_seq: 3 },
+    { cate_name: '클리닉', cate_seq: 4 },
+    { cate_name: '스타일링', cate_seq: 5 },
+  ];
   const onUpload = () => {
     toast.current.show({
       severity: 'info',
@@ -68,20 +79,16 @@ export default function Hairstyle() {
     setDeleteProductDialog(false);
   };
 
-  const hshop_seqeDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
-
   const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.style_name.trim()) {
       let _products = [...products];
       let _product = { ...product };
-
+      console.log(_product);
       try {
-        if (product.shop_seq) {
-          const index = findIndexByshop_seq(product.style_seq);
+        if (product.style_seq) {
+          const index = findIndexByStyle_seq(product.style_seq);
 
           _products[index] = _product;
           await axios.put(
@@ -152,26 +159,8 @@ export default function Hairstyle() {
     });
   };
 
-  const findIndexByshop_seq = (style_seq) => {
+  const findIndexByStyle_seq = (style_seq) => {
     return products.findIndex((product) => product.style_seq === style_seq);
-  };
-
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Products Deleted',
-      life: 3000,
-    });
   };
 
   const onInputChange = (e, style_name) => {
@@ -188,13 +177,6 @@ export default function Hairstyle() {
           icon='pi pi-plus'
           severity='success'
           onClick={openNew}
-        />
-        <Button
-          label='Delete'
-          icon='pi pi-trash'
-          severity='danger'
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
         />
       </div>
     );
@@ -279,23 +261,6 @@ export default function Hairstyle() {
     </React.Fragment>
   );
 
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label='No'
-        icon='pi pi-times'
-        outlined
-        onClick={hshop_seqeDeleteProductsDialog}
-      />
-      <Button
-        label='Yes'
-        icon='pi pi-check'
-        severity='danger'
-        onClick={deleteSelectedProducts}
-      />
-    </React.Fragment>
-  );
-
   return (
     <div>
       <Toast ref={toast} />
@@ -308,8 +273,6 @@ export default function Hairstyle() {
         <DataTable
           ref={dt}
           value={products}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey='style_seq'
           paginator
           rows={10}
@@ -319,10 +282,6 @@ export default function Hairstyle() {
           globalFilter={globalFilter}
           header={header}
         >
-          <Column
-            selectionMode='multiple'
-            exportable={false}
-          ></Column>
           <Column
             field='style_image'
             header='이미지'
@@ -497,6 +456,7 @@ export default function Hairstyle() {
               'p-invalid': submitted && !product.style_intro,
             })}
           />
+
           {submitted && !product.style_intro && (
             <small className='p-error'>소개 is required.</small>
           )}
@@ -525,6 +485,41 @@ export default function Hairstyle() {
           >
             카테고리
           </label>
+          <Dropdown
+            id='cate_name'
+            value={selectedCategory}
+            onChange={(e) => {
+              const selectedOption = categoryOptions.find(
+                (option) => option.cate_seq === e.value
+              );
+              setSelectedCategory(e.value);
+
+              setProduct({
+                ...product,
+                cate_seq: e.value,
+                cate_name: selectedOption ? selectedOption.cate_name : '', // Ensure to handle undefined
+              });
+            }}
+            options={categoryOptions}
+            optionLabel='cate_name'
+            optionValue='cate_seq'
+            required
+            autoFocus
+            className={classNames({
+              'p-invalid': submitted && !product.cate_name,
+            })}
+          />
+          {submitted && !product.cate_name && (
+            <small className='p-error'>카테고리는 필수 항목입니다.</small>
+          )}
+        </div>
+        {/* <div className='field'>
+          <label
+            htmlFor='cate_name'
+            className='font-bold'
+          >
+            카테고리
+          </label>
           <InputText
             id='cate_name'
             value={product.cate_name}
@@ -536,9 +531,9 @@ export default function Hairstyle() {
             })}
           />
           {submitted && !product.cate_name && (
-            <small className='p-error'>카테고리 is required.</small>
+            <small className='p-error'>price is required.</small>
           )}
-        </div>
+        </div> */}
       </Dialog>
 
       <Dialog
@@ -559,26 +554,6 @@ export default function Hairstyle() {
             <span>
               Are you sure you want to delete <b>{product.style_name}</b>?
             </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header='Confirm'
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hshop_seqeDeleteProductsDialog}
-      >
-        <div className='confirmation-content'>
-          <i
-            className='pi pi-exclamation-triangle mr-3'
-            style={{ fontSize: '2rem' }}
-          />
-          {selectedProducts && (
-            <span>Are you sure you want to delete the selected products?</span>
           )}
         </div>
       </Dialog>
