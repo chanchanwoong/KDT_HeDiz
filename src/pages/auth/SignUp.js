@@ -20,9 +20,7 @@ import { Button } from 'primereact/button';
 function SignUp() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [registerCode, setRegisterCode] = useState('');
-  const [selectClosedDay, setSelectClosedDay] = useState(null);
   const [message, setMessage] = useState('');
-  const [shopCode, setShopCode] = useState('');
 
   const stepItems = [
     { label: '사업자등록번호 인증' },
@@ -55,7 +53,9 @@ function SignUp() {
 
   const onSubmit = async (data) => {
     console.log('Form data submitted:', data);
-    const shopOffString = data.shop_off.map((option) => option.code).join(', ');
+    const shopOffString = data.shop_regular
+      .map((option) => option.code)
+      .join(', ');
 
     const authData = {
       shop_register: registerCode,
@@ -74,7 +74,7 @@ function SignUp() {
         minute: '2-digit',
         hour12: false,
       }),
-      shop_off: shopOffString,
+      shop_regular: shopOffString,
       shop_tag: data.shop_tag,
       shop_intro: data.shop_intro,
       shop_image: 'test',
@@ -388,12 +388,12 @@ function SignUp() {
                 />
 
                 <Controller
-                  name='shop_off'
+                  name='shop_regular'
                   control={control}
                   render={({ field }) => (
                     <>
                       <MultiSelect
-                        name='shop_off'
+                        name='shop_regular'
                         // value={selectClosedDay}
                         value={field.value || ''}
                         onChange={field.onChange}
