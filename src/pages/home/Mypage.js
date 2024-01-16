@@ -11,7 +11,6 @@ import img from '../../assets/img.jpg';
 import CallAxios from 'service/CallAxios';
 
 function Mypage() {
-  // CallAxios({ method: 'get', url: 'http://localhost:8080/mypage' });
   const [displayPasswordModal, setDisplayPasswordModal] = useState(false);
   const [current_passwd, setCurrent_passwd] = useState('');
   const [new_passwd, setNew_passwd] = useState('');
@@ -23,6 +22,7 @@ function Mypage() {
   const hideDialog = () => {
     setDisplayPasswordModal(false);
   };
+
   return (
     <>
       <Form method='get'>
