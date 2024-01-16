@@ -46,8 +46,8 @@ function SignIn() {
       >
         <div className='flex flex-column gap-2'>
           <InputText
-            id='staff_id'
-            name='staff_id'
+            id='shop_id'
+            name='shop_id'
             defaultValue={userid}
             placeholder='아이디'
             onChange={(e) => setUserid(e.target.value)}
@@ -55,8 +55,8 @@ function SignIn() {
         </div>
         <div className='flex flex-column gap-2'>
           <Password
-            id='staff_pw'
-            name='staff_pw'
+            id='shop_pw'
+            name='shop_pw'
             placeholder='비밀번호'
             feedback={false}
             toggleMask
@@ -108,8 +108,8 @@ export default SignIn;
 export async function action({ request }) {
   const data = await request.formData();
   const authData = {
-    staff_id: data.get('staff_id'),
-    staff_pw: data.get('staff_pw'),
+    shop_id: data.get('shop_id'),
+    shop_pw: data.get('shop_pw'),
   };
   console.log('authData>>', authData);
   let resData = '';
@@ -126,13 +126,13 @@ export async function action({ request }) {
     console.log('response>>>>>>', response);
     resData = response.data;
     console.log(resData);
-    const token = resData.jwtauthtoken;
-    localStorage.setItem('jwtauthtoken', token);
-    localStorage.setItem('staff_id', authData.staff_id);
+    // const token = resData.jwtauthtoken;
+    // localStorage.setItem('jwtauthtoken', token);
+    // localStorage.setItem('shop_seq', authData.shop_seq);
   } catch (error) {
     console.log('error:', error);
     throw new Error('error 발생되었습니다');
   }
 
-  return redirect('/');
+  // return redirect('/');
 }

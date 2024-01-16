@@ -7,7 +7,8 @@ import MainLayout from 'components/layout/MainLayout';
 
 // auth__인증
 import SignIn, { action as SignInAction } from 'pages/auth/SignIn';
-import SignUp, { action as SignUpAction } from 'pages/auth/SignUp';
+// import SignUp, { action as SignUpAction } from 'pages/auth/SignUp';
+import SignUp from 'pages/auth/SignUp';
 import Find from 'pages/auth/Find';
 
 // home__바로가기
@@ -29,22 +30,15 @@ import Alarm from 'pages/reservation/Alarm';
 
 // customer__고객 관리
 import Management from 'pages/customer/Management';
-
-// sales__매출 관리
-import Summary from 'pages/sales/Summary';
-import KakaoLoginResult from 'components/common/KakaoLoginResult';
+import Coupon from 'pages/customer/Coupon';
 
 const router = createBrowserRouter([
-  {
-    path: '/KakaoLoginResult',
-    element: <KakaoLoginResult />,
-  },
   {
     path: '/auth',
     element: <AuthLayout />,
     children: [
       { path: 'sign-in', element: <SignIn />, action: SignInAction },
-      { path: 'sign-up', element: <SignUp />, action: SignUpAction },
+      { path: 'sign-up', element: <SignUp /> },
       { path: 'find', element: <Find /> },
     ],
   },
@@ -80,8 +74,10 @@ const router = createBrowserRouter([
       },
       {
         path: '/customer',
-        element: <Management />,
-        children: [{ path: 'management', element: <Management /> }],
+        children: [
+          { path: 'management', element: <Management /> },
+          { path: 'coupon', element: <Coupon /> },
+        ],
       },
     ],
   },
