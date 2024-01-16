@@ -42,30 +42,30 @@ export default function AppTopbar() {
       // label: 'Home',
       icon: 'pi pi-ellipsis-v',
     },
-    // {
-    //   label: 'Projects',
-    //   icon: 'pi pi-ellipsis-v',
-    //   items: [
-    //     {
-    //       label: 'Core',
-    //       icon: 'pi pi-bolt',
-    //       shortcut: '⌘+S',
-    //       template: itemRenderer,
-    //     },
-    //     {
-    //       label: 'Blocks',
-    //       icon: 'pi pi-server',
-    //       shortcut: '⌘+B',
-    //       template: itemRenderer,
-    //     },
-    //     {
-    //       label: 'UI Kit',
-    //       icon: 'pi pi-pencil',
-    //       shortcut: '⌘+U',
-    //       template: itemRenderer,
-    //     },
-    //   ],
-    // },
+    {
+      label: 'Projects',
+      icon: 'pi pi-ellipsis-v',
+      items: [
+        {
+          label: 'Core',
+          icon: 'pi pi-bolt',
+          shortcut: '⌘+S',
+          template: itemRenderer,
+        },
+        {
+          label: 'Blocks',
+          icon: 'pi pi-server',
+          shortcut: '⌘+B',
+          template: itemRenderer,
+        },
+        {
+          label: 'UI Kit',
+          icon: 'pi pi-pencil',
+          shortcut: '⌘+U',
+          template: itemRenderer,
+        },
+      ],
+    },
   ];
 
   const start = <Logo />;

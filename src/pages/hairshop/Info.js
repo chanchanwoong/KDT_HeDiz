@@ -46,21 +46,77 @@ function Info() {
     { shop_offday: '금요일', shop_off: '6' },
     { shop_offday: '토요일', shop_off: '7' },
   ];
+  const getGroupList = async () => {
+    const token = localStorage.getItem('jwtauthtoken');
+    console.log('token:', token);
+    const response = await fetch('http://localhost:8080/hairshop/info2', {
+      // mode:'no-cors',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        jwtauthtoken: token,
+      },
+    });
 
+    console.log('response>>>>>>>>>>>>', response);
+    if (response.status !== 200) {
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.status);
+      // throw json({ message: 'Could not save event.' }, { status: 500 });
+    }
+  };
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/hairshop/info/1')
-      .then((res) => {
-        console.log(res.data);
-        setInfo(res.data);
-        setSelectClosedDay(
-          res.data.shop_off ? res.data.shop_off.split(',') : []
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    getGroupList();
   }, []);
+
+  // useEffect(async() => {
+  //   const token = localStorage.getItem("jwtauthtoken");
+  //   console.log("token:", token);
+  //   const response = await fetch('http://localhost:8080/hairshop/info', {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'jwtauthtoken': token
+  //     },
+  //   });
+  //   if (response.status !== 200) {
+  //       console.log(response.status);
+  //       // throw json({ message: 'Could not save event.' }, { status: 500 });
+  //     }
+
+  // console.log("email:" , email);
+
+  // const response = await axios({
+  //    method:"GET",
+  //    url:"http://localhost:8080/hairshop/info",
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'jwtauthtoken': token,
+  //       'xyz':'hello'
+  //     }
+  //   });
+  //   console.log("Hairshop.response >>>>>>>>>>>..", response );
+  //   if (response.status !== 200) {
+  //     console.log(response.status);
+  //     // throw json({ message: 'Could not save event.' }, { status: 500 });
+  //   }
+
+  //   axios
+  //     .get('http://localhost:8080/hairshop/info/1')
+  //     .then((res) => {
+
+  //       // const token = localStorage.getItem('jwtauthtoken');
+  //       // console.log("토근 값 " , token);
+
+  //       console.log(res.data);
+  //       setInfo(res.data);
+  //       setSelectClosedDay(
+  //         res.data.shop_off ? res.data.shop_off.split(',') : []
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
   return (
     <>
       <Panel
@@ -237,16 +293,25 @@ function Info() {
 export default Info;
 
 export async function action({ request }) {
+  const token = localStorage.getItem('jwtauthtoken');
+  console.log('토근 값 ', token);
   const formData = await request.formData();
   const postData = Object.fromEntries(formData); // { body: '...', author: '...' }
   console.log('postData >>>>>', postData);
-  await fetch('http://localhost:8080/hairshop/info', {
+  const response = await fetch('http://localhost:8080/hairshop/info', {
     method: 'PUT',
     body: JSON.stringify(postData),
     headers: {
       'Content-Type': 'application/json',
+      jwtauthtoken: token,
     },
   });
+
+  console.log(response);
+
+  if (!response.ok) {
+    console.log('!response.ok>>', !response.ok);
+  }
 
   return redirect('/hairshop/info');
 }
