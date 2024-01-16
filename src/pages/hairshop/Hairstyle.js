@@ -10,7 +10,6 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { FileUpload } from 'primereact/fileupload';
-import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from 'primereact/dropdown';
 import callAxios from 'service/CallAxios';
 
@@ -37,6 +36,22 @@ export default function Hairstyle() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const dt = useRef(null);
   const toast = useRef(null);
+  const token = localStorage.getItem('jwtauthtoken');
+  const shop_seq = localStorage.getItem('shop_seq');
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/hairshop/hairstyle/' + shop_seq, {
+        headers: { jwtauthtoken: token },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   const categoryOptions = [
     { cate_name: '커트', cate_seq: 1 },
@@ -52,17 +67,6 @@ export default function Hairstyle() {
       detail: 'File Uploaded',
     });
   };
-  useEffect(() => {
-    axios
-      .get('http://localhost:8080/hairshop/hairstyle')
-      .then((response) => {
-        console.log(response.data);
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
 
   const openNew = () => {
     setProduct(emptyProduct);
@@ -195,7 +199,7 @@ export default function Hairstyle() {
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
+      <>
         <Button
           icon='pi pi-pencil'
           rounded
@@ -210,7 +214,7 @@ export default function Hairstyle() {
           severity='danger'
           onClick={() => confirmDeleteProduct(rowData)}
         />
-      </React.Fragment>
+      </>
     );
   };
 

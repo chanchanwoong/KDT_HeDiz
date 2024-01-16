@@ -10,10 +10,9 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { FileUpload } from 'primereact/fileupload';
-import { SelectButton } from 'primereact/selectbutton';
-import { Dropdown } from 'primereact/dropdown';
 import callAxios from 'service/CallAxios';
 
+const shop_seq = localStorage.getItem('shop_seq');
 export default function staff() {
   let emptyProduct = {
     shop_seq: 0,
@@ -37,6 +36,7 @@ export default function staff() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const dt = useRef(null);
   const toast = useRef(null);
+  const token = localStorage.getItem('jwtauthtoken');
 
   const onUpload = () => {
     toast.current.show({
@@ -47,7 +47,9 @@ export default function staff() {
   };
   useEffect(() => {
     axios
-      .get('http://localhost:8080/hairshop/staff')
+      .get('http://localhost:8080/hairshop/staff', {
+        headers: { jwtauthtoken: token },
+      })
       .then((response) => {
         console.log(response.data);
         setProducts(response.data);
@@ -86,7 +88,10 @@ export default function staff() {
           _products[index] = _product;
           await axios.put(
             `http://localhost:8080/hairshop/staff/${product.staff_seq}`,
-            _product
+            _product,
+            {
+              headers: { jwtauthtoken: token },
+            }
           );
 
           toast.current.show({
@@ -99,7 +104,9 @@ export default function staff() {
           _product.staff_seq = _products.length + 1;
           _product.staff_image = 'product-placeholder.svg'; // Use 'staff_image' instead of 'staff_'
           _products.push(_product);
-          await axios.post('http://localhost:8080/hairshop/staff/', _product);
+          await axios.post('http://localhost:8080/hairshop/staff/', _product, {
+            headers: { jwtauthtoken: token },
+          });
           console.log(_product);
           toast.current.show({
             severity: 'success',

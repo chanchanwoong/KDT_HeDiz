@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import axios from 'axios';
+const token = localStorage.getItem('jwtauthtoken');
+const shop_seq = localStorage.getItem('shop_seq');
 
 class MyCalendar extends Component {
   constructor(props) {
@@ -14,7 +16,9 @@ class MyCalendar extends Component {
 
   componentDidMount() {
     axios
-      .get('http://localhost:8080/hairshop/closed-day/1')
+      .get('http://localhost:8080/hairshop/closed-day/' + shop_seq, {
+        headers: { jwtauthtoken: token },
+      })
       .then((res) => {
         console.log(res.data);
         this.setState({ info: res.data });
@@ -51,11 +55,13 @@ class MyCalendar extends Component {
       const postData = {
         temp_offday: date,
         staff_name: title,
-        shop_seq: '1',
+        shop_seq: shop_seq,
       };
 
       axios
-        .post('http://localhost:8080/hairshop/closed-day', postData)
+        .post('http://localhost:8080/hairshop/closed-day', postData, {
+          headers: { jwtauthtoken: token },
+        })
         .then((res) => {
           console.log(res.data);
         })

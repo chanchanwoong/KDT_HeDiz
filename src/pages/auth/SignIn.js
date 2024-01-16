@@ -65,9 +65,9 @@ function SignIn() {
       );
 
       console.log('Server response:', response.data);
-      const tokenShopSeq = response.data.shopSeq;
+      const tokenShop_seq = response.data.shop_seq;
       const token = response.data.jwtauthtoken;
-      localStorage.setItem('shopSeq', tokenShopSeq);
+      localStorage.setItem('shop_seq', tokenShop_seq);
       localStorage.setItem('jwtauthtoken', token);
 
       if (isRemember) {

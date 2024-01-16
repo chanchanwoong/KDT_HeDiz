@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { Controller, useForm } from 'react-hook-form';
 import { classNames } from 'primereact/utils';
-
 import Logo from 'components/common/Logo';
-
 import { Steps } from 'primereact/steps';
 import { Link } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
@@ -13,7 +10,6 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import { InputMask } from 'primereact/inputmask';
 import { Password } from 'primereact/password';
-
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 

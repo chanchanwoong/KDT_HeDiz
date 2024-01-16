@@ -14,7 +14,8 @@ function Info() {
   const [selectClosedDay, setSelectClosedDay] = useState();
   const [visible, setVisible] = useState(false);
   const toast = useRef(null);
-
+  const token = localStorage.getItem('jwtauthtoken');
+  const shop_seq = localStorage.getItem('shop_seq');
   const convertArrayToString = (array) => {
     return array.join(',');
   };
@@ -46,26 +47,18 @@ function Info() {
     { shop_offday: '금요일', shop_off: '6' },
     { shop_offday: '토요일', shop_off: '7' },
   ];
-  const getGroupList = async () => {
-    const token = localStorage.getItem('jwtauthtoken');
-    console.log('token:', token);
-    const response = await fetch('http://localhost:8080/hairshop/info2', {
-      // mode:'no-cors',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        jwtauthtoken: token,
-      },
-    });
-
-    console.log('response>>>>>>>>>>>>', response);
-    if (response.status !== 200) {
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.status);
-      // throw json({ message: 'Could not save event.' }, { status: 500 });
-    }
-  };
   useEffect(() => {
-    getGroupList();
+    axios
+      .get('http://localhost:8080/hairshop/info/' + shop_seq, {
+        headers: { jwtauthtoken: token },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setInfo(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
 
   // useEffect(async() => {
@@ -294,9 +287,9 @@ export default Info;
 
 export async function action({ request }) {
   const token = localStorage.getItem('jwtauthtoken');
-  console.log('토근 값 ', token);
+  console.log('토큰 값 ', token);
   const formData = await request.formData();
-  const postData = Object.fromEntries(formData); // { body: '...', author: '...' }
+  const postData = Object.fromEntries(formData);
   console.log('postData >>>>>', postData);
   const response = await fetch('http://localhost:8080/hairshop/info', {
     method: 'PUT',

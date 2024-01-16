@@ -7,6 +7,8 @@ import { Panel } from 'primereact/panel';
 
 export default function Total() {
   const [reservation, setReservation] = useState([]);
+  const token = localStorage.getItem('jwtauthtoken');
+  const shop_seq = localStorage.getItem('shop_seq');
 
   const getReserveValue = (status) => {
     switch (status) {
@@ -48,7 +50,9 @@ export default function Total() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/reservation/total')
+      .get('http://localhost:8080/reservation/total/' + shop_seq, {
+        headers: { jwtauthtoken: token },
+      })
       .then((response) => {
         console.log(response.data);
         setReservation(response.data);

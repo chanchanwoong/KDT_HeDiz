@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-
 import { Panel } from 'primereact/panel';
-
-import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
@@ -12,10 +9,13 @@ function Review() {
   const [products, setProducts] = useState([]);
   const [layout, setLayout] = useState('grid');
   const [averageScore, setAverageScore] = useState();
-
+  const token = localStorage.getItem('jwtauthtoken');
+  const shop_seq = localStorage.getItem('shop_seq');
   useEffect(() => {
     axios
-      .get('http://localhost:8080/reservation/review')
+      .get('http://localhost:8080/hairshop/review/' + shop_seq, {
+        headers: { jwtauthtoken: token },
+      })
       .then((response) => {
         console.log(response.data);
         setProducts(response.data);

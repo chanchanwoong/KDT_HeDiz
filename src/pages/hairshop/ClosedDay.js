@@ -1,15 +1,11 @@
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
 import React, { useState, useEffect } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
 import MyCalendar from 'service/MyCalender';
-import axios from 'axios';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { classNames } from 'primereact/utils';
-import callAxios from 'service/CallAxios';
 import { InputText } from 'primereact/inputtext';
 
 function ClosedDay() {
@@ -49,6 +45,7 @@ function ClosedDay() {
 
   function checkDate() {
     if (dates) {
+      console.log(dates);
       const startDate = new Date(dates[0]);
       const endDate = new Date(dates[1]);
 
