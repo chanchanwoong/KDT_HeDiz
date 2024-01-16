@@ -1,124 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
-import { Button } from 'primereact/button';
-import { ProgressBar } from 'primereact/progressbar';
-import { Calendar } from 'primereact/calendar';
-import { MultiSelect } from 'primereact/multiselect';
-import { Slider } from 'primereact/slider';
+import axios from 'axios';
 import { Tag } from 'primereact/tag';
-import { CustomerService } from '../../service/CustomerService';
 
 export default function Total() {
   const [customers, setCustomers] = useState([]);
-  const [selectedCustomers, setSelectedCustomers] = useState([]);
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    'country.name': {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    date: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
-    },
-    balance: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
-    status: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
-    activity: { value: null, matchMode: FilterMatchMode.BETWEEN },
-  });
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
-  const [representatives] = useState([
-    { name: 'Amy Elsner', image: 'amyelsner.png' },
-    { name: 'Anna Fali', image: 'annafali.png' },
-    { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-    { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-    { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-    { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-    { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-    { name: 'Onyama Limba', image: 'onyamalimba.png' },
-    { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-    { name: 'XuXue Feng', image: 'xuxuefeng.png' },
-  ]);
-  const [statuses] = useState([
-    'unqualified',
-    'qualified',
-    'new',
-    'negotiation',
-    'renewal',
-  ]);
+
+  const getReserveValue = (status) => {
+    switch (status) {
+      case 0:
+        return '대기';
+      case 1:
+        return '수락';
+      case 2:
+        return '거절';
+      default:
+        return '';
+    }
+  };
 
   const getSeverity = (status) => {
     switch (status) {
-      case 'unqualified':
-        return 'danger';
-
-      case 'qualified':
-        return 'success';
-
-      case 'new':
+      case 0:
         return 'info';
-
-      case 'negotiation':
-        return 'warning';
-
-      case 'renewal':
+      case 1:
+        return 'success';
+      case 2:
+        return 'danger';
+      default:
         return null;
     }
   };
 
-  useEffect(() => {
-    CustomerService.getCustomersLarge().then((data) =>
-      setCustomers(getCustomers(data))
+  const statusBodyTemplate = (rowData) => {
+    const reserveValue = getReserveValue(rowData.reserv_stat);
+    const severity = getSeverity(rowData.reserv_stat);
+
+    return (
+      <Tag
+        value={reserveValue}
+        severity={severity}
+      />
     );
+  };
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/reservation/total')
+      .then((response) => {
+        console.log(response.data);
+        setCustomers(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
-
-  const getCustomers = (data) => {
-    return [...(data || [])].map((d) => {
-      d.date = new Date(d.date);
-
-      return d;
-    });
-  };
-
-  const formatDate = (value) => {
-    return value.toLocaleDateString('en-US', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  };
-
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
-
-  const onGlobalFilterChange = (e) => {
-    const value = e.target.value;
-    let _filters = { ...filters };
-
-    _filters['global'].value = value;
-
-    setFilters(_filters);
-    setGlobalFilterValue(value);
-  };
 
   const renderHeader = () => {
     return (
@@ -126,132 +63,8 @@ export default function Total() {
         <h4 className='m-0'>전체 예약 목록</h4>
         <span className='p-input-icon-left'>
           <i className='pi pi-search' />
-          <InputText
-            value={globalFilterValue}
-            onChange={onGlobalFilterChange}
-            placeholder='검색어를 입력하세요'
-          />
         </span>
       </div>
-    );
-  };
-
-  const representativeBodyTemplate = (rowData) => {
-    const representative = rowData.representative;
-
-    return (
-      <div className='flex align-items-center gap-2'>
-        <img
-          alt={representative.name}
-          src={`https://primefaces.org/cdn/primereact/images/avatar/${representative.image}`}
-          width='32'
-        />
-        <span>{representative.name}</span>
-      </div>
-    );
-  };
-
-  const representativeFilterTemplate = (options) => {
-    return (
-      <React.Fragment>
-        <div className='mb-3 font-bold'>Agent Picker</div>
-        <MultiSelect
-          value={options.value}
-          options={representatives}
-          itemTemplate={representativesItemTemplate}
-          onChange={(e) => options.filterCallback(e.value)}
-          optionLabel='name'
-          placeholder='Any'
-          className='p-column-filter'
-        />
-      </React.Fragment>
-    );
-  };
-
-  const representativesItemTemplate = (option) => {
-    return (
-      <div className='flex align-items-center gap-2'>
-        <img
-          alt={option.name}
-          src={`https://primefaces.org/cdn/primereact/images/avatar/${option.image}`}
-          width='32'
-        />
-        <span>{option.name}</span>
-      </div>
-    );
-  };
-
-  const dateBodyTemplate = (rowData) => {
-    return formatDate(rowData.date);
-  };
-
-  const dateFilterTemplate = (options) => {
-    return (
-      <Calendar
-        value={options.value}
-        onChange={(e) => options.filterCallback(e.value, options.index)}
-        dateFormat='mm/dd/yy'
-        placeholder='mm/dd/yyyy'
-        mask='99/99/9999'
-      />
-    );
-  };
-
-  const balanceBodyTemplate = (rowData) => {
-    return formatCurrency(rowData.balance);
-  };
-
-  const balanceFilterTemplate = (options) => {
-    return (
-      <InputNumber
-        value={options.value}
-        onChange={(e) => options.filterCallback(e.value, options.index)}
-        mode='currency'
-        currency='USD'
-        locale='en-US'
-      />
-    );
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.status}
-        severity={getSeverity(rowData.status)}
-      />
-    );
-  };
-
-  const statusFilterTemplate = (options) => {
-    return (
-      <Dropdown
-        value={options.value}
-        options={statuses}
-        onChange={(e) => options.filterCallback(e.value, options.index)}
-        itemTemplate={statusItemTemplate}
-        placeholder='Select One'
-        className='p-column-filter'
-        showClear
-      />
-    );
-  };
-
-  const statusItemTemplate = (option) => {
-    return (
-      <Tag
-        value={option}
-        severity={getSeverity(option)}
-      />
-    );
-  };
-
-  const actionBodyTemplate = () => {
-    return (
-      <Button
-        type='button'
-        icon='pi pi-star'
-        rounded
-      ></Button>
     );
   };
 
@@ -266,67 +79,31 @@ export default function Total() {
         rows={10}
         paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
         rowsPerPageOptions={[10, 25, 50]}
-        dataKey='id'
-        selectionMode='checkbox'
-        selection={selectedCustomers}
-        onSelectionChange={(e) => setSelectedCustomers(e.value)}
-        filters={filters}
-        filterDisplay='menu'
-        globalFilterFields={[
-          'name',
-          'country.name',
-          'representative.name',
-          'balance',
-          'status',
-        ]}
-        emptyMessage='No customers found.'
-        currentPageReportTemplate='Showing {first} to {last} of {totalRecords} entries'
       >
         <Column
-          selectionMode='multiple'
-          headerStyle={{ width: '3rem' }}
-        ></Column>
-        <Column
-          field='name'
+          field='cust_name'
           header='고객 이름'
-          // sortable
-          filter
-          filterPlaceholder='Search by name'
           style={{ minWidth: '14rem' }}
         />
         <Column
+          field='staff_nickname'
           header='담당 디자이너'
           sortable
-          sortField='representative.name'
-          filterField='representative'
-          showFilterMatchModes={false}
-          filterMenuStyle={{ width: '14rem' }}
           style={{ minWidth: '14rem' }}
-          body={representativeBodyTemplate}
-          filter
-          filterElement={representativeFilterTemplate}
         />
         <Column
-          field='date'
+          field='reserv_time'
           header='예약날짜'
           sortable
-          filterField='date'
-          dataType='date'
           style={{ minWidth: '12rem' }}
-          body={dateBodyTemplate}
-          filter
-          filterElement={dateFilterTemplate}
         />
+
         <Column
-          field='date'
+          field='time'
           header='예약시간'
           sortable
-          filterField='date'
           dataType='date'
           style={{ minWidth: '12rem' }}
-          body={dateBodyTemplate}
-          filter
-          filterElement={dateFilterTemplate}
         />
         <Column
           field='balance'
@@ -334,26 +111,25 @@ export default function Total() {
           sortable
           dataType='numeric'
           style={{ minWidth: '12rem' }}
-          body={balanceBodyTemplate}
-          filter
-          filterElement={balanceFilterTemplate}
         />
         <Column
-          field='status'
+          field='reserv_stat'
           header='예약상태'
           sortable
-          filterMenuStyle={{ width: '14rem' }}
           style={{ minWidth: '12rem' }}
           body={statusBodyTemplate}
-          filter
-          filterElement={statusFilterTemplate}
         />
-        <Column header='헤어스타일' />
-        <Column header='요청사항' />
+        <Column
+          field='style_name'
+          header='헤어스타일'
+        />
+        <Column
+          field='reserv_request'
+          header='요청사항'
+        />
         <Column
           headerStyle={{ width: '5rem', textAlign: 'center' }}
           bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
-          body={actionBodyTemplate}
         />
       </DataTable>
     </div>
