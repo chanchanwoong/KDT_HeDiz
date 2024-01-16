@@ -21,6 +21,12 @@ function SignUp() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [registerCode, setRegisterCode] = useState('');
   const [message, setMessage] = useState('');
+  // 아이디 중복 체크
+  const [isIdAvailable, setIsIdAvailable] = useState(true);
+  // 패스워드 확인 일치
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMatchError, setPasswordMatchError] = useState('');
 
   const stepItems = [
     { label: '사업자등록번호 인증' },
@@ -45,7 +51,7 @@ function SignUp() {
 
   const {
     control,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
     getValues,
     reset,
@@ -58,7 +64,7 @@ function SignUp() {
       .join(', ');
 
     const authData = {
-      shop_register: registerCode,
+      shop_register: data.shop_register,
       shop_id: data.shop_id,
       shop_pw: data.shop_pw,
       shop_name: data.shop_name,
@@ -107,7 +113,7 @@ function SignUp() {
     );
   };
 
-  // 사업자 등록번호 인증
+  // 사업자 등록번호 인증 핸들러
   async function handleAuth() {
     try {
       const serviceKey =
@@ -145,14 +151,14 @@ function SignUp() {
     }
   }
 
-  // 아이디 중복 체크
+  // 아이디 중복 체크 핸들러
   async function handleIdCheck() {
     const shopId = {
-      shop_id: data.shop_id,
+      shop_id: getValues('shop_id'),
     };
     try {
       const response = await axios.post(
-        'http://localhost:8080/auth/sign-up',
+        'http://localhost:8080/auth/duplicate-check',
         shopId,
         {
           headers: {
@@ -161,11 +167,43 @@ function SignUp() {
         }
       );
 
-      console.log('Server response:', response.data);
+      const isAvailable = response.data.available;
+
+      if (isAvailable) {
+        // 아이디가 사용 가능한 경우
+        setIsIdAvailable(true);
+        console.log('Server response: ID is available');
+      } else {
+        // 아이디가 이미 사용 중인 경우
+        setIsIdAvailable(false);
+        console.log('Server response: ID is not available');
+      }
     } catch (error) {
-      console.error('Error during signup:', error);
+      console.error('Error during ID check:', error);
     }
   }
+
+  // 이벤트 핸들러: 비밀번호 입력 시
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    // 비밀번호 확인과 비교하여 일치 여부를 확인
+    if (confirmPassword && e.target.value !== confirmPassword) {
+      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
+    } else {
+      setPasswordMatchError('');
+    }
+  };
+
+  // 이벤트 핸들러: 비밀번호 확인 입력 시
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    // 비밀번호와 비교하여 일치 여부를 확인
+    if (password !== e.target.value) {
+      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
+    } else {
+      setPasswordMatchError('');
+    }
+  };
 
   return (
     <main className='flex flex-column bg-white p-6 w-auto border-round-lg gap-4 w-4'>
@@ -196,13 +234,14 @@ function SignUp() {
                       value={field.value || ''}
                       placeholder='사업자등록번호'
                       mask='999-99-99999'
-                      onChange={(e) => setRegisterCode(e.value)}
+                      // onChange={(e) => setRegisterCode(e.value)}
+                      onChange={field.onChange}
                       className={classNames({ 'p-invalid': fieldState.error })}
                     />
                     <Button
                       label='인증하기'
                       type='button'
-                      onClick={handleAuth}
+                      // onClick={handleAuth}
                     />
                   </div>
                   {message}
@@ -216,13 +255,30 @@ function SignUp() {
               rules={{ required: '아이디는 필수입력 항목입니다.' }}
               render={({ field, fieldState }) => (
                 <>
-                  <InputText
-                    id={field.name}
-                    value={field.value || ''}
-                    placeholder='아이디'
-                    className={classNames({ 'p-invalid': fieldState.error })}
-                    onChange={field.onChange}
-                  />
+                  <div className='p-inputgroup flex-1'>
+                    <InputText
+                      id={field.name}
+                      value={field.value || ''}
+                      placeholder='아이디'
+                      className={classNames({
+                        'p-invalid': fieldState.error || !isIdAvailable, // 아이디 중복 여부에 따라 스타일 변경
+                      })}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setIsIdAvailable(true); // 아이디 변경 시 다시 체크 가능한 상태로 변경
+                      }}
+                    />
+                    <Button
+                      label='중복확인'
+                      type='button'
+                      onClick={handleIdCheck}
+                    />
+                  </div>
+                  {!isIdAvailable && (
+                    <small className='p-error'>
+                      이미 사용 중인 아이디입니다.
+                    </small>
+                  )}
                   {getFormErrorMessage(field.name)}
                 </>
               )}
@@ -237,8 +293,11 @@ function SignUp() {
                     value={field.value || ''}
                     placeholder='비밀번호'
                     className={classNames({ 'p-invalid': fieldState.error })}
-                    onChange={field.onChange}
-                    feedback={false}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handlePasswordChange(e);
+                    }}
+                    // feedback={false}
                     toggleMask
                   />
                   {getFormErrorMessage(field.name)}
@@ -255,11 +314,17 @@ function SignUp() {
                     value={field.value || ''}
                     placeholder='비밀번호 확인'
                     className={classNames({ 'p-invalid': fieldState.error })}
-                    onChange={field.onChange}
-                    feedback={false}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handleConfirmPasswordChange(e);
+                    }}
+                    // feedback={false}
                     toggleMask
                   />
                   {getFormErrorMessage(field.name)}
+                  {passwordMatchError && (
+                    <small className='p-error'>{passwordMatchError}</small>
+                  )}
                 </>
               )}
             />
@@ -280,7 +345,16 @@ function SignUp() {
               </div>
               <Button
                 label='다음 단계'
-                onClick={() => setActiveIndex(1)}
+                onClick={() => {
+                  if (isValid) {
+                    setActiveIndex(1);
+                  } else {
+                    console.log(
+                      'Form is not valid. Please fill in all required fields.'
+                    );
+                  }
+                }}
+                disabled={!isValid}
               />
             </div>
           </div>
