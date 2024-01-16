@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import Logo from 'components/common/Logo';
 
-import { Form, Link, redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
@@ -12,10 +12,6 @@ import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 
 function SignIn() {
-  const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
-  const [userid, setUserid] = useState('');
-  const [isRemember, setIsRemember] = useState(false);
-
   const defaultValues = {
     value: '',
   };
@@ -26,7 +22,36 @@ function SignIn() {
     handleSubmit,
     getValues,
     reset,
-  } = useForm({ defaultValues });
+  } = useForm();
+
+  const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
+  const [userid, setUserid] = useState('');
+  const [isRemember, setIsRemember] = useState(false);
+
+  const onSubmit = async (data) => {
+    const authData = {
+      shop_id: data.shop_id,
+      shop_pw: data.shop_pw,
+    };
+
+    console.log('authData >> ', authData);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/auth/sign-in',
+        authData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('Server response:', response.data);
+    } catch (error) {
+      console.error('Error during signup:', error);
+    }
+  };
 
   // Cookie 아이디 저장
   useEffect(() => {
@@ -62,7 +87,7 @@ function SignIn() {
       />
 
       <form
-        onSubmit={handleSubmit(onsubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         method='post'
         className='flex flex-column flex-wrap gap-4 mb-4'
       >
@@ -77,11 +102,13 @@ function SignIn() {
                   id={field.name}
                   value={field.value || ''}
                   placeholder='아이디'
-                  defaultValue={userid}
                   className={classNames({
                     'p-invalid': fieldState.error,
                   })}
-                  onChange={field.onChange}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setUserid(e.target.value); // 아이디 값 업데이트
+                  }}
                 />
                 {getFormErrorMessage(field.name)}
               </>
@@ -161,34 +188,34 @@ function SignIn() {
 
 export default SignIn;
 
-export async function action({ request }) {
-  const data = await request.formData();
-  const authData = {
-    shop_id: data.get('shop_id'),
-    shop_pw: data.get('shop_pw'),
-  };
-  console.log('authData>>', authData);
-  let resData = '';
-  try {
-    const response = await axios({
-      method: 'POST',
-      url: 'http://localhost:8080/auth/sign-in',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(authData),
-    });
+// export async function action({ request }) {
+//   const data = await request.formData();
+//   const authData = {
+//     shop_id: data.get('shop_id'),
+//     shop_pw: data.get('shop_pw'),
+//   };
+//   console.log('authData>>', authData);
+//   let resData = '';
+//   try {
+//     const response = await axios({InputText
+//       method: 'POST',
+//       url: 'http://localhost:8080/auth/sign-in',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       data: JSON.stringify(authData),
+//     });
 
-    console.log('response>>>>>>', response);
-    resData = response.data;
-    console.log(resData);
-    // const token = resData.jwtauthtoken;
-    // localStorage.setItem('jwtauthtoken', token);
-    // localStorage.setItem('shop_seq', authData.shop_seq);
-  } catch (error) {
-    console.log('error:', error);
-    throw new Error('error 발생되었습니다');
-  }
+//     console.log('response>>>>>>', response);
+//     resData = response.data;
+//     console.log(resData);
+//     // const token = resData.jwtauthtoken;
+//     // localStorage.setItem('jwtauthtoken', token);
+//     // localStorage.setItem('shop_seq', authData.shop_seq);
+//   } catch (error) {
+//     console.log('error:', error);
+//     throw new Error('error 발생되었습니다');
+//   }
 
-  // return redirect('/');
-}
+//   // return redirect('/');
+// }

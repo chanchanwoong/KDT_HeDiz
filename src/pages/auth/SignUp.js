@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { Controller, useForm } from 'react-hook-form';
@@ -154,11 +154,25 @@ function SignUp() {
 
   // 아이디 중복 체크 핸들러
   async function handleIdCheck() {
+    const shopIdValue = getValues('shop_id');
+
+    if (!shopIdValue || shopIdValue.trim() === '') {
+      setIdCheckMessage('아이디를 입력해주세요.');
+      return;
+    }
+
+    const validIdRegex = /^[a-zA-Z0-9]+$/;
+    if (!validIdRegex.test(shopIdValue)) {
+      setIdCheckMessage('아이디는 영어와 숫자만 입력 가능합니다.');
+      return;
+    }
+
     const shopId = {
       shop_id: getValues('shop_id'),
     };
 
     try {
+      setIdCheckMessage('');
       const response = await axios.post(
         'http://localhost:8080/auth/duplicate-check',
         shopId,
@@ -177,7 +191,7 @@ function SignUp() {
         setIdCheckMessage('이미 사용 중인 아이디입니다.');
       }
     } catch (error) {
-      console.error('Error during ID check:', error);
+      console.error('Error: ', error);
     }
   }
 
@@ -221,111 +235,123 @@ function SignUp() {
       >
         {activeIndex === 0 ? (
           <div className='flex flex-column gap-4 min-w-full'>
-            <Controller
-              name='shop_register'
-              control={control}
-              rules={{ required: '사업자등록번호는 필수입력 항목입니다.' }}
-              render={({ field, fieldState }) => (
-                <>
-                  <div className='p-inputgroup flex-1'>
-                    <InputMask
+            <div className='flex flex-column gap-2'>
+              <Controller
+                name='shop_register'
+                control={control}
+                rules={{ required: '사업자등록번호는 필수입력 항목입니다.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <div className='p-inputgroup flex-1'>
+                      <InputMask
+                        value={field.value || ''}
+                        placeholder='사업자등록번호'
+                        mask='999-99-99999'
+                        // onChange={(e) => setRegisterCode(e.value)}
+                        onChange={field.onChange}
+                        className={classNames({
+                          'p-invalid': fieldState.error,
+                        })}
+                      />
+                      <Button
+                        label='인증하기'
+                        type='button'
+                        // onClick={handleAuth}
+                      />
+                    </div>
+                    {message}
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+            </div>
+            <div className='flex flex-column gap-2'>
+              <Controller
+                name='shop_id'
+                control={control}
+                rules={{ required: '아이디는 필수입력 항목입니다.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <div className='p-inputgroup flex-1'>
+                      <InputText
+                        id={field.name}
+                        value={field.value || ''}
+                        placeholder='아이디'
+                        className={classNames({
+                          'p-invalid': fieldState.error || !isIdAvailable,
+                        })}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setIdCheckMessage(''); // 아이디가 변경될 때 메시지 초기화
+                        }}
+                      />
+                      <Button
+                        label='중복확인'
+                        type='button'
+                        onClick={handleIdCheck}
+                      />
+                    </div>
+                    {idCheckMessage && (
+                      <small
+                        className={isIdAvailable ? 'p-success' : 'p-error'}
+                      >
+                        {idCheckMessage}
+                      </small>
+                    )}
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+            </div>
+            <div className='flex flex-column gap-2'>
+              <Controller
+                name='shop_pw'
+                control={control}
+                rules={{ required: '비밀번호는 필수입력 항목입니다.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <Password
                       value={field.value || ''}
-                      placeholder='사업자등록번호'
-                      mask='999-99-99999'
-                      // onChange={(e) => setRegisterCode(e.value)}
-                      onChange={field.onChange}
+                      placeholder='비밀번호'
                       className={classNames({ 'p-invalid': fieldState.error })}
-                    />
-                    <Button
-                      label='인증하기'
-                      type='button'
-                      // onClick={handleAuth}
-                    />
-                  </div>
-                  {message}
-                  {getFormErrorMessage(field.name)}
-                </>
-              )}
-            />
-            <Controller
-              name='shop_id'
-              control={control}
-              rules={{ required: '아이디는 필수입력 항목입니다.' }}
-              render={({ field, fieldState }) => (
-                <>
-                  <div className='p-inputgroup flex-1'>
-                    <InputText
-                      id={field.name}
-                      value={field.value || ''}
-                      placeholder='아이디'
-                      className={classNames({
-                        'p-invalid': fieldState.error || !isIdAvailable,
-                      })}
                       onChange={(e) => {
                         field.onChange(e);
-                        setMessage(''); // 아이디가 변경될 때 메시지 초기화
+                        handlePasswordChange(e);
                       }}
+                      // feedback={false}
+                      toggleMask
                     />
-                    <Button
-                      label='중복확인'
-                      type='button'
-                      onClick={handleIdCheck}
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+            </div>
+            <div className='flex flex-column gap-2'>
+              <Controller
+                name='shop_pw_check'
+                control={control}
+                rules={{ required: '비밀번호는 필수입력 항목입니다.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <Password
+                      value={field.value || ''}
+                      placeholder='비밀번호 확인'
+                      className={classNames({ 'p-invalid': fieldState.error })}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        handleConfirmPasswordChange(e);
+                      }}
+                      // feedback={false}
+                      toggleMask
                     />
-                  </div>
-                  {idCheckMessage && (
-                    <small className={isIdAvailable ? 'p-success' : 'p-error'}>
-                      {idCheckMessage}
-                    </small>
-                  )}
-                  {getFormErrorMessage(field.name)}
-                </>
-              )}
-            />
-            <Controller
-              name='shop_pw'
-              control={control}
-              rules={{ required: '비밀번호는 필수입력 항목입니다.' }}
-              render={({ field, fieldState }) => (
-                <>
-                  <Password
-                    value={field.value || ''}
-                    placeholder='비밀번호'
-                    className={classNames({ 'p-invalid': fieldState.error })}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      handlePasswordChange(e);
-                    }}
-                    // feedback={false}
-                    toggleMask
-                  />
-                  {getFormErrorMessage(field.name)}
-                </>
-              )}
-            />
-            <Controller
-              name='shop_pw_check'
-              control={control}
-              rules={{ required: '비밀번호는 필수입력 항목입니다.' }}
-              render={({ field, fieldState }) => (
-                <>
-                  <Password
-                    value={field.value || ''}
-                    placeholder='비밀번호 확인'
-                    className={classNames({ 'p-invalid': fieldState.error })}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      handleConfirmPasswordChange(e);
-                    }}
-                    // feedback={false}
-                    toggleMask
-                  />
-                  {getFormErrorMessage(field.name)}
-                  {passwordMatchError && (
-                    <small className='p-error'>{passwordMatchError}</small>
-                  )}
-                </>
-              )}
-            />
+                    {getFormErrorMessage(field.name)}
+                    {passwordMatchError && (
+                      <small className='p-error'>{passwordMatchError}</small>
+                    )}
+                  </>
+                )}
+              />
+            </div>
             <div className='flex justify-content-between mt-4'>
               <div>
                 <Button
