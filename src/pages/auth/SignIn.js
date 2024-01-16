@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import Logo from 'components/common/Logo';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
@@ -23,6 +23,8 @@ function SignIn() {
     getValues,
     reset,
   } = useForm();
+
+  const navigate = useNavigate();
 
   const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
   const [userid, setUserid] = useState('');
@@ -48,6 +50,11 @@ function SignIn() {
       );
 
       console.log('Server response:', response.data);
+      const token = response.data.jwtauthtoken;
+      localStorage.setItem('jwtauthtoken', token);
+      // localStorage.setItem('shop_seq', authData.shop_seq);
+
+      navigate('/');
     } catch (error) {
       console.error('Error during signup:', error);
     }
