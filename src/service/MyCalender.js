@@ -45,33 +45,31 @@ class MyCalendar extends Component {
         .toString()
         .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
 
-      const date = `${formattedStartDate} ~ ${formattedEndDate}`;
+      const date = `${formattedStartDate},${formattedEndDate}`;
       const title = staffName || '미용실 휴무';
 
       const postData = {
-        date: date,
-        title: title,
+        temp_offday: date,
+        staff_name: title,
+        shop_seq: '1',
       };
 
       axios
         .post('http://localhost:8080/hairshop/closed-day', postData)
         .then((res) => {
           console.log(res.data);
-          // Handle the response if needed
         })
         .catch((error) => {
           console.log(error);
-          // Handle the error if needed
         });
     }
 
     if (info.length > 0) {
-      // 배열의 각 날짜를 events에 추가
       info.forEach((item) => {
         let newDate = item.date.split(',').map((date) => date.trim());
 
         events.push({
-          title: item.title, // 날짜마다 미용실 휴무로 설정
+          title: item.title,
           start: newDate[0],
           end: newDate[1],
           color: '#' + Math.floor(Math.random() * 16777215).toString(16),

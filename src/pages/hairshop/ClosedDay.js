@@ -76,7 +76,7 @@ function ClosedDay() {
             header='미용실 임시 휴무일'
           >
             <div className='card flex flex justify-content-between flex-wrap align-items-center'>
-              임시 휴무일
+              미용실 임시 휴무
               <Calendar
                 value={dates}
                 onChange={(e) => e.value && setDates(e.value)}
@@ -103,6 +103,7 @@ function ClosedDay() {
                     <InputText
                       id={field.name}
                       value={field.value || ''}
+                      placeholder='디자이너 이름'
                       className={classNames({
                         'p-invalid': fieldState.error,
                       })}
