@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import Logo from 'components/common/Logo';
 
 import { Form, Link, redirect } from 'react-router-dom';
+import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Checkbox } from 'primereact/checkbox';
@@ -14,6 +15,18 @@ function SignIn() {
   const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
   const [userid, setUserid] = useState('');
   const [isRemember, setIsRemember] = useState(false);
+
+  const defaultValues = {
+    value: '',
+  };
+
+  const {
+    control,
+    formState: { errors, isValid },
+    handleSubmit,
+    getValues,
+    reset,
+  } = useForm({ defaultValues });
 
   // Cookie 아이디 저장
   useEffect(() => {
@@ -33,6 +46,14 @@ function SignIn() {
     }
   };
 
+  const getFormErrorMessage = (name) => {
+    return errors[name] ? (
+      <small className='p-error'>{errors[name].message}</small>
+    ) : (
+      ''
+    );
+  };
+
   return (
     <main className='flex flex-column bg-white p-6 w-auto border-round-lg'>
       <Logo
@@ -40,27 +61,62 @@ function SignIn() {
         margin='mb-6'
       />
 
-      <Form
+      <form
+        onSubmit={handleSubmit(onsubmit)}
         method='post'
         className='flex flex-column flex-wrap gap-4 mb-4'
       >
         <div className='flex flex-column gap-2'>
-          <InputText
-            id='shop_id'
+          <Controller
             name='shop_id'
-            defaultValue={userid}
-            placeholder='아이디'
-            onChange={(e) => setUserid(e.target.value)}
+            control={control}
+            rules={{ required: '아이디를 입력해주세요' }}
+            render={({ field, fieldState }) => (
+              <>
+                <InputText
+                  id={field.name}
+                  value={field.value || ''}
+                  placeholder='아이디'
+                  defaultValue={userid}
+                  className={classNames({
+                    'p-invalid': fieldState.error,
+                  })}
+                  onChange={field.onChange}
+                />
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
           />
         </div>
         <div className='flex flex-column gap-2'>
-          <Password
+          <Controller
+            name='shop_pw'
+            control={control}
+            rules={{ required: '비밀번호를 입력해주세요' }}
+            render={({ field, fieldState }) => (
+              <>
+                <Password
+                  id={field.name}
+                  value={field.value || ''}
+                  placeholder='비밀번호'
+                  className={classNames({
+                    'p-invalid': fieldState.error,
+                  })}
+                  feedback={false}
+                  onChange={field.onChange}
+                  toggleMask
+                />
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
+          />
+          {/* <Password
             id='shop_pw'
             name='shop_pw'
             placeholder='비밀번호'
             feedback={false}
             toggleMask
-          />
+          /> */}
         </div>
         <div className='flex align-items-center justify-content-between mb-4'>
           <div className='flex align-items-center mr-8'>
@@ -85,7 +141,7 @@ function SignIn() {
           label='로그인'
           type='submit'
         />
-      </Form>
+      </form>
 
       <Button
         type='button'

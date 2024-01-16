@@ -22,6 +22,7 @@ function SignUp() {
   const [registerCode, setRegisterCode] = useState('');
   const [message, setMessage] = useState('');
   // 아이디 중복 체크
+  const [idCheckMessage, setIdCheckMessage] = useState('');
   const [isIdAvailable, setIsIdAvailable] = useState(true);
   // 패스워드 확인 일치
   const [password, setPassword] = useState('');
@@ -31,7 +32,6 @@ function SignUp() {
   const stepItems = [
     { label: '사업자등록번호 인증' },
     { label: '미용실 정보' },
-    // { label: '회원가입 정보' },
   ];
 
   const closedDay = [
@@ -54,6 +54,7 @@ function SignUp() {
     formState: { errors, isValid },
     handleSubmit,
     getValues,
+    setValue,
     reset,
   } = useForm({ defaultValues });
 
@@ -156,6 +157,7 @@ function SignUp() {
     const shopId = {
       shop_id: getValues('shop_id'),
     };
+
     try {
       const response = await axios.post(
         'http://localhost:8080/auth/duplicate-check',
@@ -167,16 +169,12 @@ function SignUp() {
         }
       );
 
-      const isAvailable = response.data.available;
-
-      if (isAvailable) {
-        // 아이디가 사용 가능한 경우
-        setIsIdAvailable(true);
-        console.log('Server response: ID is available');
+      const isIdAvailable = response.data;
+      if (isIdAvailable) {
+        setIdCheckMessage('사용 가능한 아이디입니다.');
+        setValue('shop_id', shopId.shop_id);
       } else {
-        // 아이디가 이미 사용 중인 경우
-        setIsIdAvailable(false);
-        console.log('Server response: ID is not available');
+        setIdCheckMessage('이미 사용 중인 아이디입니다.');
       }
     } catch (error) {
       console.error('Error during ID check:', error);
@@ -199,7 +197,7 @@ function SignUp() {
     setConfirmPassword(e.target.value);
     // 비밀번호와 비교하여 일치 여부를 확인
     if (password !== e.target.value) {
-      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
+      setPasswordMatchError('비밀번호가 일치하지 않습니다222.');
     } else {
       setPasswordMatchError('');
     }
@@ -261,11 +259,11 @@ function SignUp() {
                       value={field.value || ''}
                       placeholder='아이디'
                       className={classNames({
-                        'p-invalid': fieldState.error || !isIdAvailable, // 아이디 중복 여부에 따라 스타일 변경
+                        'p-invalid': fieldState.error || !isIdAvailable,
                       })}
                       onChange={(e) => {
                         field.onChange(e);
-                        setIsIdAvailable(true); // 아이디 변경 시 다시 체크 가능한 상태로 변경
+                        setMessage(''); // 아이디가 변경될 때 메시지 초기화
                       }}
                     />
                     <Button
@@ -274,9 +272,9 @@ function SignUp() {
                       onClick={handleIdCheck}
                     />
                   </div>
-                  {!isIdAvailable && (
-                    <small className='p-error'>
-                      이미 사용 중인 아이디입니다.
+                  {idCheckMessage && (
+                    <small className={isIdAvailable ? 'p-success' : 'p-error'}>
+                      {idCheckMessage}
                     </small>
                   )}
                   {getFormErrorMessage(field.name)}
@@ -346,15 +344,15 @@ function SignUp() {
               <Button
                 label='다음 단계'
                 onClick={() => {
-                  if (isValid) {
+                  if (isValid && !passwordMatchError && isIdAvailable) {
                     setActiveIndex(1);
                   } else {
                     console.log(
-                      'Form is not valid. Please fill in all required fields.'
+                      'Form is not valid. Please fill in all required fields, make sure passwords match, and check ID availability.'
                     );
                   }
                 }}
-                disabled={!isValid}
+                disabled={!isValid || !!passwordMatchError || !isIdAvailable}
               />
             </div>
           </div>
@@ -464,6 +462,7 @@ function SignUp() {
                 <Controller
                   name='shop_regular'
                   control={control}
+                  rules={{ required: '휴무일을 입력해주세요' }}
                   render={({ field }) => (
                     <>
                       <MultiSelect
