@@ -1,32 +1,83 @@
 import React, { Component } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import './MyCalender.css';
+import axios from 'axios';
 
 class MyCalendar extends Component {
-  render() {
-    const { parsedDate } = this.props;
-    console.log({ parsedDate });
+  constructor(props) {
+    super(props);
 
-    const events = [
-      { title: '이주 휴무일', date: '2024-01-25' },
-      { title: '루하 휴무일', start: '2024-01-22', end: '2024-01-26' },
-    ];
+    this.state = {
+      info: [],
+    };
+  }
+
+  componentDidMount() {
+    axios
+      .get('http://localhost:8080/hairshop/closed-day/1')
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ info: res.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  render() {
+    const { info } = this.state;
+    const events = [];
+    const { staffName, parsedDate } = this.props;
 
     if (parsedDate) {
-      let start = parsedDate.parsedStartDate;
-      let end = parsedDate.parsedEndDate;
-      console.log(start, end);
-      console.log('실행');
-      events.push({
-        title: '미용실 휴무',
-        start: start,
-        end: end,
-        color: '#fc4e4e',
+      const startDate = new Date(parsedDate.parsedStartDate);
+      const endDate = new Date(parsedDate.parsedEndDate);
+
+      const formattedStartDate = `${startDate.getFullYear()}-${(
+        startDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, '0')}-${startDate.getDate().toString().padStart(2, '0')}`;
+
+      const formattedEndDate = `${endDate.getFullYear()}-${(
+        endDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
+
+      const date = `${formattedStartDate},${formattedEndDate}`;
+      const title = staffName || '미용실 휴무';
+
+      const postData = {
+        temp_offday: date,
+        staff_name: title,
+        shop_seq: '1',
+      };
+
+      axios
+        .post('http://localhost:8080/hairshop/closed-day', postData)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    if (info.length > 0) {
+      info.forEach((item) => {
+        let newDate = item.date.split(',').map((date) => date.trim());
+
+        events.push({
+          title: item.title,
+          start: newDate[0],
+          end: newDate[1],
+          color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+        });
       });
-      console.log(start, end);
     }
     console.log(events);
+
     return (
       <div className='App'>
         <FullCalendar
