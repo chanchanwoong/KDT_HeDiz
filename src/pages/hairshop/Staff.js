@@ -15,7 +15,7 @@ import callAxios from 'service/CallAxios';
 const shop_seq = localStorage.getItem('shop_seq');
 export default function staff() {
   let emptyProduct = {
-    shop_seq: 0,
+    shop_seq: shop_seq,
     staff_seq: 0,
     staff_nickname: '',
     staff_role: '',
