@@ -60,7 +60,7 @@ const router = createBrowserRouter([
       {
         path: '/hairshop',
         children: [
-          { path: 'info', element: <Info />, action: Hairshopaction },
+          { path: 'info', element: <Info /> },
           { path: 'hairstyle', element: <Hairstyle /> },
           { path: 'staff', element: <Staff /> },
           { path: 'closed-day', element: <ClosedDay /> },
