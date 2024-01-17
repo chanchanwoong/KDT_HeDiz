@@ -25,22 +25,23 @@ function AppSidebar() {
       </Link>
     </div>
   );
-  let items = [
-    // {
-    //   template: () => {
-    //     return (
-    //       <span className='inline-flex align-items-center gap-1 px-2 py-2'>
-    //         <span className='font-medium text-xl font-semibold'>
-    //           He<span className='text-primary'>DIz</span>
-    //         </span>
-    //       </span>
-    //     );
-    //   },
-    // },
 
-    // {
-    //   separator: true,
-    // },
+  let items = [
+    {
+      template: () => {
+        return (
+          <span className='inline-flex align-items-center gap-1 px-2 py-2'>
+            <span className='font-medium text-xl font-semibold'>
+              He<span className='text-primary'>DIz</span>
+            </span>
+          </span>
+        );
+      },
+    },
+
+    {
+      separator: true,
+    },
     {
       // command: () => {
       //   toast.current.show({
@@ -58,11 +59,6 @@ function AppSidebar() {
                 'w-full p-link flex align-items-center p-2 pl-4 text-color hover:surface-200 border-noround'
               }
             >
-              <Avatar
-                image='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
-                className='mr-3'
-                shape='circle'
-              />
               <div className='flex flex-column align'>
                 <span className='font-bold'>이가희</span>
                 <span className='text-sm'>디자이너</span>
@@ -78,17 +74,17 @@ function AppSidebar() {
     {
       label: '바로가기',
       items: [
-        {
-          label: '대시보드',
-          icon: 'pi pi-th-large',
-          url: 'home/dashboard',
-          template: itemRenderer,
-        },
+        // {
+        //   label: '대시보드',
+        //   icon: 'pi pi-th-large',
+        //   url: 'home/dashboard',
+        //   template: itemRenderer,
+        // },
         {
           label: '실시간 예약',
-          icon: 'pi pi-clock',
+          icon: 'pi pi-bell',
           url: 'home/realtime-reservation',
-          badge: 2,
+          badge: 16,
           template: itemRenderer,
         },
       ],
@@ -97,7 +93,7 @@ function AppSidebar() {
       label: '예약 관리',
       items: [
         {
-          label: '전체 예약',
+          label: '전체 예약 내역',
           icon: 'pi pi-calendar',
           url: 'reservation/total',
           template: itemRenderer,
@@ -144,7 +140,7 @@ function AppSidebar() {
       label: '고객 관리',
       items: [
         {
-          label: '고객 정보',
+          label: '고객 방문 이력',
           icon: 'pi pi-heart',
           url: 'customer/management',
           template: itemRenderer,
@@ -160,12 +156,12 @@ function AppSidebar() {
   ];
 
   return (
-    <div className='card flex sidebar mr-2'>
+    <article className='card flex sidebar'>
       <Menu
         model={items}
         className='w-full md:w-15rem'
       />
-    </div>
+    </article>
   );
 }
 

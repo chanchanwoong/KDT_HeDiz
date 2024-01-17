@@ -120,7 +120,7 @@ export default function AppTopbar() {
       />
       <Toast ref={toast} />
       <Menubar
-        className='bg-white mb-2 px-4 flex justify-content-between'
+        className='bg-white px-4 flex justify-content-between'
         start={start}
         end={end}
       />

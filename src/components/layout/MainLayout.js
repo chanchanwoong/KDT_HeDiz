@@ -12,18 +12,18 @@ function MainLayout() {
   const home = { icon: 'pi pi-home', url: '/hairshop' };
 
   return (
-    <div className={`${styles.wrap} min-h-screen p-3`}>
+    <div className={`${styles.wrap} min-h-screen p-3 flex flex-column gap-2`}>
       <AppTopbar />
-      <div className='flex'>
+      <main className='flex gap-2'>
         <AppSidebar />
-        <main className='flex flex-grow-1 flex-column gap-2'>
+        <section className='flex flex-grow-1 flex-column gap-2'>
           <BreadCrumb
             model={items}
             home={home}
           />
           <Outlet />
-        </main>
-      </div>
+        </section>
+      </main>
       <AppFooter />
     </div>
   );

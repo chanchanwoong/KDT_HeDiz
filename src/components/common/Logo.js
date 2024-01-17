@@ -1,13 +1,19 @@
-// HeDiz 로고
+import { Link } from 'react-router-dom';
+
 function Logo(props) {
   return (
-    <div
-      className={`flex justify-content-center align-items-center ${props.margin}`}
+    <Link
+      to='/'
+      className='text-color'
     >
-      <span className={`font-medium text-xl font-semibold ${props.size}`}>
-        He<span className='text-primary font-bold'>Diz</span>
-      </span>
-    </div>
+      <div
+        className={`flex justify-content-center align-items-center ${props.margin}`}
+      >
+        <span className={`font-medium text-xl font-semibold ${props.size}`}>
+          He<span className='text-primary font-bold'>Diz</span>
+        </span>
+      </div>
+    </Link>
   );
 }
 
