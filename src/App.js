@@ -19,7 +19,7 @@ import RealtimeReservation from 'pages/home/RealtimeReservation';
 import Mypage from 'pages/home/Mypage';
 
 // hairshop__미용실 관리
-import Info, { action as Hairshopaction } from 'pages/hairshop/Info';
+import Info from 'pages/hairshop/Info';
 import Hairstyle from 'pages/hairshop/Hairstyle';
 import Staff from 'pages/hairshop/Staff';
 import ClosedDay from 'pages/hairshop/ClosedDay';

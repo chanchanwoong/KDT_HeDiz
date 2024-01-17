@@ -67,8 +67,10 @@ function SignIn() {
       console.log('Server response:', response.data);
       const tokenShop_seq = response.data.shop_seq;
       const token = response.data.jwtauthtoken;
+      const tokenShop_name = response.data.shop_name;
       localStorage.setItem('shop_seq', tokenShop_seq);
       localStorage.setItem('jwtauthtoken', token);
+      localStorage.setItem('shop_name', tokenShop_name);
 
       if (isRemember) {
         setCookie('rememberUserId', data.shop_id, {
