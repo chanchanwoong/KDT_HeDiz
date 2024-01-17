@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { Badge } from 'primereact/badge';
 import Logo from 'components/common/Logo';
 
-export default function AppTopbar() {
+export default function AppTopbar({ onToggleSidebar }) {
   const navigate = useNavigate();
   const toast = useRef(null);
 
@@ -29,7 +29,7 @@ export default function AppTopbar() {
   const reject = () => {
     toast.current.show({
       severity: 'warn',
-      summary: 'Rejected',
+      summary: 'Cancel',
       detail: '로그아웃을 취소했습니다.',
       life: 3000,
     });
@@ -48,32 +48,46 @@ export default function AppTopbar() {
 
   const start = <Logo size='text-2xl' />;
   const end = (
-    <div className='flex flex-wrap align-items-center gap-3'>
-      <Link
-        to='/home/realtime-reservation'
-        className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-1'
-      >
-        <i className='pi pi-bell p-overlay-badge text-2xl text-color'>
-          <Badge
-            value='16'
-            style={{
-              background: '#8b5cf6',
-              color: '#fff',
-            }}
-          ></Badge>
-        </i>
-      </Link>
+    <div className='flex flex-wrap align-items-center justify-content-between gap-3'>
       <Button
-        onClick={handleSignOut}
+        onClick={onToggleSidebar}
         className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
       >
-        <i className='pi pi-sign-out text-2xl text-color'></i>
+        <i className='pi pi-bars text-2xl text-color'></i>
       </Button>
+      <nav>
+        <Link
+          to='/home/realtime-reservation'
+          className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-3'
+        >
+          <i className='pi pi-bell p-overlay-badge text-2xl text-color'>
+            <Badge
+              value='16'
+              style={{
+                background: '#8b5cf6',
+                color: '#fff',
+              }}
+            ></Badge>
+          </i>
+        </Link>
+        <Button
+          onClick={handleSignOut}
+          className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
+        >
+          <i className='pi pi-sign-out text-2xl text-color'></i>
+        </Button>
+      </nav>
     </div>
   );
 
   return (
     <header>
+      <Menubar
+        className='bg-white px-4 flex justify-content-between'
+        start={start}
+        end={end}
+        autoDisplay={false}
+      />
       <ConfirmDialog
         group='headless'
         content={({ headerRef, contentRef, footerRef, hide, message }) => (
@@ -119,11 +133,6 @@ export default function AppTopbar() {
         )}
       />
       <Toast ref={toast} />
-      <Menubar
-        className='bg-white px-4 flex justify-content-between'
-        start={start}
-        end={end}
-      />
     </header>
   );
 }

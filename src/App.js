@@ -6,8 +6,6 @@ import AuthLayout from 'components/layout/AuthLayout';
 import MainLayout from 'components/layout/MainLayout';
 
 // auth__인증
-// import SignIn, { action as SignInAction } from 'pages/auth/SignIn';
-// import SignUp, { action as SignUpAction } from 'pages/auth/SignUp';
 import SignIn from 'pages/auth/SignIn';
 import SignUp from 'pages/auth/SignUp';
 import Find from 'pages/auth/Find';
@@ -38,7 +36,6 @@ const router = createBrowserRouter([
     path: '/auth',
     element: <AuthLayout />,
     children: [
-      // { path: 'sign-in', element: <SignIn />, action: SignInAction },
       { path: 'sign-in', element: <SignIn /> },
       { path: 'sign-up', element: <SignUp /> },
       { path: 'find', element: <Find /> },
@@ -49,12 +46,14 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
+        path: '/',
+        element: <Dashboard />, // Add this line to render Dashboard by default
+      },
+      {
         path: '/home',
         children: [
-          { path: 'test', element: <Test /> },
-          { path: 'dashboard', element: <Dashboard /> },
           { path: 'realtime-reservation', element: <RealtimeReservation /> },
-          { path: 'mypage', element: <Mypage /> },
+          // { path: 'mypage', element: <Mypage /> },
         ],
       },
       {

@@ -1,12 +1,95 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Menu } from 'primereact/menu';
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+import { classNames } from 'primereact/utils';
 import { Badge } from 'primereact/badge';
-import { Avatar } from 'primereact/avatar';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 
 function AppSidebar() {
-  const navigate = useNavigate;
+  const [visible, setVisible] = useState(false);
+
+  const defaultValues = {
+    value: '',
+  };
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm();
+
+  const onCancelClick = () => {
+    reset(defaultValues);
+    setVisible(false);
+  };
+
+  const getFormErrorMessage = (name) => {
+    return errors[name] ? (
+      <small className='p-error'>{errors[name].message}</small>
+    ) : (
+      ''
+    );
+  };
+
+  const onSubmit = async (data) => {
+    const authData = {
+      shop_id: data.shop_id,
+      shop_pw: data.shop_pw,
+    };
+
+    console.log('authData >> ', authData);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/auth/change-password',
+        authData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('Server response:', response.data);
+      const tokenShop_seq = response.data.shop_seq;
+      const token = response.data.jwtauthtoken;
+      const tokenShop_name = response.data.shop_name;
+
+      if (isRemember) {
+        setCookie('rememberUserId', data.shop_id, {
+          maxAge: 5 * (60 * 60 * 24),
+        });
+      } else {
+        removeCookie('rememberUserId');
+      }
+
+      navigate('/');
+    } catch (error) {
+      console.error('Error during signup:', error);
+    }
+  };
+
+  const footerContent = (
+    <div>
+      <Button
+        label='No'
+        icon='pi pi-times'
+        onClick={() => setVisible(false)}
+        className='p-button-text'
+      />
+      <Button
+        label='Yes'
+        icon='pi pi-check'
+        onClick={() => setVisible(false)}
+        autoFocus
+      />
+    </div>
+  );
 
   const itemRenderer = (item) => (
     <div className='p-menuitem-content'>
@@ -26,45 +109,121 @@ function AppSidebar() {
     </div>
   );
 
-  let items = [
+  let menu = [
     {
       template: () => {
         return (
-          <span className='inline-flex align-items-center gap-1 px-2 py-2'>
-            <span className='font-medium text-xl font-semibold'>
-              He<span className='text-primary'>DIz</span>
-            </span>
-          </span>
-        );
-      },
-    },
-
-    {
-      separator: true,
-    },
-    {
-      // command: () => {
-      //   toast.current.show({
-      //     severity: 'info',
-      //     summary: 'Info',
-      //     detail: 'Item Selected',
-      //     life: 3000,
-      //   });
-      // },
-      template: (item, options) => {
-        return (
-          <a href='/home/mypage'>
-            <button
-              className={
-                'w-full p-link flex align-items-center p-2 pl-4 text-color hover:surface-200 border-noround'
-              }
+          <div className='flex flex-column align gap-4 px-4 py-3'>
+            <p className='font-bold text-lg text-center m-0'>
+              {localStorage.getItem('shop_name')}
+            </p>
+            <Button
+              label='비밀번호 변경'
+              icon='pi pi-user-edit'
+              onClick={() => setVisible(true)}
+              size='small'
+              severity='secondary'
+            />
+            <Dialog
+              header='비밀번호 변경'
+              visible={visible}
+              onHide={() => setVisible(false)}
+              style={{ width: '30vw' }}
+              breakpoints={{ '960px': '75vw', '641px': '100vw' }}
             >
-              <div className='flex flex-column align'>
-                <span className='font-bold'>이가희</span>
-                <span className='text-sm'>디자이너</span>
-              </div>
-            </button>
-          </a>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                method='post'
+                className='flex flex-column flex-wrap gap-4'
+              >
+                <div className='flex flex-column gap-2'>
+                  <Controller
+                    name='shop_pw'
+                    control={control}
+                    rules={{ required: '비밀번호를 입력해주세요' }}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <Password
+                          id={field.name}
+                          value={field.value || ''}
+                          placeholder='현재 비밀번호'
+                          className={classNames({
+                            'p-invalid': fieldState.error,
+                          })}
+                          feedback={false}
+                          onChange={field.onChange}
+                          toggleMask
+                        />
+                        {getFormErrorMessage(field.name)}
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='flex flex-column gap-2'>
+                  <Controller
+                    name='new_pw'
+                    control={control}
+                    rules={{ required: '비밀번호를 입력해주세요' }}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <Password
+                          id={field.name}
+                          value={field.value || ''}
+                          placeholder='비밀번호'
+                          className={classNames({
+                            'p-invalid': fieldState.error,
+                          })}
+                          feedback={false}
+                          onChange={field.onChange}
+                          toggleMask
+                        />
+                        {getFormErrorMessage(field.name)}
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='flex flex-column gap-2'>
+                  <Controller
+                    name='new_pw_check'
+                    control={control}
+                    rules={{ required: '비밀번호를 확인해주세요' }}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <Password
+                          id={field.name}
+                          value={field.value || ''}
+                          placeholder='비밀번호'
+                          className={classNames({
+                            'p-invalid': fieldState.error,
+                          })}
+                          feedback={false}
+                          onChange={field.onChange}
+                          toggleMask
+                        />
+                        {getFormErrorMessage(field.name)}
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='flex justify-content-end gap-2'>
+                  <Button
+                    label='취소'
+                    type='button'
+                    onClick={onCancelClick}
+                    size='small'
+                    className='w-6rem'
+                    outlined
+                  />
+                  <Button
+                    label='변경'
+                    type='submit'
+                    size='small'
+                    className='w-6rem'
+                  />
+                </div>
+              </form>
+            </Dialog>
+          </div>
         );
       },
     },
@@ -74,12 +233,12 @@ function AppSidebar() {
     {
       label: '바로가기',
       items: [
-        // {
-        //   label: '대시보드',
-        //   icon: 'pi pi-th-large',
-        //   url: 'home/dashboard',
-        //   template: itemRenderer,
-        // },
+        {
+          label: '대시보드',
+          icon: 'pi pi-th-large',
+          url: '/',
+          template: itemRenderer,
+        },
         {
           label: '실시간 예약',
           icon: 'pi pi-bell',
@@ -158,7 +317,7 @@ function AppSidebar() {
   return (
     <article className='card flex sidebar'>
       <Menu
-        model={items}
+        model={menu}
         className='w-full md:w-15rem'
       />
     </article>

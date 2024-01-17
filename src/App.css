@@ -19,6 +19,15 @@ a {
   width: 100%;
 }
 
+.p-menubar .p-menubar-end {
+  width: calc(100% - 220px);
+  margin-left: 0;
+}
+
+.p-menubar-button {
+  display: none !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
