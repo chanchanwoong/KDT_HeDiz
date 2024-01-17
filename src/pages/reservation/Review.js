@@ -13,7 +13,7 @@ function Review() {
   const shop_seq = localStorage.getItem('shop_seq');
   useEffect(() => {
     axios
-      .get('http://localhost:8080/hairshop/review/' + shop_seq, {
+      .get('http://localhost:8080/reservation/review/' + shop_seq, {
         headers: { jwtauthtoken: token },
       })
       .then((response) => {
