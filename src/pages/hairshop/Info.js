@@ -1,21 +1,21 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { Form, redirect } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
 
 function Info() {
-  const [info, setInfo] = useState([]);
-  const [selectClosedDay, setSelectClosedDay] = useState();
+  const [info, setInfo] = useState({});
+  const [selectClosedDay, setSelectClosedDay] = useState([]);
   const [visible, setVisible] = useState(false);
-  const toast = useRef(null);
+  const toast = useState(null);
   const token = localStorage.getItem('jwtauthtoken');
   const shop_seq = localStorage.getItem('shop_seq');
+
   const convertArrayToString = (array) => {
     return array.join(',');
   };
@@ -39,27 +39,58 @@ function Info() {
   };
 
   const closedDay = [
-    { shop_offday: '일요일', shop_off: '1' },
-    { shop_offday: '월요일', shop_off: '2' },
-    { shop_offday: '화요일', shop_off: '3' },
-    { shop_offday: '수요일', shop_off: '4' },
-    { shop_offday: '목요일', shop_off: '5' },
-    { shop_offday: '금요일', shop_off: '6' },
-    { shop_offday: '토요일', shop_off: '7' },
+    { shop_regularDay: '일요일', shop_regular: '1' },
+    { shop_regularDay: '월요일', shop_regular: '2' },
+    { shop_regularDay: '화요일', shop_regular: '3' },
+    { shop_regularDay: '수요일', shop_regular: '4' },
+    { shop_regularDay: '목요일', shop_regular: '5' },
+    { shop_regularDay: '금요일', shop_regular: '6' },
+    { shop_regularDay: '토요일', shop_regular: '7' },
   ];
+
   useEffect(() => {
     axios
-      .get('http://localhost:8080/hairshop/info/' + shop_seq, {
+      .get(`http://localhost:8080/hairshop/info/${shop_seq}`, {
         headers: { jwtauthtoken: token },
       })
       .then((response) => {
         console.log(response.data);
         setInfo(response.data);
+        setSelectClosedDay(
+          response.data.shop_regular
+            ? response.data.shop_regular.split(',')
+            : []
+        );
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
   }, []);
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/hairshop/info/${shop_seq}`,
+        info,
+        {
+          headers: { 'Content-Type': 'application/json', jwtauthtoken: token },
+        }
+      );
+
+      console.log(response);
+
+      if (response.ok) {
+        accept();
+      } else {
+        reject();
+      }
+    } catch (error) {
+      console.error('Error updating info:', error);
+      reject();
+    }
+  };
 
   // useEffect(async() => {
   //   const token = localStorage.getItem("jwtauthtoken");
@@ -148,8 +179,8 @@ function Info() {
         header='미용실 정보 수정'
         toggleable
       >
-        <Form
-          method='post'
+        <form
+          onSubmit={handleFormSubmit}
           className='flex flex-column flex-wrap gap-4'
         >
           <div className='card flex flex-column gap-3'>
@@ -165,17 +196,18 @@ function Info() {
               />
 
               <MultiSelect
-                name='shop_off'
+                name='shop_regular'
                 value={selectClosedDay}
                 onChange={(e) => {
                   setSelectClosedDay(e.value);
                   const selectedDaysString = convertArrayToString(e.value);
-                  setInfo({ ...info, shop_off: selectedDaysString });
+                  setInfo({ ...info, shop_regular: selectedDaysString });
                   console.log(info);
+                  console.log(selectClosedDay);
                 }}
                 options={closedDay}
-                optionLabel='shop_offday'
-                optionValue='shop_off'
+                optionLabel='shop_regularDay'
+                optionValue='shop_regular'
                 placeholder='정기 휴무일'
                 className='w-full md:w-20rem'
               />
@@ -194,9 +226,9 @@ function Info() {
 
             <InputText
               hidden='true'
-              name='shop_off'
+              name='shop_regular'
               placeholder='휴무일'
-              defaultValue={info.shop_off}
+              defaultValue={info.shop_regular}
             />
 
             <div className='p-inputgroup flex-1'>
@@ -271,40 +303,15 @@ function Info() {
           />
           <div className='card flex justify-content-center'>
             <Button
-              onClick={() => setVisible(true)}
               icon='pi pi-check'
               label='수정하기'
               type='submit'
             />
           </div>
-        </Form>
+        </form>
       </Panel>
     </>
   );
 }
 
 export default Info;
-
-export async function action({ request }) {
-  const token = localStorage.getItem('jwtauthtoken');
-  console.log('토큰 값 ', token);
-  const formData = await request.formData();
-  const postData = Object.fromEntries(formData);
-  console.log('postData >>>>>', postData);
-  const response = await fetch('http://localhost:8080/hairshop/info', {
-    method: 'PUT',
-    body: JSON.stringify(postData),
-    headers: {
-      'Content-Type': 'application/json',
-      jwtauthtoken: token,
-    },
-  });
-
-  console.log(response);
-
-  if (!response.ok) {
-    console.log('!response.ok>>', !response.ok);
-  }
-
-  return redirect('/hairshop/info');
-}

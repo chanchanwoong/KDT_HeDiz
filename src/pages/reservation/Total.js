@@ -9,6 +9,7 @@ export default function Total() {
   const [reservation, setReservation] = useState([]);
   const token = localStorage.getItem('jwtauthtoken');
   const shop_seq = localStorage.getItem('shop_seq');
+  console.log(token);
 
   const getReserveValue = (status) => {
     switch (status) {
