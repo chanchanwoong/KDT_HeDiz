@@ -6,10 +6,14 @@ import { Panel } from 'primereact/panel';
 
 function Management() {
   const [customers, setCustomers] = useState([]);
+  const token = localStorage.getItem('jwtauthtoken');
+  const shop_seq = localStorage.getItem('shop_seq');
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/customer/1')
+      .get('http://localhost:8080/customer/total/' + shop_seq, {
+        headers: { jwtauthtoken: token },
+      })
       .then((response) => {
         console.log(response.data);
         setCustomers(response.data);
@@ -35,7 +39,7 @@ function Management() {
   };
 
   return (
-    <Panel header='고객 관리'>
+    <Panel header='고객 방문 이력'>
       <div className='card'>
         <DataTable
           value={customers}
@@ -51,7 +55,7 @@ function Management() {
           />
           <Column
             field='cust_id'
-            header='고객 id'
+            header='고객 아이디'
             sortable
             style={{ minWidth: '14rem' }}
           />
@@ -62,16 +66,35 @@ function Management() {
             style={{ minWidth: '12rem' }}
           />
 
-          <Column
+          {/* <Column
             field='cust_gender'
             header='성별'
             sortable
             style={{ minWidth: '12rem' }}
             body={checkGender}
-          />
-          <Column
+          /> */}
+          {/* <Column
             field='cust_visit'
             header='방문횟수'
+            sortable
+            style={{ minWidth: '12rem' }}
+          /> */}
+
+          <Column
+            field='stat_complete'
+            header='정상 방문 횟수'
+            sortable
+            style={{ minWidth: '12rem' }}
+          />
+          <Column
+            field='stat_cancel'
+            header='예약 취소 횟수'
+            sortable
+            style={{ minWidth: '12rem' }}
+          />
+          <Column
+            field='stat_noshow'
+            header='노쇼 횟수'
             sortable
             style={{ minWidth: '12rem' }}
           />
