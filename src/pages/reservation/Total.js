@@ -10,35 +10,23 @@ export default function Total() {
   const token = localStorage.getItem('jwtauthtoken');
   const shop_seq = localStorage.getItem('shop_seq');
 
-  const getReserveValue = (status) => {
+  const getValueAndSeverity = (status) => {
     switch (status) {
       case 0:
-        return '대기';
+        return { value: '대기', severity: 'info' };
       case 1:
-        return '수락';
+        return { value: '수락', severity: 'success' };
       case 2:
-        return '거절';
+        return { value: '거절', severity: 'danger' };
       default:
-        return '';
-    }
-  };
-
-  const getSeverity = (status) => {
-    switch (status) {
-      case 0:
-        return 'info';
-      case 1:
-        return 'success';
-      case 2:
-        return 'danger';
-      default:
-        return null;
+        return { value: '', severity: null };
     }
   };
 
   const statusBodyTemplate = (rowData) => {
-    const reserveValue = getReserveValue(rowData.reserv_stat);
-    const severity = getSeverity(rowData.reserv_stat);
+    const { value: reserveValue, severity } = getValueAndSeverity(
+      rowData.reserv_stat
+    );
 
     return (
       <Tag
@@ -46,6 +34,21 @@ export default function Total() {
         severity={severity}
       />
     );
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const [year, month, day] = new Date(dateString)
+      .toLocaleDateString('ko-KR', options)
+      .split('.')
+      .map((part) => part.trim());
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatTime = (dateString) => {
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    return new Date(dateString).toLocaleTimeString('ko-KR', options);
   };
 
   useEffect(() => {
@@ -75,49 +78,48 @@ export default function Total() {
           <Column
             field='cust_name'
             header='고객 이름'
-            style={{ minWidth: '10rem' }}
           />
           <Column
-            field='staff_nickname'
+            field='staff_name'
             header='담당 디자이너'
             sortable
-            style={{ minWidth: '10rem' }}
           />
+
+          <Column
+            field='style_name'
+            header='헤어스타일'
+          />
+
           <Column
             field='reserv_time'
             header='예약날짜'
             sortable
-            style={{ minWidth: '12rem' }}
+            body={(rowData) => formatDate(rowData.reserv_time)}
           />
 
           <Column
-            field='time'
+            field='reserv_time'
             header='예약시간'
             sortable
-            dataType='date'
-            style={{ minWidth: '12rem' }}
+            // dataType='date'
+            body={(rowData) => formatTime(rowData.reserv_time)}
+          />
+
+          <Column
+            field='reserv_request'
+            header='요청사항'
+          />
+          <Column
+            field='reserv_stat'
+            header='예약상태'
+            sortable
+            body={statusBodyTemplate}
           />
           <Column
             field='balance'
             header='결제금액'
             sortable
             dataType='numeric'
-            style={{ minWidth: '12rem' }}
-          />
-          <Column
-            field='reserv_stat'
-            header='예약상태'
-            sortable
-            style={{ minWidth: '12rem' }}
-            body={statusBodyTemplate}
-          />
-          <Column
-            field='style_name'
-            header='헤어스타일'
-          />
-          <Column
-            field='reserv_request'
-            header='요청사항'
           />
           <Column
             headerStyle={{ width: '5rem', textAlign: 'center' }}
