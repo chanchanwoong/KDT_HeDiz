@@ -47,7 +47,7 @@ export default function staff() {
   };
   useEffect(() => {
     axios
-      .get('http://localhost:8080/hairshop/staff', {
+      .get('http://localhost:8080/hairshop/staff/' + shop_seq, {
         headers: { jwtauthtoken: token },
       })
       .then((response) => {
@@ -86,13 +86,9 @@ export default function staff() {
           const index = findIndexBystaff_seq(product.staff_seq);
 
           _products[index] = _product;
-          await axios.put(
-            `http://localhost:8080/hairshop/staff/${product.staff_seq}`,
-            _product,
-            {
-              headers: { jwtauthtoken: token },
-            }
-          );
+          await axios.put(`http://localhost:8080/hairshop/staff/`, _product, {
+            headers: { jwtauthtoken: token },
+          });
 
           toast.current.show({
             severity: 'success',

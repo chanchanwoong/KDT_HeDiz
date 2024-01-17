@@ -8,13 +8,15 @@ import { Image } from 'primereact/image';
 import { Dialog } from 'primereact/dialog';
 import { Password } from 'primereact/password';
 import img from '../../assets/img.jpg';
-import CallAxios from 'service/CallAxios';
 
 function Mypage() {
   const [displayPasswordModal, setDisplayPasswordModal] = useState(false);
   const [current_passwd, setCurrent_passwd] = useState('');
   const [new_passwd, setNew_passwd] = useState('');
   const [check_passwd, setCheck_passwd] = useState('');
+  const token = localStorage.getItem('jwtauthtoken');
+  const shop_seq = localStorage.getItem('shop_seq');
+
   const showDialog = () => {
     setDisplayPasswordModal(true);
   };

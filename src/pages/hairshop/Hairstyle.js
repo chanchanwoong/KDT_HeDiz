@@ -14,8 +14,9 @@ import { Dropdown } from 'primereact/dropdown';
 import callAxios from 'service/CallAxios';
 
 export default function Hairstyle() {
+  const shop_seq = localStorage.getItem('shop_seq');
   let emptyProduct = {
-    shop_seq: 0,
+    shop_seq: shop_seq,
     style_seq: 0,
     style_name: '',
     style_gender: '',
@@ -37,7 +38,6 @@ export default function Hairstyle() {
   const dt = useRef(null);
   const toast = useRef(null);
   const token = localStorage.getItem('jwtauthtoken');
-  const shop_seq = localStorage.getItem('shop_seq');
 
   useEffect(() => {
     axios
@@ -96,8 +96,9 @@ export default function Hairstyle() {
 
           _products[index] = _product;
           await axios.put(
-            `http://localhost:8080/hairshop/hairstyle/${product.style_seq}`,
-            _product
+            `http://localhost:8080/hairshop/hairstyle`,
+            _product,
+            { headers: { jwtauthtoken: token } }
           );
 
           toast.current.show({
@@ -112,7 +113,8 @@ export default function Hairstyle() {
           _products.push(_product);
           await axios.post(
             'http://localhost:8080/hairshop/hairstyle/',
-            _product
+            _product,
+            { headers: { jwtauthtoken: token } }
           );
           console.log(_product);
           toast.current.show({
