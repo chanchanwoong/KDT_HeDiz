@@ -39,6 +39,7 @@ function Info() {
   };
 
   const closedDay = [
+    { shop_regularDay: '휴무일없음', shop_regular: '0' },
     { shop_regularDay: '일요일', shop_regular: '1' },
     { shop_regularDay: '월요일', shop_regular: '2' },
     { shop_regularDay: '화요일', shop_regular: '3' },
@@ -72,7 +73,7 @@ function Info() {
 
     try {
       const response = await axios.put(
-        `http://localhost:8080/hairshop/info/${shop_seq}`,
+        `http://localhost:8080/hairshop/info`,
         info,
         {
           headers: { 'Content-Type': 'application/json', jwtauthtoken: token },
