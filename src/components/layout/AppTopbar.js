@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from 'components/common/Logo';
 
+import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { Badge } from 'primereact/badge';
-import Logo from 'components/common/Logo';
 
 export default function AppTopbar({ onToggleSidebar }) {
   const navigate = useNavigate();
@@ -56,9 +57,15 @@ export default function AppTopbar({ onToggleSidebar }) {
         <i className='pi pi-bars text-2xl text-color'></i>
       </Button>
       <nav>
+        <Tooltip
+          target='.realtimeReservation'
+          mouseTrack
+          mouseTrackLeft={10}
+        />
         <Link
           to='/home/realtime-reservation'
-          className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-3'
+          data-pr-tooltip='실시간 예약'
+          className='realtimeReservation p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-3'
         >
           <i className='pi pi-bell p-overlay-badge text-2xl text-color'>
             <Badge
@@ -70,8 +77,19 @@ export default function AppTopbar({ onToggleSidebar }) {
             ></Badge>
           </i>
         </Link>
+        <Tooltip
+          target='.signOut'
+          mouseTrack
+          mouseTrackLeft={10}
+        />
         <Button
           onClick={handleSignOut}
+          tooltip='로그아웃'
+          tooltipOptions={{
+            position: 'bottom',
+            mouseTrack: true,
+            mouseTrackTop: 15,
+          }}
           className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
         >
           <i className='pi pi-sign-out text-2xl text-color'></i>
@@ -86,7 +104,6 @@ export default function AppTopbar({ onToggleSidebar }) {
         className='bg-white px-4 flex justify-content-between'
         start={start}
         end={end}
-        autoDisplay={false}
       />
       <ConfirmDialog
         group='headless'
