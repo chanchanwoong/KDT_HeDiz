@@ -11,9 +11,11 @@ function Review() {
   const [averageScore, setAverageScore] = useState();
   const token = localStorage.getItem('jwtauthtoken');
   const shop_seq = localStorage.getItem('shop_seq');
+  const shop_name = localStorage.getItem('shop_name');
   useEffect(() => {
     axios
-      .get('http://localhost:8080/reservation/review/' + shop_seq, {
+      //.get('http://localhost:8080/reservation/review/' + shop_seq, {
+      .get('http://localhost:8080/reservation/review/1', {
         headers: { jwtauthtoken: token },
       })
       .then((response) => {
@@ -144,7 +146,7 @@ function Review() {
   return (
     <>
       <Panel
-        header='token에 담은 헤어샵 시퀀스로 이름 찾아서 출력'
+        header={shop_name}
         toggleable
       >
         <div className='col-6 p-0'>
