@@ -22,6 +22,7 @@ function SignIn() {
     control,
     formState: { errors },
     handleSubmit,
+    reset
   } = useForm({
     defaultValues: {
       shop_id: cookies.rememberUserId || '',
@@ -71,11 +72,15 @@ function SignIn() {
         } else {
           removeCookie('rememberUserId');
         }
-        showSuccess();
+        navigate('/');
       })
       .catch((error) => {
         console.error('Non-Auth Error:', error);
         showError();
+        reset({
+          shop_id: '',
+          shop_pw: '',
+        });
       });
   };
 
@@ -92,19 +97,6 @@ function SignIn() {
     ) : (
       ''
     );
-  };
-
-  const showSuccess = () => {
-    toast.current.show({
-      severity: 'success',
-      summary: 'Hello :)',
-      detail: '로그인 성공',
-      life: 1000,
-    });
-
-    setTimeout(() => {
-      navigate('/');
-    }, 1000);
   };
 
   const showError = () => {

@@ -80,7 +80,7 @@ export default function Total() {
             header='고객 이름'
           />
           <Column
-            field='staff_name'
+            field='staff_nickname'
             header='담당 디자이너'
             sortable
           />
