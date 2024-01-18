@@ -66,7 +66,7 @@ export default function Total() {
   }, []);
 
   return (
-    <Panel header='전체 예약'>
+    <Panel header='전체 예약 내역'>
       <div className='card'>
         <DataTable
           value={reservation}

@@ -287,11 +287,12 @@ export default function Hairstyle() {
           currentPageReportTemplate='Showing {first} to {last} of {totalRecords} products'
           globalFilter={globalFilter}
           header={header}
+          size='small'
         >
           <Column
             field='style_image'
             header='이미지'
-            body={imageBodyTemplate}
+            // body={imageBodyTemplate}
           ></Column>
           <Column
             field='style_name'

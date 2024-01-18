@@ -274,6 +274,7 @@ export default function staff() {
           currentPageReportTemplate='Showing {first} to {last} of {totalRecords} products'
           globalFilter={globalFilter}
           header={header}
+          size='small'
         >
           <Column
             field='staff_image'
