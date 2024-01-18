@@ -239,6 +239,12 @@ function AppSidebar() {
           url: '/',
           template: itemRenderer,
         },
+        
+      ],
+    },
+    {
+      label: '예약 관리',
+      items: [
         {
           label: '실시간 예약',
           icon: 'pi pi-bell',
@@ -246,23 +252,13 @@ function AppSidebar() {
           badge: 16,
           template: itemRenderer,
         },
-      ],
-    },
-    {
-      label: '예약 관리',
-      items: [
         {
           label: '전체 예약 내역',
           icon: 'pi pi-calendar',
           url: 'reservation/total',
           template: itemRenderer,
         },
-        {
-          label: '리뷰 관리',
-          icon: 'pi pi-star',
-          url: 'reservation/review',
-          template: itemRenderer,
-        },
+        
       ],
     },
     {
@@ -302,6 +298,12 @@ function AppSidebar() {
           label: '고객 방문 이력',
           icon: 'pi pi-heart',
           url: 'customer/management',
+          template: itemRenderer,
+        },
+        {
+          label: '리뷰 관리',
+          icon: 'pi pi-star',
+          url: 'reservation/review',
           template: itemRenderer,
         },
         {
