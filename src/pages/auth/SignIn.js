@@ -99,11 +99,10 @@ function SignIn() {
       severity: 'success',
       summary: 'Hello :)',
       detail: '로그인 성공',
-      life: 500,
+      life: 1000,
     });
 
     setTimeout(() => {
-      localStorage.clear();
       navigate('/');
     }, 1000);
   };
