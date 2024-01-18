@@ -119,13 +119,11 @@ function Review() {
   };
 
   const itemTemplate = (product) => {
-    setUserReview(product.review_content);
     return (
       <div className='col-12'>
         <div className='flex flex-column xl:flex-row xl:align-items-start p-4 gap-4'>
           <img
             className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
             alt={product.review_photo}
           />
           <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
@@ -157,15 +155,13 @@ function Review() {
                 <Tag value={product.review_date}></Tag>
               </div>
             </div>
-            <div className='flex align-items-center gap-3'>
-              <span className='font-semibold'>
-                답글 : {product.review_reply}
-              </span>
-            </div>
+
+            <span className='font-semibold'>답글 : {product.review_reply}</span>
             <Button
               icon='pi pi-pencil'
               className='p-button-rounded'
               onClick={() => {
+                setUserReview(product.review_content);
                 setProduct({ ...product, review_seq: product.review_seq });
                 showDialog();
               }}
@@ -177,50 +173,88 @@ function Review() {
   };
 
   return (
-    <Panel header='리뷰 관리'>
-      <div className='card'>
-        <DataView
-          value={products}
-          itemTemplate={itemTemplate}
-          paginator
-          rows={5}
-          header={header()}
-          sortField={sortField}
-          sortOrder={sortOrder}
-        />
-      </div>
-      <Dialog
-        header='답글 달기'
-        visible={replyModal}
-        onHide={hideDialog}
+    <>
+      <Panel
+        header={shop_name}
+        toggleable
       >
-        <form onSubmit={handleFormSubmit}>
-          <div className='flex flex-column gap-4 ml-5'>
-            <div className='p-inputgroup'>
-              <span className='p-float-label'>
-                <InputText
-                  value={userReview}
-                  disabled
-                />
-              </span>
+        <div className='col-6 p-0'>
+          <div className='flex flex-column xl:flex-row xl:align-items-center gap-4'>
+            <img
+              className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
+              src={`https://img.kr.news.samsung.com/kr/wp-content/uploads/2016/05/ss1.png`}
+              alt='미용실 이미지'
+            />
+            <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
+              <div className='flex flex-column align-items-center sm:align-items-start gap-4'>
+                <div className='text-2xl font-bold text-900'>
+                  <span className='flex align-items-end gap-2 font-normal vertical-align-baseline'>
+                    <span className='font-bold text-primary text-4xl'>
+                      {averageScore && averageScore.toFixed(1)}
+                    </span>{' '}
+                    / 5
+                  </span>
+                </div>
+                <Rating
+                  value={averageScore || 0}
+                  readOnly
+                  cancel={false}
+                ></Rating>
+              </div>
+              <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'>
+                <span className='text-2xl font-semibold'>
+                  {products.length} 개의 리뷰가 있습니다.
+                </span>
+              </div>
             </div>
-
-            <InputTextarea
-              value={staffReview}
-              onChange={(e) => setStaffReview(e.target.value)}
-              rows={5}
-              cols={30}
-              placeholder='답글을 입력하세요'
-            />
-
-            <Button
-              label='수정하기'
-              onClick={hideDialog}
-            />
           </div>
-        </form>
-      </Dialog>
-    </Panel>
+        </div>
+      </Panel>
+      <Panel header='리뷰 관리'>
+        <div className='card'>
+          <DataView
+            value={products}
+            itemTemplate={itemTemplate}
+            paginator
+            rows={5}
+            header={header()}
+            sortField={sortField}
+            sortOrder={sortOrder}
+          />
+        </div>
+        <Dialog
+          header='답글 달기'
+          visible={replyModal}
+          onHide={hideDialog}
+        >
+          <form onSubmit={handleFormSubmit}>
+            <div className='flex flex-column gap-4 ml-5'>
+              <div className='p-inputgroup'>
+                <span className='p-float-label'>
+                  <InputText
+                    value={userReview}
+                    disabled
+                  />
+                </span>
+              </div>
+
+              <InputTextarea
+                value={staffReview}
+                onChange={(e) => setStaffReview(e.target.value)}
+                rows={5}
+                cols={30}
+                placeholder='답글을 입력하세요'
+              />
+
+              <Button
+                label='수정하기'
+                onClick={hideDialog}
+              />
+            </div>
+          </form>
+        </Dialog>
+      </Panel>
+    </>
   );
 }
 export default Review;
