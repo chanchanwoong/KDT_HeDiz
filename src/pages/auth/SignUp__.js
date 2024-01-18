@@ -1,24 +1,23 @@
-import { useState, useRef } from 'react';
-import { nonAuthAxios } from '../../api/AxiosAPI';
-import Logo from 'components/common/Logo';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import { classNames } from 'primereact/utils';
+import Logo from 'components/common/Logo';
 import { Steps } from 'primereact/steps';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import { InputMask } from 'primereact/inputmask';
 import { Password } from 'primereact/password';
+import { FileUpload } from 'primereact/fileupload';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
 
 function SignUp() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [registerCode, setRegisterCode] = useState('');
   const [message, setMessage] = useState('');
-  const toast = useRef(null);
   // 아이디 중복 체크
   const [idCheckMessage, setIdCheckMessage] = useState('');
   const [isIdAvailable, setIsIdAvailable] = useState(true);
@@ -26,7 +25,7 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
-  const navigate = useNavigate();
+
   const stepItems = [
     { label: '사업자등록번호 인증' },
     { label: '미용실 정보' },
@@ -43,10 +42,6 @@ function SignUp() {
     { name: '토요일', code: 7 },
   ];
 
-  const defaultValues = {
-    value: '',
-  };
-
   const {
     control,
     formState: { errors, isValid },
@@ -54,64 +49,57 @@ function SignUp() {
     getValues,
     setValue,
     reset,
-  } = useForm({ defaultValues });
+  } = useForm();
 
   const onSubmit = async (data) => {
-    console.log('Form data submitted:', data);
+    console.log('data:', data);
     const shopOffString = data.shop_regular
       .map((option) => option.code)
       .join(',');
 
-    const requestData = {
-      ...data,
-      shop_start: data.shop_start.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
-      shop_end: data.shop_end.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
-      shop_regular: shopOffString,
-    };
+    try {
+      const formData = new FormData();
+      console.log(data.shop_image);
+      formData.append('shop_image', data.shop_image.files[0]);
 
-    console.log('NonAuth Request:', requestData);
+      const hairshopDto = {
+        shop_register: data.shop_register,
+        shop_id: data.shop_id,
+        shop_pw: data.shop_pw,
+        shop_name: data.shop_name,
+        shop_address: data.shop_address,
+        shop_phone: data.shop_phone,
+        shop_start: data.shop_start.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }),
+        shop_end: data.shop_end.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }),
+        shop_regular: shopOffString,
+        shop_tag: data.shop_tag,
+        shop_intro: data.shop_intro,
+      };
 
-    nonAuthAxios()
-      .post('/auth/sign-up', requestData)
-      .then((response) => {
-        console.log('Non-Auth Response:', response.data);
+      formData.append('hairshopDto', JSON.stringify(hairshopDto));
 
-        showSuccess();
-      })
-      .catch((error) => {
-        console.error('Non-Auth Error:', error);
-        showError();
-      });
-  };
+      const response = await axios.post(
+        'http://localhost:8080/auth/sign-up',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
-  const showSuccess = () => {
-    toast.current.show({
-      severity: 'success',
-      summary: '회원가입 성공 :)',
-      detail: '로그인 페이지로 이동합니다.',
-      life: 1000,
-    });
-
-    setTimeout(() => {
-      navigate('/auth/sign-in');
-    }, 1000);
-  };
-
-  const showError = () => {
-    toast.current.show({
-      severity: 'error',
-      summary: '회원가입 실패 :(',
-      detail: '회원가입에 실패했습니다 ',
-      life: 3000,
-    });
+      console.log('Server response:', response.data);
+    } catch (error) {
+      console.error('Error during signup:', error);
+    }
   };
 
   const getFormErrorMessage = (name) => {
@@ -225,8 +213,24 @@ function SignUp() {
     }
   };
 
+  const imageBase64Uploader = async (event) => {
+    const file = event.files[0];
+    const reader = new FileReader();
+    let blob = await fetch(file.objectURL).then((r) => r.blob());
+
+    reader.readAsDataURL(blob);
+
+    reader.onloadend = function () {
+      const base64data = reader.result;
+      console.log('base64data:', base64data);
+      setValue('shop_image', base64data);
+    };
+
+    // field.onChange(event);
+  };
+
   return (
-    <main className='flex flex-column bg-white p-6 w-auto border-round-lg gap-4 w-8'>
+    <main className='flex flex-column bg-white p-6 border-round-lg gap-4 w-8'>
       <Logo size='text-4xl' />
 
       <div className='card my-4'>
@@ -357,6 +361,40 @@ function SignUp() {
                       <small className='p-error'>{passwordMatchError}</small>
                     )}
                   </>
+                )}
+              />
+            </div>
+            <div className='flex flex-column gap-2'>
+              <Controller
+                name='shop_image'
+                control={control}
+                render={({ field }) => (
+                  <FileUpload
+                    auto
+                    mode='basic'
+                    name='shop_image'
+                    url='http://localhost:8080/auth/sign-up'
+                    accept='image/*'
+                    customUpload
+                    uploadHandler={async (event) => {
+                      const file = event.files[0];
+                      // const reader = new FileReader();
+                      // let blob = await fetch(file.objectURL).then((r) =>
+                      //   r.blob()
+                      // );
+
+                      // reader.readAsDataURL(blob);
+
+                      // reader.onloadend = function () {
+                      //   const base64data = reader.result;
+                      //   console.log('base64data:', base64data);
+                      //   setValue('shop_image', base64data);
+                      // };
+
+                      field.onChange(event);
+                    }}
+                    value={field.value}
+                  />
                 )}
               />
             </div>
@@ -538,7 +576,6 @@ function SignUp() {
               로그인페이지
             </Link>
           </Button>
-          <Toast ref={toast} />
           <Button
             label='회원가입'
             type='submit'
