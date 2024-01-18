@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useCookies } from 'react-cookie';
-import axios from 'axios';
 import { Controller, useForm } from 'react-hook-form';
+import { nonAuthAxios } from '../../api/AxiosAPI';
 import Logo from 'components/common/Logo';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,22 +10,18 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 
 function SignIn() {
   const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
   const [userid, setUserid] = useState('');
   const [isRemember, setIsRemember] = useState(false);
-
-  const defaultValues = {
-    value: '',
-  };
+  const toast = useRef(null);
 
   const {
     control,
-    formState: { errors, isValid },
+    formState: { errors },
     handleSubmit,
-    getValues,
-    reset,
   } = useForm({
     defaultValues: {
       shop_id: cookies.rememberUserId || '',
@@ -35,6 +31,7 @@ function SignIn() {
 
   const navigate = useNavigate();
 
+  // 쿠키에 아이디값 저장
   const handleOnChange = (e) => {
     setIsRemember(e.target.checked);
     if (!e.target.checked) {
@@ -51,78 +48,43 @@ function SignIn() {
       shop_pw: data.shop_pw,
     };
 
-    console.log('authData >> ', authData);
+    console.log('Non-Auth Request: ', authData);
 
-    try {
-      const response = await axios.post(
-        'http://localhost:8080/auth/sign-in',
-        authData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    // [POST] 로그인
+    nonAuthAxios()
+      .post('/auth/sign-in', authData)
+      .then((response) => {
+        console.log('Non-Auth Response:', response.data);
+        const resData = response.data;
+        const jwtToken = resData.jwtauthtoken;
+        const shopSeq = resData.shop_seq;
+        const shopName = resData.shop_name;
+
+        localStorage.setItem('jwtauthtoken', jwtToken);
+        localStorage.setItem('shop_seq', shopSeq);
+        localStorage.setItem('shop_name', shopName);
+
+        if (isRemember) {
+          setCookie('rememberUserId', data.shop_id, {
+            maxAge: 5 * (60 * 60 * 24),
+          });
+        } else {
+          removeCookie('rememberUserId');
         }
-      );
-
-      console.log('Server response:', response.data);
-      const tokenShop_seq = response.data.shop_seq;
-      const token = response.data.jwtauthtoken;
-      const tokenShop_name = response.data.shop_name;
-      localStorage.setItem('shop_seq', tokenShop_seq);
-      localStorage.setItem('jwtauthtoken', token);
-      localStorage.setItem('shop_name', tokenShop_name);
-
-      if (isRemember) {
-        setCookie('rememberUserId', data.shop_id, {
-          maxAge: 5 * (60 * 60 * 24),
-        });
-      } else {
-        removeCookie('rememberUserId');
-      }
-
-      navigate('/');
-    } catch (error) {
-      console.error('Error during signup:', error);
-    }
+        showSuccess();
+      })
+      .catch((error) => {
+        console.error('Non-Auth Error:', error);
+        showError();
+      });
   };
 
-  // const onSubmit = async (data) => {
-  //   const authData = {
-  //     shop_id: data.shop_id,
-  //     shop_pw: data.shop_pw,
-  //   };
-
-  //   console.log('authData >> ', authData);
-
-  //   try {
-  //     const response = await axios.post(
-  //       'http://localhost:8080/auth/sign-in',
-  //       authData,
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       }
-  //     );
-
-  //     console.log('Server response:', response.data);
-  //     const token = response.data.jwtauthtoken;
-  //     localStorage.setItem('jwtauthtoken', token);
-  //     // localStorage.setItem('shop_seq', authData.shop_seq);
-
-  //     navigate('/');
-  //   } catch (error) {
-  //     console.error('Error during signup:', error);
-  //   }
-  // };
-
-  // Cookie 아이디 저장
   useEffect(() => {
     if (cookies.rememberUserId !== undefined) {
       setUserid(cookies.rememberUserId);
       setIsRemember(true);
     }
-  }, []);
+  }, [cookies.rememberUserId]);
 
   const getFormErrorMessage = (name) => {
     return errors[name] ? (
@@ -130,6 +92,29 @@ function SignIn() {
     ) : (
       ''
     );
+  };
+
+  const showSuccess = () => {
+    toast.current.show({
+      severity: 'success',
+      summary: 'Hello :)',
+      detail: '로그인 성공',
+      life: 500,
+    });
+
+    setTimeout(() => {
+      localStorage.clear();
+      navigate('/');
+    }, 1000);
+  };
+
+  const showError = () => {
+    toast.current.show({
+      severity: 'error',
+      summary: '로그인 실패 :(',
+      detail: '아이디 또는 비밀번호가 올바르지 않습니다. ',
+      life: 3000,
+    });
   };
 
   return (
@@ -153,14 +138,14 @@ function SignIn() {
               <>
                 <InputText
                   id={field.name}
-                  value={field.value || ''}
+                  value={field.value}
                   placeholder='아이디'
                   className={classNames({
                     'p-invalid': fieldState.error,
                   })}
                   onChange={(e) => {
                     field.onChange(e);
-                    setUserid(e.target.value); // 아이디 값 업데이트
+                    setUserid(e.target.value);
                   }}
                 />
                 {getFormErrorMessage(field.name)}
@@ -193,25 +178,17 @@ function SignIn() {
         </div>
         <div className='flex align-items-center justify-content-between mb-4'>
           <div className='flex align-items-center mr-8'>
-            {/* <Checkbox
-              id='saveId'
-              onChange={(e) => handleOnChange(e)}
-              checked={isRemember}
-              className='mr-2'
-            />
-            <label htmlFor='saveId'>아이디 저장</label> */}
-
             <Controller
               name='checked'
               control={control}
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <>
                   <Checkbox
                     id='saveId'
-                    inputId={field.name}
-                    checked={field.value}
-                    inputRef={field.ref}
-                    onChange={(e) => field.onChange(e.checked)}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                    checked={isRemember}
                     className='mr-2'
                   />
                   <label htmlFor='saveId'>아이디 저장</label>
@@ -228,6 +205,7 @@ function SignIn() {
             </Link>
           </div>
         </div>
+        <Toast ref={toast} />
         <Button
           label='로그인'
           type='submit'
