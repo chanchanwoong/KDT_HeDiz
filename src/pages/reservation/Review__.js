@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
@@ -78,41 +77,16 @@ function Review() {
     }
   };
 
-  const headerTemplate = () => {
+  const header = () => {
     return (
-      <div className='flex justify-content-between align-items-center'>
-        <span>리뷰 관리</span>
-        <div className='flex align-items-center gap-4'>
-          <span className='flex align-items-end gap-2 font-normal text-xl'>
-            <span className='font-bold text-primary'>
-              {averageScore && averageScore.toFixed(1)}
-            </span> / 5
-          </span>
-          <Rating
-            value={averageScore || 0}
-            readOnly
-            cancel={false}
-          ></Rating>
-        </div>
-      </div>
-    );
-  };
-
-  const headerDataTemplate = () => {
-    return (
-      <div className='flex justify-content-between align-items-center'>
-        <Dropdown
-          options={sortOptions}
-          value={sortKey}
-          optionLabel='label'
-          placeholder='Sort By Price'
-          onChange={onSortChange}
-          className='w-full sm:w-14rem'
-        />
-        <span className='text-lg font-semibold'>
-          총 {products.length} 개의 리뷰가 있습니다.
-        </span>
-      </div>
+      <Dropdown
+        options={sortOptions}
+        value={sortKey}
+        optionLabel='label'
+        placeholder='Sort By Price'
+        onChange={onSortChange}
+        className='w-full sm:w-14rem'
+      />
     );
   };
 
@@ -147,52 +121,45 @@ function Review() {
   const itemTemplate = (product) => {
     return (
       <div className='col-12'>
-        <div className='flex flex-column xl:flex-row p-4 gap-4'>
+        <div className='flex flex-column xl:flex-row xl:align-items-start p-4 gap-4'>
           <img
             className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
             alt={product.review_photo}
           />
-          <div className='flex flex-column sm:flex-row justify-content-between align-items-center flex-1 gap-4'>
-            <div className='flex flex-column align-items-center sm:align-items-start gap-3 w-2'>
-              <div>
-                <div className='text-lg font-bold text-800 mb-1'>
-                {product.style_name} 
+          <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
+            <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
+              <div className='text-2xl font-bold text-900'>
+                <div className=''>
+                  {product.style_name}
+                  <span style={{ fontSize: '14px' }}>
+                    담당 디자이너: {product.staff_nickname}
+                  </span>
                 </div>
-                <i className="pi pi-calendar mr-2"></i> 
-                <span>{product.review_date}</span>
-                </div>
-                <div>
-
                 <Rating
                   value={product.review_score}
                   readOnly
                   cancel={false}
-                  className='mb-2'
-                />
-              <Tag value={product.review_date} icon="pi pi-pencil" className='px-3'></Tag>
-                </div>
-                
+                ></Rating>
+              </div>
+
+              <div className='flex align-items-center gap-3'>
+                <span
+                  style={{ fontSize: '25px' }}
+                  className='font-semibold'
+                >
+                  {product.review_content}
+                </span>
+              </div>
+              <div className='flex align-items-center gap-3'>
+                <span className='font-semibold'>{product.cust_name}</span>
+                <Tag value={product.review_date}></Tag>
+              </div>
             </div>
 
-            <div className='flex flex-column gap-2 w-4'>
-              <span className='font-bold'>{product.cust_name}</span>
-              <span>
-                {product.review_content}
-              </span>
-            </div>
-
-            <div className='flex flex-column gap-2 w-4'>
-              <span className='font-bold'>{product.staff_nickname}</span>
-              <span>
-                {product.review_reply && product.review_reply}
-                {!product.review_reply && <span className='text-indigo-400'>답글을 작성해주세요</span>}
-              </span>
-            </div>
-            
+            <span className='font-semibold'>답글 : {product.review_reply}</span>
             <Button
               icon='pi pi-pencil'
               className='p-button-rounded'
-              outlined
               onClick={() => {
                 setUserReview(product.review_content);
                 setProduct({ ...product, review_seq: product.review_seq });
@@ -204,16 +171,53 @@ function Review() {
       </div>
     );
   };
-  
+
   return (
-    <Panel header={headerTemplate} className='flex-none'>
+    <>
+      <Panel
+        header={shop_name}
+        toggleable
+      >
+        <div className='col-6 p-0'>
+          <div className='flex flex-column xl:flex-row xl:align-items-center gap-4'>
+            <img
+              className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
+              src={`https://img.kr.news.samsung.com/kr/wp-content/uploads/2016/05/ss1.png`}
+              alt='미용실 이미지'
+            />
+            <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
+              <div className='flex flex-column align-items-center sm:align-items-start gap-4'>
+                <div className='text-2xl font-bold text-900'>
+                  <span className='flex align-items-end gap-2 font-normal vertical-align-baseline'>
+                    <span className='font-bold text-primary text-4xl'>
+                      {averageScore && averageScore.toFixed(1)}
+                    </span>{' '}
+                    / 5
+                  </span>
+                </div>
+                <Rating
+                  value={averageScore || 0}
+                  readOnly
+                  cancel={false}
+                ></Rating>
+              </div>
+              <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'>
+                <span className='text-2xl font-semibold'>
+                  {products.length} 개의 리뷰가 있습니다.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Panel>
+      <Panel header='리뷰 관리'>
         <div className='card'>
           <DataView
             value={products}
             itemTemplate={itemTemplate}
             paginator
-            rows={4}
-            header={headerDataTemplate()}
+            rows={5}
+            header={header()}
             sortField={sortField}
             sortOrder={sortOrder}
           />
@@ -250,6 +254,7 @@ function Review() {
           </form>
         </Dialog>
       </Panel>
+    </>
   );
 }
 export default Review;
