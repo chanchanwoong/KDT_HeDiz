@@ -12,8 +12,8 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { FileUpload } from 'primereact/fileupload';
 import callAxios from 'service/CallAxios';
 
-const shop_seq = localStorage.getItem('shop_seq');
 export default function staff() {
+  const shop_seq = localStorage.getItem('shop_seq');
   let emptyProduct = {
     shop_seq: shop_seq,
     staff_seq: 0,
@@ -27,24 +27,20 @@ export default function staff() {
     cate_name: '',
   };
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [imageData, setImageData] = useState(null);
+  const [btnRefreshUser, setBtnRefreshUser] = useState(false);
+  const [inferResult, setInferResult] = useState([]);
+  const [sendImgs, setSendImgs] = useState([]);
   const dt = useRef(null);
   const toast = useRef(null);
   const token = localStorage.getItem('jwtauthtoken');
 
-  const onUpload = () => {
-    toast.current.show({
-      severity: 'info',
-      summary: 'Success',
-      detail: 'File Uploaded',
-    });
-  };
   useEffect(() => {
     axios
       .get('http://localhost:8080/hairshop/staff/' + shop_seq, {
@@ -74,11 +70,40 @@ export default function staff() {
     setDeleteProductDialog(false);
   };
 
+  const handleImageUpload = (e) => {
+    setBtnRefreshUser((val) => !val);
+    setInferResult([]);
+    const file = e.target.files && e.target.files[0];
+
+    if (!file) {
+      alert('파일을 선택해주세요.');
+      return;
+    }
+
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+      setSendImgs();
+      alert('JPG 사진 파일만 가능합니다.');
+      return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = () => {
+      setSendImgs(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.staff_nickname.trim()) {
       let _products = [...products];
+      console.log(product);
+      console.log(product.staff_image);
+      product.staff_image = sendImgs;
+      console.log(product.staff_image);
       let _product = { ...product };
       console.log(_product);
       try {
@@ -176,12 +201,14 @@ export default function staff() {
   };
 
   const imageBodyTemplate = (rowData) => {
+    // Assuming rowData.staff_image contains base64 encoded image data
+    const imageData = rowData.staff_image;
+
     return (
       <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.staff_image}`} // Use 'staff_image' instead of 'staff_'
-        alt={rowData.staff_image} // Use 'staff_image' instead of 'staff_'
+        src={imageData} // Set the correct data URL format
         className='shadow-2 border-round'
-        staff={{ width: '64px' }}
+        style={{ width: '64px' }} // Correct the attribute name to 'style' instead of 'staff'
       />
     );
   };
@@ -254,6 +281,13 @@ export default function staff() {
     </React.Fragment>
   );
 
+  const onUpload = () => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Success',
+      detail: 'File Uploaded',
+    });
+  };
   return (
     <div>
       <Toast ref={toast} />
@@ -331,8 +365,7 @@ export default function staff() {
       >
         {product.staff_image && (
           <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.staff_image}`}
-            alt={product.staff_image}
+            src={product.staff_image}
             className='product-staff block m-auto pb-3'
           />
         )}
@@ -448,22 +481,42 @@ export default function staff() {
             <small className='p-error'>소개 is required.</small>
           )}
         </div>
-        <div className='field'>
+
+        <div>
+          <input
+            type='file'
+            multiple
+            style={{ display: 'none' }}
+            id='staff_image'
+            name='staff_image'
+            accept='.jpg'
+            onChange={handleImageUpload}
+          />
           <label
-            htmlFor='staff_intro'
+            className='btn btn-secondary border-0 bg_grey'
+            htmlFor='staff_image'
+          >
+            사진 추가
+          </label>
+        </div>
+
+        {/* <div className='field'>
+          <label
+            htmlFor='staff_image'
             className='font-bold'
           >
             직원 프로필 사진
           </label>
           <FileUpload
+            name='staff_image'
+            id='staff_image'
+            type='file'
             mode='basic'
-            name='demo[]'
-            url='/api/upload'
-            accept='image/*'
+            accept='.jpg'
             maxFileSize={1000000}
-            onUpload={onUpload}
+            onUpload={handleImageUpload}
           />
-        </div>
+        </div> */}
       </Dialog>
 
       <Dialog
