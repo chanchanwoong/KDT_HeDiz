@@ -121,7 +121,7 @@ function Info() {
         onSubmit={handleSubmit(onSubmit)}
         className='flex flex-column flex-wrap gap-4'
       >
-        <div className='card flex flex-column gap-3'>
+        <div className='card flex flex-column gap-4'>
           <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
               <i className='pi pi-home mr-2'></i> 상호명
