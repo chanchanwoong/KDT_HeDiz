@@ -71,8 +71,6 @@ export default function staff() {
   };
 
   const handleImageUpload = (e) => {
-    setBtnRefreshUser((val) => !val);
-    setInferResult([]);
     const file = e.target.files && e.target.files[0];
 
     if (!file) {
@@ -514,7 +512,7 @@ export default function staff() {
             mode='basic'
             accept='.jpg'
             maxFileSize={1000000}
-            onUpload={handleImageUpload}
+            onChange={handleImageUpload}
           />
         </div> */}
       </Dialog>
