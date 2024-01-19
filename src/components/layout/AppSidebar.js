@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import Logo from 'components/common/Logo';
+// import { axios } from 'axios';
+import { authAxios } from 'api/AxiosAPI';
 
 import { Menu } from 'primereact/menu';
-import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { classNames } from 'primereact/utils';
 import { Badge } from 'primereact/badge';
@@ -39,40 +40,37 @@ function AppSidebar() {
 
   const onSubmit = async (data) => {
     const authData = {
-      shop_id: data.shop_id,
-      shop_pw: data.shop_pw,
+      before_password: data.before_password,
+      after_password: data.after_password,
     };
 
     console.log('authData >> ', authData);
 
-    try {
-      const response = await axios.post(
-        'http://localhost:8080/auth/change-password',
-        authData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+    authAxios()
+      .post(`/home/mypage/${localStorage.getItem('shop_seq')}`)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
+    // try {
+    //   const response = await axios.post(
+    //     `http://localhost:8080/mypage/${localStorage.getItem('shop_seq')}`,
+    //     authData,
+    //     {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     }
+    //   );
 
-      console.log('Server response:', response.data);
-      const tokenShop_seq = response.data.shop_seq;
-      const token = response.data.jwtauthtoken;
-      const tokenShop_name = response.data.shop_name;
+    //   console.log('Server response:', response.data);
 
-      if (isRemember) {
-        setCookie('rememberUserId', data.shop_id, {
-          maxAge: 5 * (60 * 60 * 24),
-        });
-      } else {
-        removeCookie('rememberUserId');
-      }
-
-      navigate('/');
-    } catch (error) {
-      console.error('Error during signup:', error);
-    }
+    //   navigate('/');
+    // } catch (error) {
+    //   console.error('Error during signup:', error);
+    // }
   };
 
   const footerContent = (
@@ -114,7 +112,7 @@ function AppSidebar() {
     {
       template: () => {
         return (
-          <div style={{ height: '60px' }}>
+          <div className='h-4rem'>
             <Logo />
           </div>
         );
@@ -151,7 +149,7 @@ function AppSidebar() {
               >
                 <div className='flex flex-column gap-2'>
                   <Controller
-                    name='shop_pw'
+                    name='before_password'
                     control={control}
                     rules={{ required: '비밀번호를 입력해주세요' }}
                     render={({ field, fieldState }) => (
@@ -174,7 +172,7 @@ function AppSidebar() {
                 </div>
                 <div className='flex flex-column gap-2'>
                   <Controller
-                    name='new_pw'
+                    name='after_password'
                     control={control}
                     rules={{ required: '비밀번호를 입력해주세요' }}
                     render={({ field, fieldState }) => (
@@ -197,7 +195,7 @@ function AppSidebar() {
                 </div>
                 <div className='flex flex-column gap-2'>
                   <Controller
-                    name='new_pw_check'
+                    name='after_password_check'
                     control={control}
                     rules={{ required: '비밀번호를 확인해주세요' }}
                     render={({ field, fieldState }) => (
