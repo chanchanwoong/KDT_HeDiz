@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
+import Logo from 'components/common/Logo';
 
 import { Menu } from 'primereact/menu';
 import { InputText } from 'primereact/inputtext';
@@ -110,6 +111,18 @@ function AppSidebar() {
   );
 
   let menu = [
+    {
+      template: () => {
+        return (
+          <div style={{ height: '60px' }}>
+            <Logo />
+          </div>
+        );
+      },
+    },
+    {
+      separator: true,
+    },
     {
       template: () => {
         return (
@@ -239,7 +252,6 @@ function AppSidebar() {
           url: '/',
           template: itemRenderer,
         },
-        
       ],
     },
     {
@@ -258,7 +270,6 @@ function AppSidebar() {
           url: 'reservation/total',
           template: itemRenderer,
         },
-        
       ],
     },
     {
@@ -320,7 +331,7 @@ function AppSidebar() {
     <article className='card flex sidebar'>
       <Menu
         model={menu}
-        className='w-full md:w-15rem'
+        className='w-full md:w-15rem border-noround'
       />
     </article>
   );

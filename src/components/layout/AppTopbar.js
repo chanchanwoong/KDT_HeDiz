@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from 'components/common/Logo';
 
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -47,15 +46,16 @@ export default function AppTopbar({ onToggleSidebar }) {
     });
   };
 
-  const start = <Logo size='text-2xl' />;
+  const start = (
+    <Button
+      onClick={onToggleSidebar}
+      className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
+    >
+      <i className='pi pi-bars text-2xl text-color'></i>
+    </Button>
+  );
   const end = (
     <div className='flex flex-wrap align-items-center justify-content-between gap-3'>
-      <Button
-        onClick={onToggleSidebar}
-        className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
-      >
-        <i className='pi pi-bars text-2xl text-color'></i>
-      </Button>
       <nav>
         <Tooltip
           target='.realtimeReservation'
@@ -101,15 +101,16 @@ export default function AppTopbar({ onToggleSidebar }) {
   return (
     <header>
       <Menubar
-        className='bg-white px-4 flex justify-content-between'
         start={start}
         end={end}
+        className='bg-white px-4 flex justify-content-between border-noround border-x-none'
+        style={{ height: '60px' }}
       />
       <ConfirmDialog
         group='headless'
         content={({ headerRef, contentRef, footerRef, hide, message }) => (
           <div className='flex flex-column align-items-center p-5 surface-overlay border-round'>
-            <div className='border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem -mt-8'>
+            <div className='border-circle bg-primary inline-flex justify-content-center align-items-center h-5rem w-5rem'>
               <i className='pi pi-sign-out text-4xl'></i>
             </div>
             <span

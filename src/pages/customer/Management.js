@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { authAxios } from 'api/AxiosAPI';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import axios from 'axios';
 import { Panel } from 'primereact/panel';
 
 function Management() {
   const [customers, setCustomers] = useState([]);
-  const token = localStorage.getItem('jwtauthtoken');
-  const shop_seq = localStorage.getItem('shop_seq');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/customer/total/' + shop_seq, {
-        headers: { jwtauthtoken: token },
-      })
+    authAxios()
+      .get(`/customer/total/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
-        console.log(response.data);
+        console.log('Auth Response:', response.data);
         setCustomers(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error('Auth Error:', error);
       });
   }, []);
 
@@ -71,7 +67,7 @@ function Management() {
             header='성별'
             sortable
             style={{ minWidth: '12rem' }}
-            body={checkGender}
+            body={checkGender()}
           /> */}
           {/* <Column
             field='cust_visit'
@@ -99,7 +95,7 @@ function Management() {
             style={{ minWidth: '12rem' }}
           />
           <Column
-            field='stat_noshow'
+            // field='stat_noshow'
             header='전체 노쇼 횟수'
             sortable
             style={{ minWidth: '12rem' }}

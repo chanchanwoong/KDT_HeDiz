@@ -19,11 +19,6 @@ a {
   width: 100%;
 }
 
-.p-menubar .p-menubar-end {
-  width: calc(100% - 220px);
-  margin-left: 0;
-}
-
 .p-menubar-button {
   display: none !important;
 }

@@ -86,7 +86,8 @@ function Review() {
           <span className='flex align-items-end gap-2 font-normal text-xl'>
             <span className='font-bold text-primary'>
               {averageScore && averageScore.toFixed(1)}
-            </span> / 5
+            </span>{' '}
+            / 5
           </span>
           <Rating
             value={averageScore || 0}
@@ -156,39 +157,41 @@ function Review() {
             <div className='flex flex-column align-items-center sm:align-items-start gap-3 w-2'>
               <div>
                 <div className='text-lg font-bold text-800 mb-1'>
-                {product.style_name} 
+                  {product.style_name}
                 </div>
-                <i className="pi pi-calendar mr-2"></i> 
+                <i className='pi pi-calendar mr-2'></i>
                 <span>{product.review_date}</span>
-                </div>
-                <div>
-
+              </div>
+              <div>
                 <Rating
                   value={product.review_score}
                   readOnly
                   cancel={false}
                   className='mb-2'
                 />
-              <Tag value={product.review_date} icon="pi pi-pencil" className='px-3'></Tag>
-                </div>
-                
+                <Tag
+                  value={product.review_date}
+                  icon='pi pi-pencil'
+                  className='px-3'
+                ></Tag>
+              </div>
             </div>
 
             <div className='flex flex-column gap-2 w-4'>
               <span className='font-bold'>{product.cust_name}</span>
-              <span>
-                {product.review_content}
-              </span>
+              <span>{product.review_content}</span>
             </div>
 
             <div className='flex flex-column gap-2 w-4'>
               <span className='font-bold'>{product.staff_nickname}</span>
               <span>
                 {product.review_reply && product.review_reply}
-                {!product.review_reply && <span className='text-indigo-400'>답글을 작성해주세요</span>}
+                {!product.review_reply && (
+                  <span className='text-indigo-400'>답글을 작성해주세요</span>
+                )}
               </span>
             </div>
-            
+
             <Button
               icon='pi pi-pencil'
               className='p-button-rounded'
@@ -204,52 +207,55 @@ function Review() {
       </div>
     );
   };
-  
+
   return (
-    <Panel header={headerTemplate} className='flex-none'>
-        <div className='card'>
-          <DataView
-            value={products}
-            itemTemplate={itemTemplate}
-            paginator
-            rows={4}
-            header={headerDataTemplate()}
-            sortField={sortField}
-            sortOrder={sortOrder}
-          />
-        </div>
-        <Dialog
-          header='답글 달기'
-          visible={replyModal}
-          onHide={hideDialog}
-        >
-          <form onSubmit={handleFormSubmit}>
-            <div className='flex flex-column gap-4 ml-5'>
-              <div className='p-inputgroup'>
-                <span className='p-float-label'>
-                  <InputText
-                    value={userReview}
-                    disabled
-                  />
-                </span>
-              </div>
-
-              <InputTextarea
-                value={staffReview}
-                onChange={(e) => setStaffReview(e.target.value)}
-                rows={5}
-                cols={30}
-                placeholder='답글을 입력하세요'
-              />
-
-              <Button
-                label='수정하기'
-                onClick={hideDialog}
-              />
+    <Panel
+      header={headerTemplate}
+      className='flex-none'
+    >
+      <div className='card'>
+        <DataView
+          value={products}
+          itemTemplate={itemTemplate}
+          paginator
+          rows={4}
+          header={headerDataTemplate()}
+          sortField={sortField}
+          sortOrder={sortOrder}
+        />
+      </div>
+      <Dialog
+        header='답글 달기'
+        visible={replyModal}
+        onHide={hideDialog}
+      >
+        <form onSubmit={handleFormSubmit}>
+          <div className='flex flex-column gap-4 ml-5'>
+            <div className='p-inputgroup'>
+              <span className='p-float-label'>
+                <InputText
+                  value={userReview}
+                  disabled
+                />
+              </span>
             </div>
-          </form>
-        </Dialog>
-      </Panel>
+
+            <InputTextarea
+              value={staffReview}
+              onChange={(e) => setStaffReview(e.target.value)}
+              rows={5}
+              cols={30}
+              placeholder='답글을 입력하세요'
+            />
+
+            <Button
+              label='수정하기'
+              onClick={hideDialog}
+            />
+          </div>
+        </form>
+      </Dialog>
+    </Panel>
   );
 }
 export default Review;
