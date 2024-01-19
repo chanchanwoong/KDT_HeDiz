@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { authAxios } from 'api/AxiosAPI';
-import axios from 'axios';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -10,9 +9,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { FileUpload } from 'primereact/fileupload';
 import { Dropdown } from 'primereact/dropdown';
-import callAxios from 'service/CallAxios';
 
 export default function Hairstyle() {
   const shop_seq = localStorage.getItem('shop_seq');
@@ -36,30 +33,19 @@ export default function Hairstyle() {
   const [product, setProduct] = useState(emptyProduct);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [sendImgs, setSendImgs] = useState([]);
   const dt = useRef(null);
   const toast = useRef(null);
-  const token = localStorage.getItem('jwtauthtoken');
 
   useEffect(() => {
     authAxios()
-      .get(`/reservation/total/${localStorage.getItem('shop_seq')}`)
+      .get(`/hairshop/hairstyle/` + shop_seq)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        setReservation(response.data);
-      })
-      .catch((error) => {
-        console.error('Auth Error:', error);
-      });
-    axios
-      .get('http://localhost:8080/hairshop/hairstyle/' + shop_seq, {
-        headers: { jwtauthtoken: token },
-      })
-      .then((response) => {
-        console.log(response.data);
         setProducts(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error('Auth Error:', error);
       });
   }, []);
 
@@ -70,13 +56,6 @@ export default function Hairstyle() {
     { cate_name: '클리닉', cate_seq: 4 },
     { cate_name: '스타일링', cate_seq: 5 },
   ];
-  const onUpload = () => {
-    toast.current.show({
-      severity: 'info',
-      summary: 'Success',
-      detail: 'File Uploaded',
-    });
-  };
 
   const openNew = () => {
     setProduct(emptyProduct);
@@ -93,23 +72,47 @@ export default function Hairstyle() {
     setDeleteProductDialog(false);
   };
 
+  // 이미지 업로드 코드
+  const handleImageUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) {
+      alert('파일을 선택해주세요.');
+      return;
+    }
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+      setSendImgs();
+      alert('JPG 사진 파일만 가능합니다.');
+      return;
+    }
+    let reader = new FileReader();
+    reader.onload = () => {
+      setSendImgs(reader.result);
+      setProduct({ ...product, style_image: reader.result });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.style_name.trim()) {
+      product.style_image = sendImgs;
       let _products = [...products];
       let _product = { ...product };
       console.log(_product);
       try {
         if (product.style_seq) {
           const index = findIndexByStyle_seq(product.style_seq);
-
           _products[index] = _product;
-          await axios.put(
-            `http://localhost:8080/hairshop/hairstyle`,
-            _product,
-            { headers: { jwtauthtoken: token } }
-          );
+
+          await authAxios()
+            .put(`/hairshop/hairstyle`, _product)
+            .then((response) => {
+              console.log('Auth Response:', response.data);
+            })
+            .catch((error) => {
+              console.error('Auth Error:', error);
+            });
 
           toast.current.show({
             severity: 'success',
@@ -119,13 +122,17 @@ export default function Hairstyle() {
           });
         } else {
           _product.style_seq = _products.length + 1;
-          _product.style_image = 'product-placeholder.svg'; // Use 'style_image' instead of 'style_'
           _products.push(_product);
-          await axios.post(
-            'http://localhost:8080/hairshop/hairstyle/',
-            _product,
-            { headers: { jwtauthtoken: token } }
-          );
+
+          await authAxios()
+            .post(`/hairshop/hairstyle`, _product)
+            .then((response) => {
+              console.log('Auth Response:', response.data);
+            })
+            .catch((error) => {
+              console.error('Auth Error:', error);
+            });
+
           console.log(_product);
           toast.current.show({
             severity: 'success',
@@ -155,7 +162,7 @@ export default function Hairstyle() {
     setDeleteProductDialog(true);
   };
 
-  const deleteProduct = () => {
+  const deleteProduct = async () => {
     let _products = products.filter(
       (val) => val.style_seq !== product.style_seq
     );
@@ -170,10 +177,14 @@ export default function Hairstyle() {
       life: 3000,
     });
 
-    callAxios({
-      method: 'delete',
-      url: 'http://localhost:8080/hairshop/hairstyle/' + product.style_seq,
-    });
+    await authAxios()
+      .delete(`/hairshop/hairstyle/` + product.style)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
   };
 
   const findIndexByStyle_seq = (style_seq) => {
@@ -199,10 +210,11 @@ export default function Hairstyle() {
   };
 
   const imageBodyTemplate = (rowData) => {
+    const imageData = rowData.style_image;
+
     return (
       <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.style_image}`} // Use 'style_image' instead of 'style_'
-        alt={rowData.style_image} // Use 'style_image' instead of 'style_'
+        src={imageData}
         className='shadow-2 border-round'
         style={{ width: '64px' }}
       />
@@ -277,6 +289,14 @@ export default function Hairstyle() {
     </React.Fragment>
   );
 
+  const onUpload = () => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Success',
+      detail: 'File Uploaded',
+    });
+  };
+
   return (
     <div>
       <Toast ref={toast} />
@@ -302,7 +322,7 @@ export default function Hairstyle() {
           <Column
             field='style_image'
             header='이미지'
-            // body={imageBodyTemplate}
+            body={imageBodyTemplate}
           ></Column>
           <Column
             field='style_name'
@@ -350,7 +370,6 @@ export default function Hairstyle() {
 
       <Dialog
         visible={productDialog}
-        style={{ width: '32rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
         header='헤어스타일 등록'
         modal
@@ -360,11 +379,29 @@ export default function Hairstyle() {
       >
         {product.style_image && (
           <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.style_image}`}
-            alt={product.style_image}
-            className='product-style block m-auto pb-3'
+            src={product.style_image}
+            className='product-staff block m-auto pb-3'
           />
         )}
+
+        <div>
+          <input
+            type='file'
+            multiple
+            style={{ display: 'none' }}
+            id='style_image'
+            name='style_image'
+            accept='.jpg'
+            onChange={handleImageUpload}
+          />
+          <label
+            className='btn btn-secondary border-0 bg_grey'
+            htmlFor='style_image'
+          >
+            스타일 이미지 업로드
+          </label>
+        </div>
+
         <div className='field'>
           <label
             htmlFor='style_name'
@@ -478,7 +515,8 @@ export default function Hairstyle() {
             <small className='p-error'>소개 is required.</small>
           )}
         </div>
-        <div className='field'>
+
+        {/* <div className='field'>
           <label
             htmlFor='style_intro'
             className='font-bold'
@@ -493,7 +531,7 @@ export default function Hairstyle() {
             maxFileSize={1000000}
             onUpload={onUpload}
           />
-        </div>
+        </div> */}
 
         <div className='field'>
           <label
@@ -548,7 +586,7 @@ export default function Hairstyle() {
           />
           {product && (
             <span>
-              Are you sure you want to delete <b>{product.style_name}</b>?
+              <b>{product.style_name}</b>를 정말 삭제 하시겠습니까?
             </span>
           )}
         </div>

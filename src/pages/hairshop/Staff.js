@@ -3,14 +3,12 @@ import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
-import axios from 'axios';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { FileUpload } from 'primereact/fileupload';
-import callAxios from 'service/CallAxios';
+import { authAxios } from 'api/AxiosAPI';
 
 export default function staff() {
   const shop_seq = localStorage.getItem('shop_seq');
@@ -23,8 +21,6 @@ export default function staff() {
     staff_name: null,
     staff_intro: '',
     staff_image: null,
-    cate_seq: 0,
-    cate_name: '',
   };
 
   const [products, setProducts] = useState(null);
@@ -33,25 +29,19 @@ export default function staff() {
   const [product, setProduct] = useState(emptyProduct);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [imageData, setImageData] = useState(null);
-  const [btnRefreshUser, setBtnRefreshUser] = useState(false);
-  const [inferResult, setInferResult] = useState([]);
   const [sendImgs, setSendImgs] = useState([]);
   const dt = useRef(null);
   const toast = useRef(null);
-  const token = localStorage.getItem('jwtauthtoken');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/hairshop/staff/' + shop_seq, {
-        headers: { jwtauthtoken: token },
-      })
+    authAxios()
+      .get(`/hairshop/staff/` + shop_seq)
       .then((response) => {
-        console.log(response.data);
+        console.log('Auth Response:', response.data);
         setProducts(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error('Auth Error:', error);
       });
   }, []);
 
@@ -70,26 +60,23 @@ export default function staff() {
     setDeleteProductDialog(false);
   };
 
+  // 이미지 업로드 코드
   const handleImageUpload = (e) => {
     const file = e.target.files && e.target.files[0];
-
     if (!file) {
       alert('파일을 선택해주세요.');
       return;
     }
-
     if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      setSendImgs();
       alert('JPG 사진 파일만 가능합니다.');
       return;
     }
 
     let reader = new FileReader();
-
     reader.onload = () => {
       setSendImgs(reader.result);
+      setProduct({ ...product, staff_image: reader.result });
     };
-
     reader.readAsDataURL(file);
   };
 
@@ -97,21 +84,23 @@ export default function staff() {
     setSubmitted(true);
 
     if (product.staff_nickname.trim()) {
-      let _products = [...products];
-      console.log(product);
-      console.log(product.staff_image);
       product.staff_image = sendImgs;
-      console.log(product.staff_image);
+      let _products = [...products];
       let _product = { ...product };
-      console.log(_product);
+
       try {
         if (product.staff_seq) {
           const index = findIndexBystaff_seq(product.staff_seq);
-
           _products[index] = _product;
-          await axios.put(`http://localhost:8080/hairshop/staff/`, _product, {
-            headers: { jwtauthtoken: token },
-          });
+
+          await authAxios()
+            .put(`/hairshop/staff`, _product)
+            .then((response) => {
+              console.log('Auth Response:', response.data);
+            })
+            .catch((error) => {
+              console.error('Auth Error:', error);
+            });
 
           toast.current.show({
             severity: 'success',
@@ -122,9 +111,16 @@ export default function staff() {
         } else {
           _product.staff_seq = _products.length + 1;
           _products.push(_product);
-          await axios.post('http://localhost:8080/hairshop/staff/', _product, {
-            headers: { jwtauthtoken: token },
-          });
+
+          await authAxios()
+            .post(`/hairshop/staff`, _product)
+            .then((response) => {
+              console.log('Auth Response:', response.data);
+            })
+            .catch((error) => {
+              console.error('Auth Error:', error);
+            });
+
           console.log(_product);
           toast.current.show({
             severity: 'success',
@@ -154,7 +150,7 @@ export default function staff() {
     setDeleteProductDialog(true);
   };
 
-  const deleteProduct = () => {
+  const deleteProduct = async () => {
     let _products = products.filter(
       (val) => val.staff_seq !== product.staff_seq
     );
@@ -168,10 +164,15 @@ export default function staff() {
       detail: 'Product Deleted',
       life: 3000,
     });
-    callAxios({
-      method: 'delete',
-      url: 'http://localhost:8080/hairshop/staff/' + product.staff_seq,
-    });
+
+    await authAxios()
+      .delete(`/hairshop/staff/` + product.staff_seq)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
   };
 
   const findIndexBystaff_seq = (staff_seq) => {
@@ -180,7 +181,6 @@ export default function staff() {
 
   const onInputChange = (e, staff_nickname) => {
     const val = (e.target && e.target.value) || '';
-    // Use spread operator for immutability
     setProduct({ ...product, [staff_nickname]: val });
   };
 
@@ -198,14 +198,13 @@ export default function staff() {
   };
 
   const imageBodyTemplate = (rowData) => {
-    // Assuming rowData.staff_image contains base64 encoded image data
     const imageData = rowData.staff_image;
 
     return (
       <img
-        src={imageData} // Set the correct data URL format
+        src={imageData}
         className='shadow-2 border-round'
-        style={{ width: '64px' }} // Correct the attribute name to 'style' instead of 'staff'
+        style={{ width: '64px' }}
       />
     );
   };
@@ -352,7 +351,6 @@ export default function staff() {
 
       <Dialog
         visible={productDialog}
-        staff={{ width: '32rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
         header='직원 등록'
         modal
@@ -366,6 +364,25 @@ export default function staff() {
             className='product-staff block m-auto pb-3'
           />
         )}
+
+        <div>
+          <input
+            type='file'
+            multiple
+            style={{ display: 'none' }}
+            id='staff_image'
+            name='staff_image'
+            accept='.jpg'
+            onChange={handleImageUpload}
+          />
+          <label
+            className='btn btn-secondary border-0 bg_grey'
+            htmlFor='staff_image'
+          >
+            사진 추가
+          </label>
+        </div>
+
         <div className='field'>
           <label
             htmlFor='staff_name'
@@ -479,24 +496,6 @@ export default function staff() {
           )}
         </div>
 
-        <div>
-          <input
-            type='file'
-            multiple
-            style={{ display: 'none' }}
-            id='staff_image'
-            name='staff_image'
-            accept='.jpg'
-            onChange={handleImageUpload}
-          />
-          <label
-            className='btn btn-secondary border-0 bg_grey'
-            htmlFor='staff_image'
-          >
-            사진 추가
-          </label>
-        </div>
-
         {/* <div className='field'>
           <label
             htmlFor='staff_image'
@@ -519,7 +518,7 @@ export default function staff() {
 
       <Dialog
         visible={deleteProductDialog}
-        staff={{ width: '32rem' }}
+        style={{ width: '32rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
         header='Confirm'
         modal
@@ -533,7 +532,7 @@ export default function staff() {
           />
           {product && (
             <span>
-              Are you sure you want to delete <b>{product.staff_nickname}</b>?
+              <b>{product.staff_nickname}</b>를 정말 삭제 하시겠습니까??
             </span>
           )}
         </div>
