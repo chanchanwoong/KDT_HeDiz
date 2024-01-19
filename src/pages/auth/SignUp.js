@@ -179,28 +179,21 @@ function SignUp() {
       shop_id: getValues('shop_id'),
     };
 
-    try {
-      setIdCheckMessage('');
-      const response = await axios.post(
-        'http://localhost:8080/auth/duplicate-check',
-        shopId,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    nonAuthAxios()
+      .post(`/auth/duplicate-check`, shopId)
+      .then((response) => {
+        // console.log('Auth Response:', response.data);
+        const isIdAvailable = response.data;
+        if (isIdAvailable) {
+          setIdCheckMessage('사용 가능한 아이디입니다.');
+          setValue('shop_id', shopId.shop_id);
+        } else {
+          setIdCheckMessage('이미 사용 중인 아이디입니다.');
         }
-      );
-
-      const isIdAvailable = response.data;
-      if (isIdAvailable) {
-        setIdCheckMessage('사용 가능한 아이디입니다.');
-        setValue('shop_id', shopId.shop_id);
-      } else {
-        setIdCheckMessage('이미 사용 중인 아이디입니다.');
-      }
-    } catch (error) {
-      console.error('Error: ', error);
-    }
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
   }
 
   // 이벤트 핸들러: 비밀번호 입력 시

@@ -10,6 +10,7 @@ import { Panel } from 'primereact/panel';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { authAxios } from 'api/AxiosAPI';
 
 function Review() {
   let emptyProduct = {
@@ -25,10 +26,8 @@ function Review() {
   const [averageScore, setAverageScore] = useState();
   const [replyModal, setReplyModal] = useState();
   const [userReview, setUserReview] = useState();
-  const [staffReview, setStaffReview] = useState();
   const token = localStorage.getItem('jwtauthtoken');
   const shop_seq = localStorage.getItem('shop_seq');
-  const shop_name = localStorage.getItem('shop_name');
 
   const sortOptions = [
     { staff_name: 'Price High to Low', value: '!price' },
@@ -43,24 +42,26 @@ function Review() {
     setReplyModal(false);
   };
 
-  useEffect(() => {
-    axios
-      .get('http://localhost:8080/reservation/review/' + shop_seq, {
-        headers: { jwtauthtoken: token },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setProducts(response.data);
+  const onInputChange = (e, review_content) => {
+    const val = (e.target && e.target.value) || '';
+    setProduct({ ...product, [review_content]: val });
+  };
 
+  useEffect(() => {
+    authAxios()
+      .get(`/reservation/review/` + shop_seq)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
         const totalScore = response.data.reduce(
           (sum, product) => sum + product.review_score,
           0
         );
         const averageScore = totalScore / response.data.length;
         setAverageScore(averageScore);
+        setProducts(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error('Auth Error:', error);
       });
   }, []);
 
@@ -126,22 +127,26 @@ function Review() {
 
     let _products = [...products];
     let _product = { ...product };
-    const index = findIndexByreview_seq(_product.review_seq);
-    _products[index] = _product;
-    try {
-      const response = await axios.put(
-        `http://localhost:8080/reservation/review/${_product.review_seq}`,
-        staffReview,
 
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            jwtauthtoken: token,
-          },
-        }
-      );
+    try {
+      if (product.review_seq) {
+        const index = findIndexByreview_seq(product.review_seq);
+        _products[index] = _product;
+        console.log(_product);
+
+        await authAxios()
+          .put(`/reservation/review`, _product)
+          .then((response) => {
+            console.log('Auth Response:', response.data);
+          })
+          .catch((error) => {
+            console.error('Auth Error:', error);
+          });
+        setProducts(_products);
+      }
     } catch (error) {
-      console.error('Error updating info:', error);
+      console.error('Error saving product:', error);
+      // Handle error as needed
     }
   };
 
@@ -241,8 +246,9 @@ function Review() {
             </div>
 
             <InputTextarea
-              value={staffReview}
-              onChange={(e) => setStaffReview(e.target.value)}
+              id='review_reply'
+              value={product.review_reply}
+              onChange={(e) => onInputChange(e, 'review_reply')}
               rows={5}
               cols={30}
               placeholder='답글을 입력하세요'
