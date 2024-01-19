@@ -118,7 +118,6 @@ export default function staff() {
           });
         } else {
           _product.staff_seq = _products.length + 1;
-          _product.staff_image = 'product-placeholder.svg'; // Use 'staff_image' instead of 'staff_'
           _products.push(_product);
           await axios.post('http://localhost:8080/hairshop/staff/', _product, {
             headers: { jwtauthtoken: token },
@@ -510,6 +509,7 @@ export default function staff() {
             accept='.jpg'
             maxFileSize={1000000}
             onChange={handleImageUpload}
+            onUpload={}
           />
         </div> */}
       </Dialog>
