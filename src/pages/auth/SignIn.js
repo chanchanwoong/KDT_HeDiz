@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useCookies } from 'react-cookie';
 import { Controller, useForm } from 'react-hook-form';
-import { nonAuthAxios } from '../../api/AxiosAPI';
+import { nonAuthAxios } from 'api/AxiosAPI';
 import Logo from 'components/common/Logo';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ function SignIn() {
     control,
     formState: { errors },
     handleSubmit,
-    reset
+    reset,
   } = useForm({
     defaultValues: {
       shop_id: cookies.rememberUserId || '',

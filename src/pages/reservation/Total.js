@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { authAxios } from 'api/AxiosAPI';
-import { formatDate, formatTime } from 'service/Utils';
 
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -72,20 +71,19 @@ export default function Total() {
           <Column
             field='style_name'
             header='헤어스타일'
+            sortable
           />
 
           <Column
-            field='reserv_time'
+            field='reserv_date'
             header='예약날짜'
             sortable
-            body={(rowData) => formatDate(rowData.reserv_time)}
           />
 
           <Column
             field='reserv_time'
             header='예약시간'
             sortable
-            body={(rowData) => formatTime(rowData.reserv_time)}
           />
 
           <Column

@@ -65,7 +65,7 @@ export default function AppTopbar({ onToggleSidebar }) {
         <Link
           to='/home/realtime-reservation'
           data-pr-tooltip='실시간 예약'
-          className='realtimeReservation p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-3'
+          className='realtimeReservation p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-5'
         >
           <i className='pi pi-bell p-overlay-badge text-2xl text-color'>
             <Badge
@@ -103,8 +103,8 @@ export default function AppTopbar({ onToggleSidebar }) {
       <Menubar
         start={start}
         end={end}
-        className='bg-white px-4 flex justify-content-between border-noround border-x-none'
-        style={{ height: '60px' }}
+        className='px-6 py-4 flex justify-content-between border-noround border-none '
+        style={{ background: 'none' }}
       />
       <ConfirmDialog
         group='headless'

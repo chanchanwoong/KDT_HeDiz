@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import Logo from 'components/common/Logo';
-// import { axios } from 'axios';
 import { authAxios } from 'api/AxiosAPI';
 
 import { Menu } from 'primereact/menu';
@@ -47,30 +46,13 @@ function AppSidebar() {
     console.log('authData >> ', authData);
 
     authAxios()
-      .post(`/home/mypage/${localStorage.getItem('shop_seq')}`)
+      .post(`/home/mypage/${localStorage.getItem('shop_seq')}`, authData)
       .then((response) => {
         console.log('Auth Response:', response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
       });
-    // try {
-    //   const response = await axios.post(
-    //     `http://localhost:8080/mypage/${localStorage.getItem('shop_seq')}`,
-    //     authData,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     }
-    //   );
-
-    //   console.log('Server response:', response.data);
-
-    //   navigate('/');
-    // } catch (error) {
-    //   console.error('Error during signup:', error);
-    // }
   };
 
   const footerContent = (
@@ -112,14 +94,11 @@ function AppSidebar() {
     {
       template: () => {
         return (
-          <div className='h-4rem'>
-            <Logo />
+          <div className='flex align-items-center justify-content-center h-4rem px-4 py-6'>
+            <Logo size='text-2xl' />
           </div>
         );
       },
-    },
-    {
-      separator: true,
     },
     {
       template: () => {
@@ -238,9 +217,9 @@ function AppSidebar() {
         );
       },
     },
-    {
-      separator: true,
-    },
+    // {
+    //   separator: true,
+    // },
     {
       label: '바로가기',
       items: [
@@ -329,7 +308,7 @@ function AppSidebar() {
     <article className='card flex sidebar'>
       <Menu
         model={menu}
-        className='w-full md:w-15rem border-noround'
+        className='w-full md:w-18rem border-noround'
       />
     </article>
   );
