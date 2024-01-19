@@ -33,6 +33,9 @@ export default function staff() {
   const [product, setProduct] = useState(emptyProduct);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [imageData, setImageData] = useState(null);
+  const [btnRefreshUser, setBtnRefreshUser] = useState(false);
+  const [inferResult, setInferResult] = useState([]);
   const [sendImgs, setSendImgs] = useState([]);
   const dt = useRef(null);
   const toast = useRef(null);

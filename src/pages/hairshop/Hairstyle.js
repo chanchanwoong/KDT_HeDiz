@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { authAxios } from 'api/AxiosAPI';
+import axios from 'axios';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
-import axios from 'axios';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
@@ -40,6 +41,15 @@ export default function Hairstyle() {
   const token = localStorage.getItem('jwtauthtoken');
 
   useEffect(() => {
+    authAxios()
+      .get(`/reservation/total/${localStorage.getItem('shop_seq')}`)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+        setReservation(response.data);
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
     axios
       .get('http://localhost:8080/hairshop/hairstyle/' + shop_seq, {
         headers: { jwtauthtoken: token },
@@ -287,11 +297,12 @@ export default function Hairstyle() {
           currentPageReportTemplate='Showing {first} to {last} of {totalRecords} products'
           globalFilter={globalFilter}
           header={header}
+          size='small'
         >
           <Column
             field='style_image'
             header='이미지'
-            body={imageBodyTemplate}
+            // body={imageBodyTemplate}
           ></Column>
           <Column
             field='style_name'

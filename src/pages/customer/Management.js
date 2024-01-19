@@ -99,6 +99,12 @@ function Management() {
             style={{ minWidth: '12rem' }}
           />
           <Column
+            field='stat_noshow'
+            header='전체 노쇼 횟수'
+            sortable
+            style={{ minWidth: '12rem' }}
+          />
+          <Column
             headerStyle={{ width: '5rem', textAlign: 'center' }}
             bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
           />

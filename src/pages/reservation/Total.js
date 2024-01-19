@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { authAxios } from 'api/AxiosAPI';
+import { formatDate, formatTime } from 'service/Utils';
+
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import axios from 'axios';
 import { Tag } from 'primereact/tag';
 import { Panel } from 'primereact/panel';
 
 export default function Total() {
   const [reservation, setReservation] = useState([]);
-  const token = localStorage.getItem('jwtauthtoken');
-  const shop_seq = localStorage.getItem('shop_seq');
 
   const getValueAndSeverity = (status) => {
     switch (status) {
       case 0:
-        return { value: '대기', severity: 'info' };
+        return { value: '방문 완료', severity: 'success' };
       case 1:
-        return { value: '수락', severity: 'success' };
+        return { value: '예약 취소', severity: 'danger' };
       case 2:
-        return { value: '거절', severity: 'danger' };
+        return { value: '거절', severity: 'info' };
       default:
         return { value: '', severity: null };
     }
@@ -36,42 +36,26 @@ export default function Total() {
     );
   };
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    const [year, month, day] = new Date(dateString)
-      .toLocaleDateString('ko-KR', options)
-      .split('.')
-      .map((part) => part.trim());
-
-    return `${year}-${month}-${day}`;
-  };
-
-  const formatTime = (dateString) => {
-    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-    return new Date(dateString).toLocaleTimeString('ko-KR', options);
-  };
-
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/reservation/total/' + shop_seq, {
-        headers: { jwtauthtoken: token },
-      })
+    authAxios()
+      .get(`/reservation/total/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
-        console.log(response.data);
+        console.log('Auth Response:', response.data);
         setReservation(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error('Auth Error:', error);
       });
   }, []);
 
   return (
-    <Panel header='전체 예약'>
+    <Panel header='전체 예약 내역'>
       <div className='card'>
         <DataTable
           value={reservation}
           paginator
           rows={10}
+          size='small'
           paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
           rowsPerPageOptions={[10, 25, 50]}
         >
@@ -80,7 +64,7 @@ export default function Total() {
             header='고객 이름'
           />
           <Column
-            field='staff_name'
+            field='staff_nickname'
             header='담당 디자이너'
             sortable
           />
@@ -101,7 +85,6 @@ export default function Total() {
             field='reserv_time'
             header='예약시간'
             sortable
-            // dataType='date'
             body={(rowData) => formatTime(rowData.reserv_time)}
           />
 
