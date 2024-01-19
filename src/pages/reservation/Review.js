@@ -48,23 +48,20 @@ function Review() {
   };
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/reservation/review/' + shop_seq, {
-        headers: { jwtauthtoken: token },
-      })
+    authAxios()
+      .get(`/reservation/review/` + shop_seq)
       .then((response) => {
-        console.log(response.data);
-        setProducts(response.data);
-
+        console.log('Auth Response:', response.data);
         const totalScore = response.data.reduce(
           (sum, product) => sum + product.review_score,
           0
         );
         const averageScore = totalScore / response.data.length;
         setAverageScore(averageScore);
+        setProducts(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error('Auth Error:', error);
       });
   }, []);
 
