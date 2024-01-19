@@ -47,7 +47,7 @@ function AppSidebar() {
     console.log('authData >> ', authData);
 
     authAxios()
-      .post(`/home/mypage/${localStorage.getItem('shop_seq')}`)
+      .post(`/home/mypage/${localStorage.getItem('shop_seq')}`, authData)
       .then((response) => {
         console.log('Auth Response:', response.data);
       })
