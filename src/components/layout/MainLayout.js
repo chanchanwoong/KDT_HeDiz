@@ -30,9 +30,9 @@ function MainLayout() {
       style={{ backgroundColor: '#eff3f8' }}
     >
       {sidebarVisible && <AppSidebar />}
-      <div className='min-h-screen flex flex-column gap-2 w-full'>
+      <div className='min-h-screen flex flex-column w-full'>
         <AppTopbar onToggleSidebar={toggleSidebar} />
-        <main className='flex gap-2 p-4'>
+        <main className='flex gap-2 px-4 py-2'>
           {/* {sidebarVisible && <AppSidebar />} */}
           <section className='flex flex-grow-1 flex-column gap-2'>
             <Outlet />
