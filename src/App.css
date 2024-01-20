@@ -13,6 +13,13 @@ img {
 
 a {
   text-decoration-line: none;
+  color: inherit;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
 }
 
 .p-inputtext.p-component.p-password-input.p-password-input {
@@ -34,6 +41,14 @@ a {
 
 .p-menu {
   padding: 0;
+}
+
+.card {
+  background-color: #fff;
+  box-shadow: 0px 4px 30px rgba(221, 224, 255, 0.54);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
 }
 
 @media (prefers-reduced-motion: no-preference) {

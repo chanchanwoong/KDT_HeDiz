@@ -12,29 +12,18 @@ function MainLayout() {
     setSidebarVisible(!sidebarVisible);
   };
   return (
-    // <div
-    //   className='min-h-screen p-3 flex flex-column gap-2'
-    //   style={{ backgroundColor: '#eff3f8' }}
-    // >
-    //   <AppTopbar onToggleSidebar={toggleSidebar} />
-    //   <main className='flex gap-2'>
-    //     {sidebarVisible && <AppSidebar />}
-    //     <section className='flex flex-grow-1 flex-column gap-2'>
-    //       <Outlet />
-    //     </section>
-    //   </main>
-    //   <AppFooter />
-    // </div>
     <div
       className='flex min-h-screen w-full'
       style={{ backgroundColor: '#eff3f8' }}
     >
       {sidebarVisible && <AppSidebar />}
-      <div className='min-h-screen flex flex-column w-full'>
-        <AppTopbar onToggleSidebar={toggleSidebar} />
-        <main className='flex gap-2 px-4 py-2'>
-          {/* {sidebarVisible && <AppSidebar />} */}
-          <section className='flex flex-grow-1 flex-column gap-2'>
+      <div className='min-h-screen flex flex-column w-full py-3 px-5'>
+        <AppTopbar
+          onToggleSidebar={toggleSidebar}
+          className='flex-grow-0'
+        />
+        <main>
+          <section>
             <Outlet />
           </section>
         </main>

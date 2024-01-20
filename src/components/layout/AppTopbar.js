@@ -51,7 +51,7 @@ export default function AppTopbar({ onToggleSidebar }) {
       onClick={onToggleSidebar}
       className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
     >
-      <i className='pi pi-bars text-2xl text-color'></i>
+      <i className='pi pi-bars text-xl text-color'></i>
     </Button>
   );
   const end = (
@@ -67,7 +67,7 @@ export default function AppTopbar({ onToggleSidebar }) {
           data-pr-tooltip='실시간 예약'
           className='realtimeReservation p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200 mr-5'
         >
-          <i className='pi pi-bell p-overlay-badge text-2xl text-color'>
+          <i className='pi pi-bell p-overlay-badge text-xl text-color'>
             <Badge
               value='16'
               style={{
@@ -92,7 +92,7 @@ export default function AppTopbar({ onToggleSidebar }) {
           }}
           className='p-link inline-flex justify-content-center align-items-center h-3rem w-3rem border-circle hover:bg-indigo-100 transition-all transition-duration-200'
         >
-          <i className='pi pi-sign-out text-2xl text-color'></i>
+          <i className='pi pi-sign-out text-xl text-color'></i>
         </Button>
       </nav>
     </div>
@@ -103,7 +103,7 @@ export default function AppTopbar({ onToggleSidebar }) {
       <Menubar
         start={start}
         end={end}
-        className='px-6 py-4 flex justify-content-between border-noround border-none '
+        className='mb-4 flex justify-content-between border-noround border-none '
         style={{ background: 'none' }}
       />
       <ConfirmDialog
