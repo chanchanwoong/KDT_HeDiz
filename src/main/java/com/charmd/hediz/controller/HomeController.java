@@ -1,17 +1,28 @@
 package com.charmd.hediz.controller;
 
+import com.charmd.hediz.dto.HairshopDTO;
+import com.charmd.hediz.service.HomeService;
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Api
+import java.util.List;
+
+@Api
 @RestController
 @RequestMapping("/home")
 public class HomeController {
-    @GetMapping("dashboard")
-    public String dashboard(){
 
-        return "대시보드 페이지";
+    @Autowired
+    private HomeService homeService;
+
+    @GetMapping("")
+    public ResponseEntity<?> findAllHairshop(){
+        List<HairshopDTO> hairshopList = homeService.findAllHairshop();
+        return ResponseEntity.ok().body(hairshopList);
     }
 
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.HomeMapper">
+
+    <!--모든 미용실 조회-->
+    <select id="findAllHairshop" resultType="HairshopDTO">
+        select shop_seq, shop_name, shop_register, shop_id, shop_pw, shop_address, shop_intro, shop_image, shop_start, shop_end, shop_phone, shop_regular, shop_tag
+        from T_HAIRSHOP
+    </select>
+</mapper>
