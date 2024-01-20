@@ -19,9 +19,9 @@ import java.time.LocalTime;
 public class HairshopDTO {
     private int shop_seq;
     private String shop_name;
-//    private String shop_register;
-//    private String shop_id;
-//    private String shop_pw;
+    private String shop_register;
+    private String shop_id;
+    private String shop_pw;
     private String shop_address;
     private String shop_intro;
     private String shop_image;
