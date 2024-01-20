@@ -7,8 +7,8 @@
     <!--모든 미용실 조회-->
     <select id="findAllHairshop" resultType="HairshopDTO">
         select shop_seq, shop_name, shop_register, shop_id, shop_pw, shop_address, shop_intro, shop_image, shop_start, shop_end, shop_phone, shop_regular, shop_tag,
-        (select avg(review_score) from t_review group by shop_seq ) as avg_review_score,
-        (select count(review_score) from t_review) as count_review
-        from T_HAIRSHOP
+        (select avg(review_score) from t_review as b where b.shop_seq=a.shop_seq group by shop_seq ) as avg_review_score,
+        (select count(review_score) from t_review as c where c.shop_seq=a.shop_seq) as count_review
+        from T_HAIRSHOP as a
     </select>
 </mapper>

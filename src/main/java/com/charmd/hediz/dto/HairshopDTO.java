@@ -24,7 +24,7 @@ public class HairshopDTO {
 //    private String shop_pw;
     private String shop_address;
     private String shop_intro;
-//    private String shop_image;
+    private String shop_image;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime shop_start;
     @JsonFormat(pattern = "HH:mm")
