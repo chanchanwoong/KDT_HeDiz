@@ -7,6 +7,31 @@
   pointer-events: none;
 }
 
+img {
+  border-radius: 70%;
+}
+
+a {
+  text-decoration-line: none;
+}
+
+.p-inputtext.p-component.p-password-input.p-password-input {
+  width: 100%;
+}
+
+.p-menubar-button {
+  display: none !important;
+}
+
+.p-inputgroup-addon {
+  min-width: 180px;
+  justify-content: start;
+}
+
+.p-panel-header {
+  display: block;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
