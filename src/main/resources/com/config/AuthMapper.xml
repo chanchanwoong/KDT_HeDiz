@@ -6,7 +6,7 @@
 <mapper namespace="com.config.AuthMapper">
 
     <!--id를 이용해 user 찾기-->
-    <select id="getUserById" parameterType="string" resultType="HairshopDTO">
+    <select id="getUserById" parameterType="string" resultType="CustomerDTO">
         SELECT cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender
         FROM T_CUSTOMER WHERE cust_id=#{cust_id}
     </select>

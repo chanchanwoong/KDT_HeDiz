@@ -2,6 +2,7 @@ package com.charmd.hediz.controller;
 
 import com.charmd.hediz.dto.HairshopDTO;
 import com.charmd.hediz.dto.HairstyleDTO;
+import com.charmd.hediz.dto.ReviewDTO;
 import com.charmd.hediz.dto.StaffDTO;
 import com.charmd.hediz.service.HomeService;
 import io.swagger.annotations.Api;
@@ -48,5 +49,12 @@ public class HomeController {
     public ResponseEntity<?> findStaff(@PathVariable("shop_seq") int shop_seq){
         List<StaffDTO> staffList = homeService.findStaff(shop_seq);
         return ResponseEntity.ok().body(staffList);
+    }
+
+    // 특정 미용실 리뷰 조회
+    @GetMapping("review/{shop_seq}")
+    public ResponseEntity<?> findReview(@PathVariable("shop_seq") int shop_seq){
+        List<ReviewDTO> reviewList = homeService.findReview(shop_seq);
+        return ResponseEntity.ok().body(reviewList);
     }
 }

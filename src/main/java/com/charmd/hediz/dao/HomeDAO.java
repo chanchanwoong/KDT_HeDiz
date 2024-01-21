@@ -2,6 +2,7 @@ package com.charmd.hediz.dao;
 
 import com.charmd.hediz.dto.HairshopDTO;
 import com.charmd.hediz.dto.HairstyleDTO;
+import com.charmd.hediz.dto.ReviewDTO;
 import com.charmd.hediz.dto.StaffDTO;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,9 @@ public class HomeDAO {
 
     public List<StaffDTO> findStaff(int shop_seq){
         return session.selectList("com.config.HomeMapper.findStaff", shop_seq);
+    }
+
+    public List<ReviewDTO> findReview(int shop_seq){
+        return session.selectList("com.config.HomeMapper.findReview", shop_seq);
     }
 }

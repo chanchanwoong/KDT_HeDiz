@@ -34,4 +34,28 @@
         from T_STAFF
         where shop_seq=#{shop_seq}
     </select>
+
+    <!--특정 미용실 리뷰 조회-->
+    <select id="findReview" resultType="ReviewDTO">
+        SELECT
+        tr.review_seq,
+        th.shop_name,
+        cu.cust_name,
+        tr.review_score,
+        tr.review_content,
+        tr.review_photo,
+        tr.review_date,
+        tr.review_reply,
+        s.staff_nickname,
+        st.style_name
+        FROM
+        t_review tr
+        LEFT JOIN t_hairshop th ON tr.shop_seq = th.shop_seq
+        LEFT JOIN t_reservation re ON tr.reserv_seq = re.reserv_seq
+        LEFT JOIN t_customer cu ON tr.reserv_seq = cu.cust_seq
+        LEFT JOIN t_staff s ON re.staff_seq = s.staff_seq
+        LEFT JOIN t_hairstyle st ON re.style_seq = st.style_seq
+        WHERE
+        tr.shop_seq = #{shop_seq}
+    </select>
 </mapper>
