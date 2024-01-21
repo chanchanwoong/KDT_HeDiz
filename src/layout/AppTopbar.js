@@ -9,10 +9,10 @@ export default function AppTopbar() {
   const toast = useRef(null);
 
   const items = [
-    { label: '홈', icon: 'pi pi-home' },
-    { label: '내 주변', icon: 'pi pi-chart-line' },
-    { label: '예약', icon: 'pi pi-list' },
-    { label: '마이페이지', icon: 'pi pi-inbox' },
+    { label: '홈', icon: 'pi pi-home', url: '/'},
+    { label: '내 주변', icon: 'pi pi-chart-line', url:'/near' },
+    { label: '예약', icon: 'pi pi-list', url:'/reservation' },
+    { label: '마이페이지', icon: 'pi pi-inbox', url:'/mypage' },
   ];
 
   return (
