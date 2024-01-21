@@ -59,7 +59,6 @@ public class AuthController {
     // 회원가입
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody CustomerDTO customerDto) {
-        System.out.println(customerDto);
         String newPw = new BCryptPasswordEncoder().encode(customerDto.getCust_pw());
         customerDto.setCust_pw(newPw);
         authService.signUp(customerDto);
