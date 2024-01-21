@@ -1,7 +1,7 @@
 function Reservation () {
 
     return (
-        <sapn>예약</sapn>
+        <span>예약</span>
     );
 }
 

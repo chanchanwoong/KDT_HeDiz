@@ -25,8 +25,8 @@ function SignIn() {
     reset,
   } = useForm({
     defaultValues: {
-      shop_id: cookies.rememberUserId || '',
-      shop_pw: '',
+      cust_id: cookies.rememberUserId || '',
+      cust_pw: '',
     },
   });
 
@@ -45,8 +45,8 @@ function SignIn() {
 
   const onSubmit = async (data) => {
     const authData = {
-      shop_id: data.shop_id,
-      shop_pw: data.shop_pw,
+      cust_id: data.cust_id,
+      cust_pw: data.cust_pw,
     };
 
     console.log('Non-Auth Request: ', authData);
@@ -58,15 +58,15 @@ function SignIn() {
         console.log('Non-Auth Response:', response.data);
         const resData = response.data;
         const jwtToken = resData.jwtauthtoken;
-        const shopSeq = resData.shop_seq;
-        const shopName = resData.shop_name;
+        const custSeq = resData.cust_seq;
+        const custName = resData.cust_name;
 
         localStorage.setItem('jwtauthtoken', jwtToken);
-        localStorage.setItem('shop_seq', shopSeq);
-        localStorage.setItem('shop_name', shopName);
+        localStorage.setItem('cust_seq', custSeq);
+        localStorage.setItem('cust_name', custName);
 
         if (isRemember) {
-          setCookie('rememberUserId', data.shop_id, {
+          setCookie('rememberUserId', data.cust_id, {
             maxAge: 5 * (60 * 60 * 24),
           });
         } else {
@@ -78,8 +78,8 @@ function SignIn() {
         console.error('Non-Auth Error:', error);
         showError();
         reset({
-          shop_id: '',
-          shop_pw: '',
+          cust_id: '',
+          cust_pw: '',
         });
       });
   };
@@ -122,7 +122,7 @@ function SignIn() {
       >
         <div className='flex flex-column gap-2'>
           <Controller
-            name='shop_id'
+            name='cust_id'
             control={control}
             rules={{ required: '아이디를 입력해주세요' }}
             render={({ field, fieldState }) => (
@@ -146,7 +146,7 @@ function SignIn() {
         </div>
         <div className='flex flex-column gap-2'>
           <Controller
-            name='shop_pw'
+            name='cust_pw'
             control={control}
             rules={{ required: '비밀번호를 입력해주세요' }}
             render={({ field, fieldState }) => (

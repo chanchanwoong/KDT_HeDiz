@@ -12,6 +12,7 @@ import Home from '../pages/home/Home'
 import HairshopPage from '../pages/home/HairshopDetailPage';
 import Mypage from '../pages/mypage/Mypage';
 import MyReservation from '../pages/reservation/MyReservation';
+import Reservation from '../pages/reservation/Reservation';
 
 //마이페이지
 
@@ -41,6 +42,12 @@ const router = createBrowserRouter(
           children: [
             { path: "mypage", element: <Mypage /> },
             { path: "reservation", element: <MyReservation /> },
+          ],
+        },
+        {
+          path: "/reservation",
+          children: [
+            { path: "reservation", element: <Reservation /> },
           ],
         },
       ],
