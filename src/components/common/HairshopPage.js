@@ -25,7 +25,7 @@ const getRegularDayOff = (value) => {
 };
 
 function HairshopPage() {
-  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState(null);
   const location = useLocation();
   const shop_seq = location.state.shop_seq;
   useEffect(() => {
@@ -33,25 +33,17 @@ function HairshopPage() {
       .get(`/home/${shop_seq}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        setProducts(response.data);
+        setProduct(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
       });
   }, []);
 
-  const itemTemplate = (product, index) => {
+  const itemTemplate = (product) => {
     return (
-      <div
-        className='col-12'
-        key={product.shop_seq}
-      >
-        <div
-          className={classNames(
-            'flex flex-column xl:flex-row xl:align-items-start p-4 gap-4',
-            { 'border-top-1 surface-border': index !== 0 }
-          )}
-        >
+      <div className='col-12'>
+        <div className='flex flex-column xl:flex-row xl:align-items-start p-4 gap-4'>
           <div className='flex flex-column sm:flex-column justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
             <img
               className='w-9 sm:w-16rem xl:w-20rem shadow-2 block xl:block mx-auto border-round'
@@ -60,18 +52,24 @@ function HairshopPage() {
             <div className='text-2xl font-bold text-900'>
               {product.shop_name}
             </div>
-            <div>
+            <div className='flex'>
               <Rating
                 value={product.avg_review_score}
                 readOnly
                 cancel={false}
               ></Rating>
-              리뷰 갯수 : {product.count_review}
+<p className='ml-2'>({product.count_review})</p>
             </div>
             <span>
               영업 시간 : {product.shop_start} ~ {product.shop_end}
             </span>
             <span>{getRegularDayOff(product.shop_regular)}</span>
+
+            <div>
+            <span>{product.shop_intro}</span>
+            <i className='pi pi-map-marker'></i>
+            </div>
+            
           </div>
           <div className='flex flex-column align-items-center sm:align-items-start gap-3'></div>
         </div>
@@ -79,22 +77,9 @@ function HairshopPage() {
     );
   };
 
-  const listTemplate = (items) => {
-    if (!items || items.length === 0) return null;
-
-    let list = items.map((product, index) => {
-      return itemTemplate(product, index);
-    });
-
-    return <div className='grid grid-nogutter'>{list}</div>;
-  };
-
   return (
     <div className='card'>
-      <DataView
-        value={products}
-        listTemplate={listTemplate}
-      />
+      {product && itemTemplate(product)}
     </div>
   );
 }

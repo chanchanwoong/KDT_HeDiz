@@ -9,7 +9,7 @@ import SignUp from '../pages/auth/SignUp';
 // 메인화면
 import MainLayout from '../layout/MainLayout';
 import Home from '../pages/home/Home'
-import HairshopPage from '../pages/home/HairshopDetailPage';
+import HairshopDetailPage from '../pages/home/HairshopDetailPage';
 import Mypage from '../pages/mypage/Mypage';
 import MyReservation from '../pages/reservation/MyReservation';
 import Reservation from '../pages/reservation/Reservation';
@@ -35,7 +35,7 @@ const router = createBrowserRouter(
       element: <MainLayout />,
       children: [
         { path: "/", element: <Home /> },
-        { path: "hairshop", element: <HairshopPage /> },
+        { path: "hairshop", element: <HairshopDetailPage /> },
 
         {
           path: "/mypage",

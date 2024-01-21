@@ -59,18 +59,20 @@ function HairshopList() {
               <img
                 className='w-9 sm:w-16rem xl:w-20rem shadow-2 block xl:block mx-auto border-round'
                 src={product.shop_image}
+                alt={product.shop_name}
               />
-            </Link>
+
             <div className='text-2xl font-bold text-900'>
               {product.shop_name}
             </div>
-            <div>
+            </Link>
+            <div className='flex'>
               <Rating
                 value={product.avg_review_score}
                 readOnly
                 cancel={false}
               ></Rating>
-              리뷰 갯수 : {product.count_review}
+<p className='ml-2'>({product.count_review})</p>
             </div>
             <span>
               영업 시간 : {product.shop_start} ~ {product.shop_end}

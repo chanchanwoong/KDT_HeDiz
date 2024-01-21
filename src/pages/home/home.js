@@ -20,7 +20,7 @@ function Home() {
 
   return (
     <>
-      <p>cust_name 고객님 안녕하세요</p>
+      <p>{localStorage.getItem('cust_name')} 고객님 안녕하세요</p>
       <span className='p-input-icon-left'>
         <i className='pi pi-search' />
         <InputText

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import styles from './MainLayout.module.css';
 
 import AppTopbar from './AppTopbar';
+import ReservationButton from '../components/common/ReservationButton';
 
 function MainLayout() {
   return (
@@ -13,6 +14,7 @@ function MainLayout() {
     >
       <AppTopbar />
       <Outlet />
+      <ReservationButton/>
     </div>
   );
 }

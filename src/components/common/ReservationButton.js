@@ -4,11 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 function ReservationButton() {
     const navigate = useNavigate();
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem('jwtauthtoken'));
 
   const checkToken = (e) => {
     if (token) {
-        navigate('/reservation');
+        navigate('reservation/reservation');
     } else {
         navigate('/auth/sign-in');
     }
