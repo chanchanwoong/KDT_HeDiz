@@ -95,7 +95,7 @@ function AppSidebar() {
       template: () => {
         return (
           <div className='flex align-items-center justify-content-center h-4rem px-4 py-6'>
-            <Logo size='text-2xl ' />
+            <Logo size='text-2xl' />
           </div>
         );
       },
@@ -119,7 +119,7 @@ function AppSidebar() {
       label: '예약 관리',
       items: [
         {
-          label: '실시간 예약',
+          label: '금일 예약',
           icon: 'pi pi-bell',
           url: 'home/realtime-reservation',
           badge: 16,

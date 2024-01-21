@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Clock from 'react-live-clock';
 import { authAxios } from 'api/AxiosAPI';
 import { formatTime } from 'service/Utils';
@@ -6,35 +6,61 @@ import { formatTime } from 'service/Utils';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Tag } from 'primereact/tag';
-import { CustomerService } from 'service/CustomerService';
 
 const RealtimeReservation = () => {
   const [reservation, setReservation] = useState([]);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     authAxios()
-      .get(`/reservation/total/${localStorage.getItem('shop_seq')}`)
+      .get(`/home/realtime-reservation/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setReservation(response.data);
+
+        // fullCalendar
+        const formattedEvents = response.data.map((event) => ({
+          id: event.reserv_seq,
+          title: event.style_name,
+          start: `${event.reserv_date}T${event.reserv_time}`,
+          end: `${event.reserv_date}T${event.end_time}`,
+          extendedProps: {
+            staff: event.staff_nickname,
+            cust: event.cust_name,
+          },
+        }));
+        setEvents(formattedEvents);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
       });
   }, []);
 
+  const eventContent = (eventInfo) => {
+    return (
+      <>
+        <p>{eventInfo.timeText}</p>
+        <p>
+          {eventInfo.event.extendedProps.staff} /{' '}
+          {eventInfo.event.extendedProps.cust}
+        </p>
+      </>
+    );
+  };
+
   const getValueAndSeverity = (status) => {
     switch (status) {
       case 0:
-        return { value: '대기', severity: 'success' };
+        return { value: '방문 완료', severity: 'success' };
       case 1:
-        return { value: '수락', severity: 'danger' };
+        return { value: '예약 취소', severity: 'danger' };
       case 2:
-        return { value: '거절', severity: 'danger' };
+        return { value: '방문 예정', severity: 'danger' };
       default:
         return { value: '', severity: null };
     }
@@ -53,73 +79,59 @@ const RealtimeReservation = () => {
     );
   };
 
-  const confirmTemplate = (rowData, options) => {
+  const customerTemplate = (rowData) => {
     return (
       <>
-        <Button
-          icon='pi pi-check'
-          label='수락'
-        ></Button>
-        <Button
-          icon='pi pi-times'
-          label='거절'
-          className='p-button-danger'
-        ></Button>
+        <p>{rowData.cust_name}</p>
+        <p className='text-sm'>{rowData.cust_phone}</p>
       </>
     );
   };
 
-  const representativeBodyTemplate = (rowData) => {
+  const reservationTimeTemplate = (rowData) => {
     return (
-      <div className='flex align-items-center gap-2'>
-        <img
-          alt={rowData.representative.name}
-          src={`https://primefaces.org/cdn/primereact/images/avatar/${rowData.representative.image}`}
-          width='32'
-        />
-        <span className='font-bold'>{rowData.representative.name}</span>
-      </div>
+      <>
+        <p>{formatTime(rowData.reserv_time)}</p>
+        <p>- {formatTime(rowData.end_time)}</p>
+      </>
     );
   };
 
-  const getSeverity = (status) => {
-    switch (status) {
-      case 'unqualified':
-        return 'danger';
-
-      case 'qualified':
-        return 'success';
-
-      case 'new':
-        return 'info';
-
-      case 'negotiation':
-        return 'warning';
-
-      case 'renewal':
-        return null;
-    }
+  const hairstyleTemplate = (rowData) => {
+    return (
+      <>
+        <p>{rowData.style_name}</p>
+        <p className='text-sm'>소요시간 {rowData.style_time}</p>
+      </>
+    );
   };
+
+  const header = (
+    <div className='flex flex-wrap align-items-center justify-content-between gap-2 px-2'>
+      <Clock
+        format={'YYYY년 MM월 DD일'}
+        ticking={true}
+      />
+      <Button
+        icon='pi pi-refresh'
+        rounded
+        raised
+      />
+    </div>
+  );
 
   return (
     <>
-      <div className='card w-full'>
+      <div className='card h-full'>
         <h2 className='flex align-items-center justify-content-between'>
-          실시간 예약
-          <Clock
-            format={'YYYY년 MM월 DD일 HH : mm : ss'}
-            ticking={true}
-            // timezone={'KR/Pacific'}
-          />
+          금일 예약
         </h2>
 
         <div className='flex'>
           <div className='col-8'>
             <DataTable
               value={reservation}
-              sortField='representative.name'
-              // sortOrder={1}
-              tableStyle={{ minWidth: '50rem' }}
+              header={header}
               scrollable
               scrollHeight='800px'
               showGridlines
@@ -131,58 +143,64 @@ const RealtimeReservation = () => {
                 sortable
               />
               <Column
+                field='staff_nickname'
+                header='담당 디자이너'
+                className='text-center'
+                sortable
+              />
+              <Column
                 field='reserv_time'
                 header='예약시간'
                 sortable
-              />
-              <Column
-                style={{ flex: '0 0 4rem' }}
-                body={confirmTemplate}
-              />
-              <Column
-                field='staff_nickname'
-                header='담당 디자이너'
-                sortable
-              />
-              <Column
-                field='cust_name'
-                header='고객 이름'
+                body={reservationTimeTemplate}
               />
               <Column
                 field='style_name'
                 header='헤어스타일'
                 sortable
+                body={hairstyleTemplate}
+                className='text-center'
               />
-              {/* <Column
+              <Column
+                field='cust_name'
+                header='고객 정보'
+                body={customerTemplate}
+                className='text-center'
+              />
+              <Column
                 field='reserv_request'
                 header='요청사항'
-              /> */}
+              />
               <Column
                 field='reserv_stat'
                 header='예약상태'
                 sortable
                 body={statusBodyTemplate}
+                className='text-center'
               />
-              {/* <Column
-                field='balance'
-                header='결제금액'
-                sortable
-                dataType='numeric'
-              /> */}
             </DataTable>
           </div>
           <div className='col-4'>
             <FullCalendar
               locale='kr'
-              plugins={[dayGridPlugin, timeGridPlugin]}
+              plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
               initialView='timeGridDay'
               headerToolbar={false}
+              footerToolbar={{
+                right: 'timeGridDay,listDay',
+              }}
               height='100%'
               themeSystem='standard'
-              // headerToolbar={{
-              //   start: 'title',
-              //   right: '',
-              // }}
+              events={events}
+              eventContent={eventContent}
+              expandRows={true}
+              // slotLabelInterval={'00:10:00'}
+              slotDuration={'00:10:00'}
+              // 영업 시작 일자
+              slotMinTime={'09:00:00'}
+              // 영업 종료 일자
+              slotMaxTime={'23:00:00'}
+              slotEventOverlap={false}
             />
           </div>
         </div>

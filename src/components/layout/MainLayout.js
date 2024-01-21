@@ -22,7 +22,7 @@ function MainLayout() {
           onToggleSidebar={toggleSidebar}
           className='flex-grow-0'
         />
-        <main>
+        <main className=''>
           <section>
             <Outlet />
           </section>

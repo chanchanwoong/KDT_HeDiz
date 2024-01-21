@@ -8,3 +8,7 @@
   color: blue;
   text-decoration: none;
 }
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: #fff;
+  color: #356eff;
+}
