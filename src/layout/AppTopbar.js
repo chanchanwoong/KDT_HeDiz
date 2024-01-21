@@ -9,16 +9,16 @@ export default function AppTopbar() {
   const toast = useRef(null);
 
   const items = [
-    { label: '홈', icon: 'pi pi-home', url: '/'},
-    { label: '내 주변', icon: 'pi pi-chart-line', url:'/near' },
-    { label: '예약', icon: 'pi pi-list', url:'/mypage/reservation' },
-    { label: '마이페이지', icon: 'pi pi-inbox', url:'/mypage/mypage' },
+    { label: '홈', icon: 'pi pi-home', url: '/' },
+    { label: '내 주변', icon: 'pi pi-chart-line', url: '/near' },
+    { label: '예약', icon: 'pi pi-list', url: '/mypage/reservation' },
+    { label: '마이페이지', icon: 'pi pi-inbox', url: '/mypage/mypage' },
   ];
 
   return (
     <header>
       <Logo />
-      <div className='card '>
+      <div className="card ">
         <TabMenu model={items} />
       </div>
     </header>

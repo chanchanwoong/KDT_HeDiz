@@ -92,11 +92,7 @@ function SignIn() {
   }, [cookies.rememberUserId]);
 
   const getFormErrorMessage = (name) => {
-    return errors[name] ? (
-      <small className='p-error'>{errors[name].message}</small>
-    ) : (
-      ''
-    );
+    return errors[name] ? <small className="p-error">{errors[name].message}</small> : '';
   };
 
   const showError = () => {
@@ -109,20 +105,20 @@ function SignIn() {
   };
 
   return (
-    <main className='flex flex-column bg-white p-6 w-auto border-round-lg'>
+    <main className="flex flex-column bg-white p-6 w-auto border-round-lg">
       <Logo
-        size='text-4xl'
-        margin='mb-6'
+        size="text-4xl"
+        margin="mb-6"
       />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        method='post'
-        className='flex flex-column flex-wrap gap-4 mb-4'
+        method="post"
+        className="flex flex-column flex-wrap gap-4 mb-4"
       >
-        <div className='flex flex-column gap-2'>
+        <div className="flex flex-column gap-2">
           <Controller
-            name='cust_id'
+            name="cust_id"
             control={control}
             rules={{ required: '아이디를 입력해주세요' }}
             render={({ field, fieldState }) => (
@@ -130,7 +126,7 @@ function SignIn() {
                 <InputText
                   id={field.name}
                   value={field.value}
-                  placeholder='아이디'
+                  placeholder="아이디"
                   className={classNames({
                     'p-invalid': fieldState.error,
                   })}
@@ -144,9 +140,9 @@ function SignIn() {
             )}
           />
         </div>
-        <div className='flex flex-column gap-2'>
+        <div className="flex flex-column gap-2">
           <Controller
-            name='cust_pw'
+            name="cust_pw"
             control={control}
             rules={{ required: '비밀번호를 입력해주세요' }}
             render={({ field, fieldState }) => (
@@ -154,7 +150,7 @@ function SignIn() {
                 <Password
                   id={field.name}
                   value={field.value || ''}
-                  placeholder='비밀번호'
+                  placeholder="비밀번호"
                   className={classNames({
                     'p-invalid': fieldState.error,
                   })}
@@ -167,30 +163,30 @@ function SignIn() {
             )}
           />
         </div>
-        <div className='flex align-items-center justify-content-between mb-4'>
-          <div className='flex align-items-center mr-8'>
+        <div className="flex align-items-center justify-content-between mb-4">
+          <div className="flex align-items-center mr-8">
             <Controller
-              name='checked'
+              name="checked"
               control={control}
               render={({ field }) => (
                 <>
                   <Checkbox
-                    id='saveId'
+                    id="saveId"
                     onChange={(e) => {
                       handleOnChange(e);
                     }}
                     checked={isRemember}
-                    className='mr-2'
+                    className="mr-2"
                   />
-                  <label htmlFor='saveId'>아이디 저장</label>
+                  <label htmlFor="saveId">아이디 저장</label>
                 </>
               )}
             />
           </div>
           <div>
             <Link
-              to='/auth/find'
-              className='text-purple-500 cursor-pointer no-underline'
+              to="/auth/find"
+              className="text-purple-500 cursor-pointer no-underline"
             >
               아이디/비밀번호 찾기
             </Link>
@@ -198,19 +194,19 @@ function SignIn() {
         </div>
         <Toast ref={toast} />
         <Button
-          label='로그인'
-          type='submit'
+          label="로그인"
+          type="submit"
         />
       </form>
 
       <Button
-        type='button'
-        severity='help'
+        type="button"
+        severity="help"
         outlined
       >
         <Link
-          to='/auth/sign-up'
-          className='text-purple-500 font-semibold cursor-pointer no-underline w-full'
+          to="/auth/sign-up"
+          className="text-purple-500 font-semibold cursor-pointer no-underline w-full"
         >
           회원가입
         </Link>

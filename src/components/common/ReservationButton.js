@@ -1,18 +1,18 @@
-import { Button } from "primereact/button";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Button } from 'primereact/button';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function ReservationButton() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem('jwtauthtoken'));
 
   const checkToken = (e) => {
     if (token) {
-        navigate('reservation/reservation');
+      navigate('reservation/reservation');
     } else {
-        navigate('/auth/sign-in');
+      navigate('/auth/sign-in');
     }
-  }
+  };
 
   return (
     <div

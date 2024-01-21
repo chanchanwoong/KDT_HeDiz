@@ -5,28 +5,23 @@ import StaffList from '../../components/common/StaffList';
 import HairStyleList from '../../components/common/HairStyleList';
 import ReviewList from '../../components/common/ReviewList';
 
-
-
 function HairshopDetailPage() {
   return (
     <>
-      <HairshopPage/>
-      <Divider/>
+      <HairshopPage />
+      <Divider />
       <TabView>
-      <TabPanel header='메뉴'>
-      <HairStyleList/>
-
-      </TabPanel>
-      <TabPanel header='디자이너'>
-
-      <StaffList/>
-</TabPanel>
-<TabPanel header='리뷰'>
-
-<ReviewList/>
-</TabPanel>
-</TabView>
-</>
+        <TabPanel header="메뉴">
+          <HairStyleList />
+        </TabPanel>
+        <TabPanel header="디자이너">
+          <StaffList />
+        </TabPanel>
+        <TabPanel header="리뷰">
+          <ReviewList />
+        </TabPanel>
+      </TabView>
+    </>
   );
 }
 

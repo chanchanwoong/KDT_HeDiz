@@ -1,8 +1,5 @@
-function Reservation () {
-
-    return (
-        <span>예약</span>
-    );
+function Reservation() {
+  return <span>예약</span>;
 }
 
-export default Reservation
+export default Reservation;

@@ -1,8 +1,5 @@
-function MyReservation () {
-
-    return (
-        <span>내 예약</span>
-    );
+function MyReservation() {
+  return <span>내 예약</span>;
 }
 
-export default MyReservation
+export default MyReservation;
