@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.AuthMapper">
+
+    <!--id를 이용해 user 찾기-->
+    <select id="getUserById" parameterType="string" resultType="HairshopDTO">
+        SELECT cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender
+        FROM T_CUSTOMER WHERE cust_id=#{cust_id}
+    </select>
+
+    <!--회원가입-->
+    <insert id="signUp" parameterType="CustomerDTO">
+        INSERT INTO T_CUSTOMER (cust_name, cust_id, cust_pw, cust_phone, cust_gender)
+        VALUES (#{cust_name}, #{cust_id}, #{cust_pw}, #{cust_phone}, #{cust_gender})
+    </insert>
+</mapper>
