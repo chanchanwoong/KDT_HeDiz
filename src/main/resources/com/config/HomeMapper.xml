@@ -58,4 +58,13 @@
         WHERE
         tr.shop_seq = #{shop_seq}
     </select>
+    
+    <!--keyword를 이용해 미용실 조회-->
+    <select id="findHairshopUsingKeyword" resultType="HairshopDTO">
+        SELECT shop_seq, shop_name, shop_address, shop_intro, shop_image, shop_start, shop_end, shop_phone, shop_regular, shop_tag,
+        (SELECT avg(review_score) FROM t_review as b WHERE b.shop_seq=a.shop_seq group by shop_seq ) as avg_review_score,
+        (SELECT count(review_score) FROM t_review as c WHERE c.shop_seq=a.shop_seq) as count_review
+        FROM T_HAIRSHOP as a
+        WHERE shop_name like CONCAT('%', #{keyword}, '%')
+    </select>
 </mapper>

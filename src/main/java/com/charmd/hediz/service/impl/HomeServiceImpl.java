@@ -39,4 +39,9 @@ public class HomeServiceImpl implements HomeService {
     public List<ReviewDTO> findReview(int shop_seq) {
         return dao.findReview(shop_seq);
     }
+
+    @Override
+    public List<HairshopDTO> findHairshopUsingKeyword(String keyword) {
+        return dao.findHairshopUsingKeyword(keyword);
+    }
 }

@@ -32,4 +32,7 @@ public class HomeDAO {
     public List<ReviewDTO> findReview(int shop_seq){
         return session.selectList("com.config.HomeMapper.findReview", shop_seq);
     }
+    public List<HairshopDTO> findHairshopUsingKeyword(String keyword){
+        return session.selectList("com.config.HomeMapper.findHairshopUsingKeyword", keyword);
+    }
 }

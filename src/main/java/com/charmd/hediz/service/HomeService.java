@@ -13,4 +13,5 @@ public interface HomeService {
     public List<HairstyleDTO> findHairstyle(int shop_seq);
     public List<StaffDTO> findStaff(int shop_seq);
     public List<ReviewDTO> findReview(int shop_seq);
+    public List<HairshopDTO> findHairshopUsingKeyword(String keyword);
 }
