@@ -16,4 +16,7 @@ public class AuthDAO {
     public void signUp(CustomerDTO customerDto){
         session.insert("com.config.AuthMapper.signUp", customerDto);
     }
+    public int duplicateCheck(String cust_id){
+        return session.selectOne("com.config.AuthMapper.duplicateCheck", cust_id);
+    }
 }

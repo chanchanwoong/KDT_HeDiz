@@ -48,13 +48,14 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String createToken(String id, int cust_seq) {
+    public String createToken(String id, int cust_seq, String cust_name) {
         //JwtBuilder 객체를 이용해서 토큰을 만든다.
 
         // id, cust_seq 해시맵에 저장
         Map<String, Object> claims = new HashMap<>();
         claims.put("cust_seq", cust_seq);
         claims.put("id", id);
+        claims.put("cust_name", cust_name);
 
         return Jwts.builder()
                 .setClaims(claims)  //토큰에 담을 추가 정보

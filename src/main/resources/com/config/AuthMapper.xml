@@ -16,4 +16,9 @@
         INSERT INTO T_CUSTOMER (cust_name, cust_id, cust_pw, cust_phone, cust_gender)
         VALUES (#{cust_name}, #{cust_id}, #{cust_pw}, #{cust_phone}, #{cust_gender})
     </insert>
+
+    <!--id 중복 체크-->
+    <select id="duplicateCheck" parameterType="string" resultType="int">
+        SELECT COUNT(cust_id) FROM T_CUSTOMER WHERE cust_id=#{cust_id}
+    </select>
 </mapper>

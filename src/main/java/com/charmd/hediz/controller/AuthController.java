@@ -40,24 +40,20 @@ public class AuthController {
     // 로그인
     @PostMapping("/sign-in")
     public ResponseEntity<TokenDTO> signIn(@RequestBody HashMap<String, String> signInMap) {
-        System.out.println("입력 값 > " + signInMap);
         // id 값
         String id = signInMap.get("cust_id");
         String pw = signInMap.get("cust_pw");
-
-        System.out.println(id + " " + pw);
         //사용자 인증정보 저장
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(id, pw);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         int custSeq = authService.getUserById(id).getCust_seq();
-        System.out.println("cust_seq > " + custSeq);
-        String jwt = jwtUtil.createToken(id, custSeq);
+        String custName = authService.getUserById(id).getCust_name();
+        String jwt = jwtUtil.createToken(id, custSeq, custName);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(tokenKey, "Bearer+" + jwt);
-        System.out.println("jwt > " + jwt);
-        return new ResponseEntity<>(new TokenDTO("Bearer+" + jwt, custSeq), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new TokenDTO("Bearer+" + jwt, custSeq, custName), httpHeaders, HttpStatus.OK);
     }
 
     // 회원가입
@@ -68,5 +64,17 @@ public class AuthController {
         customerDto.setCust_pw(newPw);
         authService.signUp(customerDto);
         return ResponseEntity.ok().body(customerDto);
+    }
+
+    // 회원가입_ID 중복 확인
+    @PostMapping("/duplicate-check")
+    public ResponseEntity<?> duplicateCheck(@RequestBody HashMap<String, String> IdMap) {
+        String cust_id = IdMap.get("cust_id");
+        if (cust_id == null || cust_id.trim().isEmpty()) {
+            return ResponseEntity.ok().body(false);
+        }
+        int n = authService.duplicateCheck(cust_id);
+        System.out.println("id 개수 : " + n);
+        return ResponseEntity.ok().body(n == 0);
     }
 }

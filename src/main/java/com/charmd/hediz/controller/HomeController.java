@@ -57,4 +57,6 @@ public class HomeController {
         List<ReviewDTO> reviewList = homeService.findReview(shop_seq);
         return ResponseEntity.ok().body(reviewList);
     }
+
+    //
 }

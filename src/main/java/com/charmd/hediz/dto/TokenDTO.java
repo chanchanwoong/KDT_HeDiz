@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class TokenDTO {
     private String jwtauthtoken;
     private int cust_seq;
+    private String cust_name;
 }
