@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
 //    @Autowired
 //    private ReservationService reservationService;
-
+// 현재 예약 상황 api
 
 }

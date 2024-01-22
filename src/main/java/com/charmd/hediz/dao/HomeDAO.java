@@ -1,14 +1,10 @@
 package com.charmd.hediz.dao;
 
 import com.charmd.hediz.dto.HairshopDTO;
-import com.charmd.hediz.dto.HairstyleDTO;
-import com.charmd.hediz.dto.ReviewDTO;
-import com.charmd.hediz.dto.StaffDTO;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -19,26 +15,11 @@ public class HomeDAO {
     public List<HairshopDTO> findAllHairshop(){
         return session.selectList("com.config.HomeMapper.findAllHairshop");
     }
-    public List<HairshopDTO> findHairshopWithFilter(HashMap<String, String> filterMap){
-        return session.selectList("com.config.HomeMapper.findHairshopWithFilter", filterMap);
-    }
-    public HairshopDTO findHairshop(int shop_seq){
-        return session.selectOne("com.config.HomeMapper.findHairshop", shop_seq);
-    }
-    public List<HairstyleDTO> findHairstyle(int shop_seq){
-        return session.selectList("com.config.HomeMapper.findHairstyle", shop_seq);
-    }
-    public HairstyleDTO findHairstyleInfor(HashMap<String, Integer> shopAndStyleMap){
-        return session.selectOne("com.config.HomeMapper.findHairstyleInfor", shopAndStyleMap);
-    }
-    public List<StaffDTO> findStaff(int shop_seq){
-        return session.selectList("com.config.HomeMapper.findStaff", shop_seq);
-    }
+//    public List<HairshopDTO> findHairshopWithFilter(HashMap<String, String> filterMap){
+//        return session.selectList("com.config.HomeMapper.findHairshopWithFilter", filterMap);
+//    }
 
-    public List<ReviewDTO> findReview(int shop_seq){
-        return session.selectList("com.config.HomeMapper.findReview", shop_seq);
-    }
-    public List<HairshopDTO> findHairshopUsingKeyword(String keyword){
-        return session.selectList("com.config.HomeMapper.findHairshopUsingKeyword", keyword);
-    }
+//    public List<HairshopDTO> findHairshopUsingKeyword(String keyword){
+//        return session.selectList("com.config.HomeMapper.findHairshopUsingKeyword", keyword);
+//    }
 }

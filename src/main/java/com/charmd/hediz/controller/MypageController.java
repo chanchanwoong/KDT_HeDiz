@@ -19,7 +19,7 @@ public class MypageController {
     private MypageService mypageService;
 
     // 내 정보 조회
-    @PostMapping("")
+    @PostMapping("profile")
     public ResponseEntity<?> findMypage(@RequestBody CustomerDTO customerDto){
         customerDto = mypageService.findMypage(customerDto);
         return ResponseEntity.ok().body(customerDto);
@@ -33,21 +33,21 @@ public class MypageController {
     }
 
     // 내 정보 수정
-    @PutMapping("")
+    @PutMapping("profile")
     public ResponseEntity<?> updateMypage(@RequestBody CustomerDTO customerDto){
         int n = mypageService.updateMypage(customerDto);
         return ResponseEntity.ok().body(customerDto);
     }
 
     // cust_seq에 따른 리뷰 조회
-    @GetMapping("reservation/review/{cust_seq}")
+    @GetMapping("review/{cust_seq}")
     public ResponseEntity<?> review(@PathVariable("cust_seq") int cust_seq){
         List<ReviewDTO> reviewList = mypageService.review(cust_seq);
         return ResponseEntity.ok().body(reviewList);
     }
 
     // cust_seq에 따른 리뷰 작성
-    @PostMapping("reservation/review")
+    @PostMapping("review")
     public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDto){
         int n = mypageService.reviewWrite(reviewDto);
         return ResponseEntity.ok().body(reviewDto);
