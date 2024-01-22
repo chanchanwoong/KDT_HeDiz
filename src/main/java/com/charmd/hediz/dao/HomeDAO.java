@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -24,7 +25,9 @@ public class HomeDAO {
     public List<HairstyleDTO> findHairstyle(int shop_seq){
         return session.selectList("com.config.HomeMapper.findHairstyle", shop_seq);
     }
-
+    public HairstyleDTO findHairstyleInfor(HashMap<String, Integer> shopAndStyleMap){
+        return session.selectOne("com.config.HomeMapper.findHairstyleInfor", shopAndStyleMap);
+    }
     public List<StaffDTO> findStaff(int shop_seq){
         return session.selectList("com.config.HomeMapper.findStaff", shop_seq);
     }

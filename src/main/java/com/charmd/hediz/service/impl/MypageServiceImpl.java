@@ -3,6 +3,7 @@ package com.charmd.hediz.service.impl;
 import com.charmd.hediz.dao.MypageDAO;
 import com.charmd.hediz.dto.CustomerDTO;
 import com.charmd.hediz.dto.ReservationDTO;
+import com.charmd.hediz.dto.ReviewDTO;
 import com.charmd.hediz.service.MypageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,4 +28,9 @@ public class MypageServiceImpl implements MypageService {
     public int updateMypage(CustomerDTO customerDto) {
         return dao.updateMypage(customerDto);
     }
+
+//    @Override
+//    public int review(ReviewDTO reviewDto) {
+//        return dao.review;
+//    }
 }

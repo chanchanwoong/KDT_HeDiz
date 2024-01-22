@@ -28,6 +28,13 @@
         where shop_seq=#{shop_seq}
     </select>
 
+    <!--특정 미용실 헤어스타일 중 특정 헤어스타일 정보 조회-->
+    <select id="findHairstyleInfor" resultType="HairstyleDTO" parameterType="hashmap">
+        select style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
+        from T_HAIRSTYLE inner join T_CATEGORY using(cate_seq)
+        where shop_seq=#{shop_seq} and style_seq=#{style_seq}
+    </select>
+
     <!--특정 미용실의 직원 조회-->
     <select id="findStaff" resultType="StaffDTO">
         select staff_seq, staff_role, staff_image, staff_intro, staff_nickname, staff_off

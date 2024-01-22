@@ -2,6 +2,7 @@ package com.charmd.hediz.controller;
 
 import com.charmd.hediz.dto.CustomerDTO;
 import com.charmd.hediz.dto.ReservationDTO;
+import com.charmd.hediz.dto.ReviewDTO;
 import com.charmd.hediz.service.MypageService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,6 @@ public class MypageController {
     // 내 예약 정보 조회
     @PostMapping("reservation")
     public ResponseEntity<?> reservation(@RequestBody ReservationDTO reservationDto){
-        System.out.println("받은 reservationDTO > " + reservationDto);
         List<ReservationDTO> reservationList = mypageService.reservation(reservationDto);
         return ResponseEntity.ok().body(reservationList);
     }
@@ -39,5 +39,10 @@ public class MypageController {
         return ResponseEntity.ok().body(customerDto);
     }
 
-    // 예약 삭제
+    // 리뷰 작성
+    @PostMapping("reservation/review")
+    public ResponseEntity<?> review(@RequestBody ReviewDTO reviewDto){
+//        int n = mypageService.review(reviewDto);
+        return ResponseEntity.ok().body(reviewDto);
+    }
 }
