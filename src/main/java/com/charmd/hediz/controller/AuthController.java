@@ -76,4 +76,29 @@ public class AuthController {
         System.out.println("id 개수 : " + n);
         return ResponseEntity.ok().body(n == 0);
     }
+
+    // cust_id 찾기
+    // 이름, 전화번호 입력
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findId(@RequestBody HashMap<String, String> custNameAndPhoneMap) {
+        String id = authService.findId(custNameAndPhoneMap);
+        return ResponseEntity.ok().body(id);
+    }
+
+    // cust_id, shop_name을 통해 계정있는지 확인
+    @PostMapping("/check-password")
+    public ResponseEntity<?> checkPassword(@RequestBody HashMap<String, String> custIdAndNameMap) {
+        int n = authService.checkPassword(custIdAndNameMap);
+        return ResponseEntity.ok().body(n == 1);
+    }
+
+    // 비밀번호 변경
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody HashMap<String, String> custPwMap) {
+        String newPw = new BCryptPasswordEncoder().encode(custPwMap.get("cust_pw"));
+        custPwMap.put("cust_pw", newPw);
+        int n = authService.changePassword(custPwMap);
+        if (n == 1) return ResponseEntity.ok().body(n);
+        else return ResponseEntity.ok().body(n);
+    }
 }

@@ -21,4 +21,20 @@
     <select id="duplicateCheck" parameterType="string" resultType="int">
         SELECT COUNT(cust_id) FROM T_CUSTOMER WHERE cust_id=#{cust_id}
     </select>
+
+    <!--id 찾기-->
+    <select id="findId" parameterType="hashmap" resultType="string">
+        SELECT cust_id FROM T_CUSTOMER WHERE cust_name=#{cust_name} AND cust_phone=#{cust_phone}
+    </select>
+
+    <!--id와 shop_name을 이용해서 DB에 있는지 확인-->
+    <select id="checkPassword" parameterType="hashmap" resultType="int">
+        SELECT count('cust_id') FROM T_CUSTOMER WHERE cust_id=#{cust_id} and cust_name=#{cust_name}
+    </select>
+
+    <!--비밀번호 변경-->
+    <update id="changePassword" parameterType="hashmap">
+        UPDATE T_CUSTOMER SET cust_pw=#{cust_pw}
+        WHERE cust_id=#{cust_id}
+    </update>
 </mapper>

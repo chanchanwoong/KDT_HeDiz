@@ -5,6 +5,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+
 @Repository
 public class AuthDAO {
     @Autowired
@@ -18,5 +20,14 @@ public class AuthDAO {
     }
     public int duplicateCheck(String cust_id){
         return session.selectOne("com.config.AuthMapper.duplicateCheck", cust_id);
+    }
+    public String findId(HashMap<String, String> custNameAndPhoneMap){
+        return session.selectOne("com.config.AuthMapper.findId", custNameAndPhoneMap);
+    }
+    public int checkPassword(HashMap<String, String> custIdAndNameMap){
+        return session.selectOne("com.config.AuthMapper.checkPassword", custIdAndNameMap);
+    }
+    public int changePassword(HashMap<String, String> custPwMap){
+        return session.update("com.config.AuthMapper.changePassword", custPwMap);
     }
 }
