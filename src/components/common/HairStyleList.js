@@ -36,38 +36,39 @@ function HairstyleList() {
             }
           )}
         >
-          <Link
-            to={`/hairstyle`}
-            state={{
-              shop_seq: shop_seq,
-              style_seq: product.style_seq,
-              style_name: product.style_name,
-            }}
-          >
-            <img
-              className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
-              src={product.style_image}
-              alt={product.style_name}
-            />
-            <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
-              <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
+          <div className='flex flex-row align-items-center'>
+            <Link
+              to={`/hairstyle`}
+              state={{
+                shop_seq: shop_seq,
+                style_seq: product.style_seq,
+                style_name: product.style_name,
+              }}
+            >
+              <img
+                className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
+                src={product.style_image}
+                alt={product.style_name}
+              />
+            </Link>
+            <div className='flex flex-column ml-4'>
+              <Link
+                to={`/hairstyle`}
+                state={{
+                  shop_seq: shop_seq,
+                  style_seq: product.style_seq,
+                  style_name: product.style_name,
+                }}
+              >
                 <div className='text-2xl font-bold text-900'>
                   {product.style_name}
                 </div>
-
-                <div className='flex align-items-center gap-3'>
-                  <span className='flex align-items-center gap-2'>
-                    <span className='font-semibold'>
-                      {product.style_price}원
-                    </span>
-                  </span>
-                </div>
-                <span>시술 대상 : {product.style_gender}</span>
-                <span>소요 시간 : {product.style_time}</span>
-              </div>
-              <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'></div>
+              </Link>
+              <span className='flex align-items-center gap-2'>
+                <span className='font-semibold'>{product.style_price}원</span>
+              </span>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
     );

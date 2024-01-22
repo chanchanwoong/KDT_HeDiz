@@ -14,7 +14,6 @@ function MainLayout() {
     >
       <AppTopbar />
       <Outlet />
-      <ReservationButton />
     </div>
   );
 }

@@ -25,7 +25,10 @@ const KakaoMap = ({ hairshopLocation }) => {
             center: new window.kakao.maps.LatLng(result[0].y, result[0].x),
             level: 3,
           };
-          var markerPosition = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+          var markerPosition = new window.kakao.maps.LatLng(
+            result[0].y,
+            result[0].x
+          );
 
           // 마커를 생성합니다
           var marker = new window.kakao.maps.Marker({
@@ -47,10 +50,14 @@ const KakaoMap = ({ hairshopLocation }) => {
   }, [hairshopLocation]);
 
   return (
-    <div
-      id="map"
-      style={{ width: '500px', height: '500px' }}
-    ></div>
+    <>
+      <span>{hairshopLocation}</span>
+
+      <div
+        id='map'
+        style={{ width: '500px', height: '500px' }}
+      ></div>
+    </>
   );
 };
 

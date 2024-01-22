@@ -33,19 +33,20 @@ function HairstylePage() {
               {product.style_name}
             </div>
             <div>
+              <span className='font-semibold mr-5'>
+                {product.style_price}원
+              </span>
               <i className='pi pi-clock mr-2'></i>
               {product.style_time}
             </div>
             <div className='flex'>
-              <p className='ml-2'>{product.count_review}</p>
+              <span>{product.style_intro}</span>
             </div>
 
             <div>
-              <span>{product.style_intro}</span>
+              <span>시술 대상 : {product.style_gender}</span>
             </div>
-            <span>{product.style_price}원</span>
           </div>
-          <div className='flex flex-column align-items-center sm:align-items-start gap-3'></div>
         </div>
       </div>
     );

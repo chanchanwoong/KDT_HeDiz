@@ -1,8 +1,9 @@
 import { Divider } from 'primereact/divider';
-import { TabPanel, TabView } from 'primereact/tabview';
+import { Panel } from 'primereact/panel';
 import ReviewList from '../../components/common/ReviewList';
 import HairstylePage from '../../components/common/HairstylePage';
 import { useLocation } from 'react-router-dom';
+import ReservationButton from '../../components/common/ReservationButton';
 
 function HairshopDetailPage() {
   const location = useLocation();
@@ -12,12 +13,16 @@ function HairshopDetailPage() {
     <>
       <HairstylePage />
       <Divider />
-      <TabView>
-        <TabPanel header='정보'></TabPanel>
-        <TabPanel header='리뷰'>
-          <ReviewList style_name={style_name} />
-        </TabPanel>
-      </TabView>
+
+      <Panel
+        header='리뷰'
+        title='리뷰'
+        toggleable
+      >
+        <ReviewList style_name={style_name} />
+      </Panel>
+
+      <ReservationButton />
     </>
   );
 }

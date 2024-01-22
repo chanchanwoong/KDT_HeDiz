@@ -18,13 +18,14 @@ function ReviewList() {
       .then((response) => {
         console.log('Auth Response:', response.data);
         console.log(style_name);
-        if (style_name !== null) {
+        if (style_name !== undefined) {
           // product.style_name을 기반으로 리뷰 필터링
           const filteredReviews = response.data.filter(
             (product) => product.style_name === style_name
           );
           setProducts(filteredReviews);
         } else {
+          console.log(response.data);
           setProducts(response.data);
         }
       })
@@ -73,9 +74,10 @@ function ReviewList() {
                 readOnly
                 cancel={false}
               ></Rating>
-              <span>{product.review_intro}</span>
+              <span>
+                {product.staff_nickname} : {product.review_reply}
+              </span>
             </div>
-            <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'></div>
           </div>
         </div>
       </div>

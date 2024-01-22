@@ -54,9 +54,7 @@ function StaffList() {
               </div>
               <span>{product.staff_intro}</span>
             </div>
-            <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'>
-              <Button>예약</Button>
-            </div>
+            <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'></div>
           </div>
         </div>
       </div>
