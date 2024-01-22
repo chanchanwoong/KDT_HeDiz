@@ -45,21 +45,21 @@ public class HomeController {
     }
 
     // 특정 미용실 헤어스타일 조회
-    @GetMapping("hairshop/{shop_seq}/hairstyle")
+    @GetMapping("hairshop/hairstyle/{shop_seq}")
     public ResponseEntity<?> findHairstyle(@PathVariable("shop_seq") int shop_seq){
         List<HairstyleDTO> hairstyleList = homeService.findHairstyle(shop_seq);
         return ResponseEntity.ok().body(hairstyleList);
     }
 
     // 특정 미용실 직원 조회
-    @GetMapping("hairshop/{shop_seq}/staff")
+    @GetMapping("hairshop/staff/{shop_seq}")
     public ResponseEntity<?> findStaff(@PathVariable("shop_seq") int shop_seq){
         List<StaffDTO> staffList = homeService.findStaff(shop_seq);
         return ResponseEntity.ok().body(staffList);
     }
 
     // 특정 미용실 리뷰 조회
-    @GetMapping("hairshop/{shop_seq}/review")
+    @GetMapping("hairshop/review/{shop_seq}")
     public ResponseEntity<?> findReview(@PathVariable("shop_seq") int shop_seq){
         List<ReviewDTO> reviewList = homeService.findReview(shop_seq);
         return ResponseEntity.ok().body(reviewList);
