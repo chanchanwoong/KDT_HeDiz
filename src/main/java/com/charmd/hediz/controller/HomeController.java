@@ -23,11 +23,19 @@ public class HomeController {
 
     // 모든 미용실 조회
     // 필터 데이터를 가지고 적용해야 한다.
-    @GetMapping("")
-    public ResponseEntity<?> findAllHairshop() {
-//        System.out.println(filterMap);
-        List<HairshopDTO> hairshopList = homeService.findAllHairshop();
-        return ResponseEntity.ok().body(hairshopList);
+    @PostMapping("")
+    public ResponseEntity<?> findAllHairshop(@RequestBody HashMap<String, String> filterMap) {
+        System.out.println(filterMap);
+        // 필터 값이 null 인 경우, 모든 헤어샵 조회
+        if (filterMap.get("score_filter") == null && filterMap.get("tag_filter") == null) {
+            List<HairshopDTO> hairshopList = homeService.findAllHairshop();
+            return ResponseEntity.ok().body(hairshopList);
+        }
+        // 필터에 어떤 값이 있는 경우
+        else{
+            List<HairshopDTO> hairshopList = homeService.findHairshopWithFilter(filterMap);
+            return ResponseEntity.ok().body(hairshopList);
+        }
     }
 
     // keyword를 이용해서 검색하기

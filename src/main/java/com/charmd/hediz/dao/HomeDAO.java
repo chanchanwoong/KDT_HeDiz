@@ -19,6 +19,9 @@ public class HomeDAO {
     public List<HairshopDTO> findAllHairshop(){
         return session.selectList("com.config.HomeMapper.findAllHairshop");
     }
+    public List<HairshopDTO> findHairshopWithFilter(HashMap<String, String> filterMap){
+        return session.selectList("com.config.HomeMapper.findHairshopWithFilter", filterMap);
+    }
     public HairshopDTO findHairshop(int shop_seq){
         return session.selectOne("com.config.HomeMapper.findHairshop", shop_seq);
     }

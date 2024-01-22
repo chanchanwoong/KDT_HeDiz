@@ -22,6 +22,11 @@ public class HomeServiceImpl implements HomeService {
     }
 
     @Override
+    public List<HairshopDTO> findHairshopWithFilter(HashMap<String, String> filterMap) {
+        return dao.findHairshopWithFilter(filterMap);
+    }
+
+    @Override
     public HairshopDTO findHairshop(int shop_seq) {
         return dao.findHairshop(shop_seq);
     }
