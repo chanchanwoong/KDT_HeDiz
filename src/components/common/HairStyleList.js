@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { authAxios } from '../../api/AxiosAPI';
 
-function HairStyleList() {
+function HairstyleList() {
   const [products, setProducts] = useState([]);
   const location = useLocation();
   const shop_seq = location.state.shop_seq;
@@ -36,27 +36,38 @@ function HairStyleList() {
             }
           )}
         >
-          <img
-            className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
-            src={product.style_image}
-            alt={product.style_name}
-          />
-          <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
-            <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
-              <div className='text-2xl font-bold text-900'>
-                {product.style_name}
-              </div>
+          <Link
+            to={`/hairstyle`}
+            state={{
+              shop_seq: shop_seq,
+              style_seq: product.style_seq,
+              style_name: product.style_name,
+            }}
+          >
+            <img
+              className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
+              src={product.style_image}
+              alt={product.style_name}
+            />
+            <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
+              <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
+                <div className='text-2xl font-bold text-900'>
+                  {product.style_name}
+                </div>
 
-              <div className='flex align-items-center gap-3'>
-                <span className='flex align-items-center gap-2'>
-                  <span className='font-semibold'>{product.style_price}원</span>
-                </span>
+                <div className='flex align-items-center gap-3'>
+                  <span className='flex align-items-center gap-2'>
+                    <span className='font-semibold'>
+                      {product.style_price}원
+                    </span>
+                  </span>
+                </div>
+                <span>시술 대상 : {product.style_gender}</span>
+                <span>소요 시간 : {product.style_time}</span>
               </div>
-              <span>시술 대상 : {product.style_gender}</span>
-              <span>소요 시간 : {product.style_time}</span>
+              <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'></div>
             </div>
-            <div className='flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2'></div>
-          </div>
+          </Link>
         </div>
       </div>
     );
@@ -82,4 +93,4 @@ function HairStyleList() {
   );
 }
 
-export default HairStyleList;
+export default HairstyleList;

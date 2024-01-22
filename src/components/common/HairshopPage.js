@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Rating } from 'primereact/rating';
+import { Dialog } from 'primereact/dialog';
 import { authAxios } from '../../api/AxiosAPI';
 import { useLocation } from 'react-router-dom';
 import KakaoMap from './KakaoMap';
@@ -24,6 +25,7 @@ const getRegularDayOff = (value) => {
 };
 
 function HairshopPage() {
+  const [kakaomapVisible, setKakaomapVisible] = useState(false);
   const [product, setProduct] = useState(null);
   const [hairshopLocation, setHairshopLocation] = useState(null);
   const location = useLocation();
@@ -42,6 +44,12 @@ function HairshopPage() {
       });
   }, []);
 
+  const checkKakaomap = () => {
+    setKakaomapVisible(true);
+  };
+  const hideKakaomap = () => {
+    setKakaomapVisible(false);
+  };
   const itemTemplate = (product) => {
     console.log(hairshopLocation);
     return (
@@ -71,7 +79,10 @@ function HairshopPage() {
 
             <div>
               <span>{product.shop_intro}</span>
-              <i className='pi pi-map-marker'></i>
+              <i
+                className='pi pi-map-marker'
+                onClick={() => checkKakaomap()}
+              ></i>
             </div>
           </div>
           <div className='flex flex-column align-items-center sm:align-items-start gap-3'></div>
@@ -83,7 +94,12 @@ function HairshopPage() {
   return (
     <div className='card'>
       {product && itemTemplate(product)}
-      <KakaoMap hairshopLocation={hairshopLocation} />
+      <Dialog
+        visible={kakaomapVisible}
+        onHide={hideKakaomap}
+      >
+        <KakaoMap hairshopLocation={hairshopLocation} />
+      </Dialog>
     </div>
   );
 }
