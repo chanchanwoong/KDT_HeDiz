@@ -26,4 +26,21 @@
         cust_phone = #{cust_phone}
         where cust_seq = #{cust_seq}
     </update>
+
+    <!--cust_seq에 따른 review 조회-->
+    <select id="review" resultType="ReviewDTO">
+        select review_seq, shop_name, a.reserv_seq, review_score, review_content, review_photo, review_date, review_reply, style_name, staff_name
+        from t_review a
+        inner join t_reservation b on a.reserv_seq = b.reserv_seq
+        inner join t_hairshop c on a.shop_seq = c.shop_seq
+        inner join t_hairstyle d on b.style_seq = d.style_seq
+        inner join t_staff e on b.staff_seq = e.staff_seq
+        where cust_seq=#{cust_seq}
+    </select>
+
+    <!--review 작성-->
+    <update id="reviewWrite">
+        insert into t_review (shop_seq, reserv_seq, review_score, review_content, review_photo, review_date)
+        values (#{shop_seq}, #{reserv_seq}, #{review_score}, #{review_content}, #{review_photo}, #{review_date})
+    </update>
 </mapper>

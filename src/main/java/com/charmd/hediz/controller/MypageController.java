@@ -39,10 +39,17 @@ public class MypageController {
         return ResponseEntity.ok().body(customerDto);
     }
 
-    // 리뷰 작성
+    // cust_seq에 따른 리뷰 조회
+    @GetMapping("reservation/review/{cust_seq}")
+    public ResponseEntity<?> review(@PathVariable("cust_seq") int cust_seq){
+        List<ReviewDTO> reviewList = mypageService.review(cust_seq);
+        return ResponseEntity.ok().body(reviewList);
+    }
+
+    // cust_seq에 따른 리뷰 작성
     @PostMapping("reservation/review")
-    public ResponseEntity<?> review(@RequestBody ReviewDTO reviewDto){
-//        int n = mypageService.review(reviewDto);
+    public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDto){
+        int n = mypageService.reviewWrite(reviewDto);
         return ResponseEntity.ok().body(reviewDto);
     }
 }

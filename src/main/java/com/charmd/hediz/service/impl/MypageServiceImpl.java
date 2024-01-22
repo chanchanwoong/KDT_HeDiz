@@ -29,8 +29,13 @@ public class MypageServiceImpl implements MypageService {
         return dao.updateMypage(customerDto);
     }
 
-//    @Override
-//    public int review(ReviewDTO reviewDto) {
-//        return dao.review;
-//    }
+    @Override
+    public List<ReviewDTO> review(int cust_seq) {
+        return dao.review(cust_seq);
+    }
+
+    @Override
+    public int reviewWrite(ReviewDTO reviewDto) {
+        return dao.reviewWrite(reviewDto);
+    }
 }

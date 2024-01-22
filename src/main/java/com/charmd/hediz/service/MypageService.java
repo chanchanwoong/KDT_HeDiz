@@ -10,5 +10,6 @@ public interface MypageService {
     public CustomerDTO findMypage(CustomerDTO customerDto);
     public List<ReservationDTO> reservation(ReservationDTO reservationDto);
     public int updateMypage(CustomerDTO customerDto);
-//    public int review(ReviewDTO reviewDto);
+    public List<ReviewDTO> review(int cust_seq);
+    public int reviewWrite(ReviewDTO reviewDto);
 }
