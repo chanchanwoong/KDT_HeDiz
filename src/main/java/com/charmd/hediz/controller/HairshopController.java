@@ -24,21 +24,21 @@ public class HairshopController {
     private HairshopService hairshopService;
 
     // 특정 미용실 정보 조회
-    @GetMapping("hairshop/{shop_seq}")
+    @GetMapping("{shop_seq}")
     public ResponseEntity<?> findHairshop(@PathVariable("shop_seq") int shop_seq) {
         HairshopDTO hairshopDto = hairshopService.findHairshop(shop_seq);
         return ResponseEntity.ok().body(hairshopDto);
     }
 
     // 특정 미용실 헤어스타일 조회
-    @GetMapping("hairshop/hairstyle/{shop_seq}")
+    @GetMapping("hairstyle/{shop_seq}")
     public ResponseEntity<?> findHairstyle(@PathVariable("shop_seq") int shop_seq) {
         List<HairstyleDTO> hairstyleList = hairshopService.findHairstyle(shop_seq);
         return ResponseEntity.ok().body(hairstyleList);
     }
 
     // 특정 미용실 헤어스타일 중 특정 헤어스타일 정보 조회
-    @GetMapping("hairshop/hairstyle/{shop_seq}/{style_seq}")
+    @GetMapping("hairstyle/{shop_seq}/{style_seq}")
     public ResponseEntity<?> findHairstyleInfor(@PathVariable("shop_seq") int shop_seq, @PathVariable("style_seq") int style_seq) {
         HashMap<String, Integer> shopAndStyleMap = new HashMap<>();
         shopAndStyleMap.put("shop_seq", shop_seq);
