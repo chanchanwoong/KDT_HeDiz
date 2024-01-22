@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 export default function AppTopbar() {
   const items = [
     { label: '홈', icon: 'pi pi-home', url: '/' },
-    { label: '예약', icon: 'pi pi-list', url: '/mypage/reservation' },
-    { label: '마이페이지', icon: 'pi pi-inbox', url: '/mypage/mypage' },
+    { label: '예약', icon: 'pi pi-list', url: '/reservation' },
+    { label: '마이페이지', icon: 'pi pi-inbox', url: '/mypage' },
   ];
 
   const menuItems = items.map((item) => ({
@@ -16,7 +16,7 @@ export default function AppTopbar() {
   }));
 
   return (
-    <div className='card'>
+    <div className="card">
       <Logo />
       <TabMenu model={menuItems} />
     </div>

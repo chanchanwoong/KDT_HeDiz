@@ -9,15 +9,17 @@ import SignUp from '../pages/auth/SignUp';
 // 메인화면
 import MainLayout from '../layout/MainLayout';
 import Home from '../pages/home/Home';
-import HairshopDetailPage from '../pages/home/HairshopDetailPage';
-import Mypage from '../pages/mypage/Mypage';
-import MyReservation from '../pages/reservation/MyReservation';
-import Reservation from '../pages/reservation/Reservation';
-import HairstyleDetailPage from '../pages/home/HairstyleDetailPage';
+
+//헤어샵 페이지
+import HairshopDetailPage from '../pages/hairshop/HairshopDetailPage';
+import HairstyleDetailPage from '../pages/hairshop/HairstyleDetailPage';
 
 //마이페이지
+import Mypage from '../pages/mypage/Mypage';
+import MyReservation from '../pages/mypage/MyReservation';
 
 //예약 페이지
+import Reservation from '../pages/reservation/Reservation';
 
 const router = createBrowserRouter([
   {
@@ -33,19 +35,20 @@ const router = createBrowserRouter([
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: '/', element: <Home /> },
+      { path: '', element: <Home /> },
       { path: 'hairshop', element: <HairshopDetailPage /> },
       { path: 'hairstyle', element: <HairstyleDetailPage /> },
       {
-        path: '/mypage',
-        children: [
-          { path: 'mypage', element: <Mypage /> },
-          { path: 'reservation', element: <MyReservation /> },
-        ],
+        path: 'mypage',
+        element: <Mypage />,
       },
       {
-        path: '/reservation',
-        children: [{ path: 'reservation', element: <Reservation /> }],
+        path: 'mypage/list',
+        element: <MyReservation />,
+      },
+      {
+        path: 'reservation',
+        element: <Reservation />,
       },
     ],
   },

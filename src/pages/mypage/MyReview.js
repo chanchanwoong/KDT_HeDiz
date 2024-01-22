@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { useLocation } from 'react-router-dom';
 import { authAxios } from '../../api/AxiosAPI';
+import { Panel } from 'primereact/panel';
 import { Rating } from 'primereact/rating';
 
-function ReviewList() {
+function MyReview() {
   const [products, setProducts] = useState([]);
-  const location = useLocation();
-  const shop_seq = location.state.shop_seq;
-  const style_name = location.state.style_name;
-  // ...
-
+  console.log(localStorage.getItem('cust_seq'));
   useEffect(() => {
     authAxios()
-      .get(`hairshop/hairshop/review/` + shop_seq)
+      //   .get(`mypage/review/${localStorage.getItem('cust_seq')}`)
+      .get(`mypage/review/1`)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        console.log(style_name);
-        if (style_name !== undefined) {
-          // product.style_name을 기반으로 리뷰 필터링
-          const filteredReviews = response.data.filter((product) => product.style_name === style_name);
-          setProducts(filteredReviews);
-        } else {
-          console.log(response.data);
-          setProducts(response.data);
-        }
+        setProducts(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
@@ -44,20 +33,17 @@ function ReviewList() {
           })}
         >
           <img
-            className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+            className="w-3 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
             src={product.review_photo}
             alt={product.review_photo}
           />
           <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
             <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-              <div className="text-2xl font-bold text-900">{product.cust_name}</div>
-              <div>
-                <span>{product.staff_nickname}</span>
-                <span>({product.style_name})</span>
-              </div>
+              <div className="text-2xl font-bold text-900">{product.review_nickname}</div>
+              <span>{product.review_date}</span>
               <div className="flex align-items-center gap-3">
                 <span className="flex align-items-center gap-2">
-                  <span className="font-semibold">{product.review_content}</span>
+                  <span className="font-semibold">{product.style_name}</span>
                 </span>
               </div>
               <Rating
@@ -65,9 +51,7 @@ function ReviewList() {
                 readOnly
                 cancel={false}
               ></Rating>
-              <span>
-                {product.staff_nickname} : {product.review_reply}
-              </span>
+              <span>{product.review_content}</span>
             </div>
           </div>
         </div>
@@ -86,13 +70,15 @@ function ReviewList() {
   };
 
   return (
-    <div className="card">
-      <DataView
-        value={products}
-        listTemplate={listTemplate}
-      />
-    </div>
+    <Panel header="내 리뷰">
+      <div className="card">
+        <DataView
+          value={products}
+          listTemplate={listTemplate}
+        />
+      </div>
+    </Panel>
   );
 }
 
-export default ReviewList;
+export default MyReview;

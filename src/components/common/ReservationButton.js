@@ -8,7 +8,7 @@ function ReservationButton() {
 
   const checkToken = (e) => {
     if (token) {
-      navigate('reservation/reservation');
+      navigate('/reservation');
     } else {
       navigate('/auth/sign-in');
     }
