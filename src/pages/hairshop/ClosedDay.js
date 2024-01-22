@@ -18,7 +18,7 @@ import { Toast } from 'primereact/toast';
 
 function ClosedDay() {
   const [staff, setStaff] = useState(null);
-  const [closedDay, setClosdedDay] = useState([]);
+  const [closedDay, setClosedDay] = useState([]);
   const [events, setEvents] = useState([]);
   const calendarRef = useRef(null);
   const [checked, setChecked] = useState(false);
@@ -70,7 +70,7 @@ function ClosedDay() {
       .get(`/hairshop/closed-day/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        setClosdedDay(response.data);
+        setClosedDay(response.data);
 
         // 이벤트 데이터 생성
         const eventList = response.data.map((item) => ({
