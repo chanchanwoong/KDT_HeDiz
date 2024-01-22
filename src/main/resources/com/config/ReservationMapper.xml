@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.ReservationMapper">
+    <!--예약 상황 조회-->
+    <select id="currentReservation" resultType="ReservationDTO">
+        select reserv_seq, shop_name, staff_nickname, style_name, reserv_request, reserv_date, reserv_time
+        from t_reservation a
+        inner join t_hairshop b on a.shop_seq = b.shop_seq
+        inner join t_staff c on a.staff_seq = c.staff_seq
+        inner join t_hairstyle d on a.style_seq = d.style_seq
+        where cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) <![CDATA[< now()]]>
+    </select>
+
+    <!--예약 삭제-->
+    <delete id="deleteReservation" parameterType="int">
+        delete from t_reservation where reserv_seq=#{reserv_seq}
+    </delete>
+</mapper>

@@ -22,7 +22,6 @@
     <!--mypage 수정-->
     <update id="updateMypage" parameterType="CustomerDTO">
         update t_customer set
-        cust_name = #{cust_name},
         cust_phone = #{cust_phone}
         where cust_seq = #{cust_seq}
     </update>
