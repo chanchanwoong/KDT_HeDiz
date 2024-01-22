@@ -78,7 +78,7 @@ function Dashboard() {
               실시간 예약
             </span>
             <Clock
-              format={'YY. MM. DD. HH:mm:ss'}
+              format={'YY년 MM월 DD일 HH:mm:ss'}
               ticking={true}
             />
           </h2>
@@ -94,15 +94,17 @@ function Dashboard() {
               <Column
                 field='staff_nickname'
                 header='담당 디자이너'
+                className='text-center'
               />
               <Column
                 field='cust_name'
                 header='고객 이름'
-                className='font-semibold'
+                className='text-center font-semibold'
               />
               <Column
                 field='reserv_time'
                 header='예약시간'
+                className='text-center'
                 body={reservationTimeTemplate}
               />
               <Column
@@ -116,10 +118,14 @@ function Dashboard() {
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
             <span>휴무일</span>
-            [정기 휴무일]
+            <span>
+              <span className='mr-1 text-primary text-semiblod'>월요일</span>
+              정기 휴무
+            </span>
           </h2>
           <div>
             <FullCalendar
+              locale='kr'
               ref={calendarRef}
               plugins={[dayGridPlugin]}
               initialView='dayGridMonth'
@@ -128,13 +134,13 @@ function Dashboard() {
         </div>
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
-            <span>최근 리뷰</span>
+            <span>매출 요약</span>
           </h2>
-          <div>최근 리뷰?</div>
+          <div></div>
         </div>
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
-            <span>뭘 나타내면 좋을까요</span>
+            <span>고객 방문 현황</span>
             그래프 하나 있으면 이쁠 듯
           </h2>
           <div>매출 요약 그래프 또는 금주 고객 방문 횟수?</div>
