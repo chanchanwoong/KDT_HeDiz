@@ -14,8 +14,8 @@ public class MypageDAO {
     @Autowired
     SqlSessionTemplate session;
 
-    public CustomerDTO findMypage(CustomerDTO customerDto){
-        return session.selectOne("com.config.MypageMapper.findMypage", customerDto);
+    public CustomerDTO findMypage(int cust_seq){
+        return session.selectOne("com.config.MypageMapper.findMypage", cust_seq);
     }
     public List<ReservationDTO> reservation(ReservationDTO reservationDto){
         return session.selectList("com.config.MypageMapper.reservation", reservationDto);

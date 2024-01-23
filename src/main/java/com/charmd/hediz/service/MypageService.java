@@ -7,7 +7,7 @@ import com.charmd.hediz.dto.ReviewDTO;
 import java.util.List;
 
 public interface MypageService {
-    public CustomerDTO findMypage(CustomerDTO customerDto);
+    public CustomerDTO findMypage(int cust_seq);
     public List<ReservationDTO> reservation(ReservationDTO reservationDto);
     public int updateMypage(CustomerDTO customerDto);
     public List<ReviewDTO> review(int cust_seq);

@@ -15,8 +15,8 @@ public class MypageServiceImpl implements MypageService {
     @Autowired
     MypageDAO dao;
     @Override
-    public CustomerDTO findMypage(CustomerDTO customerDto) {
-        return dao.findMypage(customerDto);
+    public CustomerDTO findMypage(int cust_seq) {
+        return dao.findMypage(cust_seq);
     }
 
     @Override

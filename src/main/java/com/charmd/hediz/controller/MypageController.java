@@ -19,11 +19,16 @@ public class MypageController {
     private MypageService mypageService;
 
     // 내 정보 조회
-    @PostMapping("profile")
-    public ResponseEntity<?> findMypage(@RequestBody CustomerDTO customerDto) {
-        customerDto = mypageService.findMypage(customerDto);
+    @GetMapping("profile/{cust_seq}")
+    public ResponseEntity<?> findMypage(@PathVariable("cust_seq") int cust_seq) {
+        CustomerDTO customerDto = mypageService.findMypage(cust_seq);
         return ResponseEntity.ok().body(customerDto);
     }
+//    @PostMapping("profile")
+//    public ResponseEntity<?> findMypage(@RequestBody CustomerDTO customerDto) {
+//        customerDto = mypageService.findMypage(customerDto);
+//        return ResponseEntity.ok().body(customerDto);
+//    }
 
     // 내 예약 정보 조회
     @PostMapping("reservation")
