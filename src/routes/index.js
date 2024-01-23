@@ -17,6 +17,7 @@ import HairstyleDetailPage from '../pages/hairshop/HairstyleDetailPage';
 //마이페이지
 import Mypage from '../pages/mypage/Mypage';
 import MyReservation from '../pages/mypage/MyReservation';
+import MyReview from '../pages/mypage/MyReview';
 
 //예약 페이지
 import Reservation from '../pages/reservation/Reservation';
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: 'mypage/list',
         element: <MyReservation />,
+      },
+      {
+        path: 'mypage/review',
+        element: <MyReview />,
       },
       {
         path: 'reservation',
