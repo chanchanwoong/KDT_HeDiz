@@ -62,4 +62,11 @@ public class MypageController {
         int n = mypageService.reviewWrite(reviewDto);
         return ResponseEntity.ok().body(reviewDto);
     }
+
+    // cust_seq에 따른 리뷰 삭제
+    @DeleteMapping("review/{review_seq}")
+    public ResponseEntity<?> reviewDelete(@PathVariable("review_seq") int review_seq){
+        int n = mypageService.reviewDelete(review_seq);
+        return ResponseEntity.ok().body(n==1);
+    }
 }

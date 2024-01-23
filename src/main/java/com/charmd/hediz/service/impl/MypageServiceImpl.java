@@ -38,4 +38,9 @@ public class MypageServiceImpl implements MypageService {
     public int reviewWrite(ReviewDTO reviewDto) {
         return dao.reviewWrite(reviewDto);
     }
+
+    @Override
+    public int reviewDelete(int review_seq) {
+        return dao.reviewDelete(review_seq);
+    }
 }

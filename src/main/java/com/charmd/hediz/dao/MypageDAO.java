@@ -29,4 +29,7 @@ public class MypageDAO {
     public int reviewWrite(ReviewDTO reviewDto){
         return session.insert("com.config.MypageMapper.reviewWrite", reviewDto);
     }
+    public int reviewDelete(int review_seq){
+        return session.delete("com.config.MypageMapper.reviewDelete", review_seq);
+    }
 }
