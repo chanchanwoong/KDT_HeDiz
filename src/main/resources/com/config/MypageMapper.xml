@@ -11,10 +11,11 @@
 
     <!--예약 정보 조회-->
     <select id="reservation" resultType="ReservationDTO">
-        select reserv_seq, reserv_request, reserv_date, reserv_time, reserv_stat,
+        select reserv_seq, reserv_request, reserv_date, reserv_time, reserv_stat, shop_seq,
         (select style_name from t_hairstyle where style_seq = tr.style_seq) as style_name,
         (select shop_name from t_hairshop where shop_seq = tr.shop_seq) as shop_name,
-        (select staff_name from t_staff where staff_seq = tr.staff_seq) as staff_name
+        (select shop_image from t_hairshop where shop_seq = tr.shop_seq) as shop_image,
+        (select staff_nickname from t_staff where staff_seq = tr.staff_seq) as staff_nickname
         from t_reservation tr
         where cust_seq = #{cust_seq}
     </select>
@@ -35,6 +36,7 @@
         inner join t_hairstyle d on b.style_seq = d.style_seq
         inner join t_staff e on b.staff_seq = e.staff_seq
         where cust_seq=#{cust_seq}
+        order by review_date desc
     </select>
 
     <!--review 작성-->

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 @Alias("ReservationDTO")
 public class ReservationDTO {
     private int reserv_seq;
@@ -32,5 +32,6 @@ public class ReservationDTO {
     private String staff_nickname;
     private String style_name;
     private String cust_phone;
-
+    private String shop_image;
+    private String shop_name;
 }

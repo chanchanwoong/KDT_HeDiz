@@ -61,4 +61,7 @@ public class HairshopController {
         List<ReviewDTO> reviewList = hairshopService.findReview(shop_seq);
         return ResponseEntity.ok().body(reviewList);
     }
+
+    // 예약 및 결제하기
+
 }
