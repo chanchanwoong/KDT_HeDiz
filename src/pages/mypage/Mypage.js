@@ -24,7 +24,7 @@ function Mypage() {
       .then((response) => {
         console.log('Auth Response:', response.data);
         let genderSelect = '';
-        if (response.data.shop_gender === 1) {
+        if (response.data.cust_gender === 1) {
           genderSelect = '남';
         } else {
           genderSelect = '여';

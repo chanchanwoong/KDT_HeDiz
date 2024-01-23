@@ -19,7 +19,6 @@ function ReviewList() {
         console.log('Auth Response:', response.data);
         console.log(style_name);
         if (style_name !== undefined) {
-          // product.style_name을 기반으로 리뷰 필터링
           const filteredReviews = response.data.filter(
             (product) => product.style_name === style_name
           );

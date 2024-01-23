@@ -25,7 +25,7 @@ function MyReservation() {
     return (
       <div
         className='col-12'
-        key={product.review_seq}
+        key={product.reserv_seq}
       >
         <div
           className={classNames(
@@ -37,15 +37,19 @@ function MyReservation() {
         >
           <img
             className='w-3 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
-            src={product.review_photo}
-            alt={product.review_photo}
+            src={product.shop_image}
+            alt={product.shop_image}
           />
           <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
             <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
               <div className='text-2xl font-bold text-900'>
-                {product.review_nickname}
+                {product.shop_name}
               </div>
-              <span>{product.review_date}</span>
+              <span>{product.staff_nickname}</span>
+              <div>
+                <span className='mr-3'>{product.reserv_date}</span>
+                <span>{product.reserv_time}</span>
+              </div>
               <div className='flex align-items-center gap-3'>
                 <span className='flex align-items-center gap-2'>
                   <span className='font-semibold'>{product.style_name}</span>
