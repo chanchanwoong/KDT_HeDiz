@@ -28,7 +28,7 @@
 
     <!--cust_seq에 따른 review 조회-->
     <select id="review" resultType="ReviewDTO">
-        select review_seq, a.shop_seq, shop_name, a.reserv_seq, review_score, review_content, review_photo, review_date, review_reply, style_name, staff_name
+        select review_seq, a.shop_seq, shop_name, a.reserv_seq, review_score, review_content, review_photo, review_date, review_reply, style_name, staff_nickname
         from t_review a
         inner join t_reservation b on a.reserv_seq = b.reserv_seq
         inner join t_hairshop c on a.shop_seq = c.shop_seq
