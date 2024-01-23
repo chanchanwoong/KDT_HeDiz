@@ -21,6 +21,7 @@ import MyReview from '../pages/mypage/MyReview';
 
 //예약 페이지
 import Reservation from '../pages/reservation/Reservation';
+import WriteReview from '../pages/mypage/WriteReview';
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: 'mypage/review',
         element: <MyReview />,
+      },
+      {
+        path: 'mypage/write-review',
+        element: <WriteReview />,
       },
       {
         path: 'reservation',

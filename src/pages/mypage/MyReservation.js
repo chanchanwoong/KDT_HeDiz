@@ -3,7 +3,7 @@ import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { authAxios } from '../../api/AxiosAPI';
 import { Panel } from 'primereact/panel';
-import { Rating } from 'primereact/rating';
+import { Link } from 'react-router-dom';
 
 function MyReservation() {
   const [products, setProducts] = useState([]);
@@ -56,6 +56,17 @@ function MyReservation() {
                 </span>
               </div>
               <span>{product.review_content}</span>
+              <Link
+                to='/mypage/write-review'
+                state={{
+                  reserv_seq: product.reserv_seq,
+                  shop_seq: product.shop_seq,
+                  shop_name: product.shop_name,
+                }}
+              >
+                {' '}
+                리뷰 등록{' '}
+              </Link>
             </div>
           </div>
         </div>
@@ -80,6 +91,7 @@ function MyReservation() {
           value={products}
           listTemplate={listTemplate}
           emptyMessage='현재 예약된 내역이 없네요 :) 예약을 시작해보세요!'
+          style={{ width: '500px', height: '500px' }}
         />
       </div>
     </Panel>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 import HairshopList from '../../components/common/HairshopList';
 
 function Home() {
