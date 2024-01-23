@@ -28,5 +28,6 @@ public class ReviewDTO {
     private String cust_name;
     private String staff_nickname;
     private String style_name;
+    private String shop_name;
 
 }

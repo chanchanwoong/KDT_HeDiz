@@ -17,8 +17,8 @@ public class MypageDAO {
     public CustomerDTO findMypage(int cust_seq){
         return session.selectOne("com.config.MypageMapper.findMypage", cust_seq);
     }
-    public List<ReservationDTO> reservation(ReservationDTO reservationDto){
-        return session.selectList("com.config.MypageMapper.reservation", reservationDto);
+    public List<ReservationDTO> reservation(int cust_seq){
+        return session.selectList("com.config.MypageMapper.reservation", cust_seq);
     }
     public int updateMypage(CustomerDTO customerDto){
         return session.update("com.config.MypageMapper.updateMypage", customerDto);

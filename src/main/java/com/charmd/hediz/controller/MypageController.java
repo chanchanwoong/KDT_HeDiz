@@ -31,11 +31,16 @@ public class MypageController {
 //    }
 
     // 내 예약 정보 조회
-    @PostMapping("reservation")
-    public ResponseEntity<?> reservation(@RequestBody ReservationDTO reservationDto) {
-        List<ReservationDTO> reservationList = mypageService.reservation(reservationDto);
+    @GetMapping("reservation/{cust_seq}")
+    public ResponseEntity<?> reservation(@PathVariable("cust_seq") int cust_seq) {
+        List<ReservationDTO> reservationList = mypageService.reservation(cust_seq);
         return ResponseEntity.ok().body(reservationList);
     }
+//    @PostMapping("reservation")
+//    public ResponseEntity<?> reservation(@RequestBody ReservationDTO reservationDto) {
+//        List<ReservationDTO> reservationList = mypageService.reservation(reservationDto);
+//        return ResponseEntity.ok().body(reservationList);
+//    }
 
     // 내 정보 수정
     @PutMapping("profile")

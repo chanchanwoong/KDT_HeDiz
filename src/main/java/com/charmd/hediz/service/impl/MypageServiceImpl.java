@@ -20,8 +20,8 @@ public class MypageServiceImpl implements MypageService {
     }
 
     @Override
-    public List<ReservationDTO> reservation(ReservationDTO reservationDto) {
-        return dao.reservation(reservationDto);
+    public List<ReservationDTO> reservation(int cust_seq) {
+        return dao.reservation(cust_seq);
     }
 
     @Override
