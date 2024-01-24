@@ -1,18 +1,13 @@
 package com.charmd.hediz.controller;
 
-import com.charmd.hediz.dto.HairshopDTO;
-import com.charmd.hediz.dto.HairstyleDTO;
-import com.charmd.hediz.dto.ReviewDTO;
-import com.charmd.hediz.dto.StaffDTO;
+import com.charmd.hediz.dto.*;
 import com.charmd.hediz.service.HairshopService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,6 +57,15 @@ public class HairshopController {
         return ResponseEntity.ok().body(reviewList);
     }
 
-    // 예약 및 결제하기
+    // 예약_날짜 눌렀을 때 예약 가능 시간 확인
+    @GetMapping("reservation/{shop_seq}/{style_seq}/{day}")
+    public ResponseEntity<?> reservationFilter(@PathVariable("shop_seq") int shop_seq, @PathVariable("style_seq") int style_seq, @PathVariable("day") String day) {
+        HashMap<String, Object> reservationFilterMap = new HashMap<>();
+        reservationFilterMap.put("shop_seq", shop_seq);
+        reservationFilterMap.put("style_seq", style_seq);
+        reservationFilterMap.put("day", day);
+        List<ReservationDTO> currentReservList = hairshopService.reservationFilter(reservationFilterMap);
+        return ResponseEntity.ok().body(currentReservList);
+    }
 
 }

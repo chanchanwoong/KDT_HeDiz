@@ -1,10 +1,8 @@
 package com.charmd.hediz.service;
 
-import com.charmd.hediz.dto.HairshopDTO;
-import com.charmd.hediz.dto.HairstyleDTO;
-import com.charmd.hediz.dto.ReviewDTO;
-import com.charmd.hediz.dto.StaffDTO;
+import com.charmd.hediz.dto.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,4 +13,5 @@ public interface HairshopService {
 
     public List<StaffDTO> findStaff(int shop_seq);
     public List<ReviewDTO> findReview(int shop_seq);
+    public List<ReservationDTO> reservationFilter(HashMap<String, Object> reservationFilterMap);
 }

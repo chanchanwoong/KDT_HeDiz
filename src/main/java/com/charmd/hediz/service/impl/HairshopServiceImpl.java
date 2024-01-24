@@ -1,16 +1,16 @@
 package com.charmd.hediz.service.impl;
 
 import com.charmd.hediz.dao.HairshopDAO;
-import com.charmd.hediz.dto.HairshopDTO;
-import com.charmd.hediz.dto.HairstyleDTO;
-import com.charmd.hediz.dto.ReviewDTO;
-import com.charmd.hediz.dto.StaffDTO;
+import com.charmd.hediz.dto.*;
 import com.charmd.hediz.service.HairshopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+
 @Service("hairshopService")
 public class HairshopServiceImpl implements HairshopService {
     @Autowired
@@ -38,5 +38,10 @@ public class HairshopServiceImpl implements HairshopService {
     @Override
     public List<ReviewDTO> findReview(int shop_seq) {
         return dao.findReview(shop_seq);
+    }
+
+    @Override
+    public List<ReservationDTO> reservationFilter(HashMap<String , Object> reservationFilterMap) {
+        return dao.reservationFilter(reservationFilterMap);
     }
 }

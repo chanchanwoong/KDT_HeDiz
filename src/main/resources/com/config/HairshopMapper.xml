@@ -61,4 +61,19 @@
         tr.shop_seq = #{shop_seq}
         ORDER BY review_date DESC, review_score DESC
     </select>
+
+    <!--예약_날짜 눌렀을 때 예약 가능 시간 확인-->
+    <select id="reservationFilter" parameterType="hashmap" resultType="ReservationDTO">
+        select reserv_seq, cust_seq, style_seq, style_price, reserv_date, reserv_time, style_time,
+        sec_to_time(time_to_sec(reserv_time) + time_to_sec(style_time)) as reserv_end_time,
+        staff_image, staff_nickname, staff_intro
+        from t_reservation a
+        inner join t_staff using(staff_seq)
+        inner join t_hairstyle using(style_seq)
+        where a.shop_seq=#{shop_seq} and
+        reserv_date = #{day} and
+        concat(reserv_date, ' ', reserv_time) >= now() and
+        style_seq = #{style_seq}
+        order by reserv_date, reserv_time
+    </select>
 </mapper>

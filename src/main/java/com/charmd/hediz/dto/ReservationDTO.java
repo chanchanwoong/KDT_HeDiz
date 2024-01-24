@@ -34,4 +34,10 @@ public class ReservationDTO {
     private String cust_phone;
     private String shop_image;
     private String shop_name;
+    private int style_price;
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime style_time;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDateTime reserv_end_time;
+    private String staff_intro;
 }
