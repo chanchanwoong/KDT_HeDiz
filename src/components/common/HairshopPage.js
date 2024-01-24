@@ -19,7 +19,9 @@ const getRegularDayOff = (value) => {
   };
   const dayOffNames = daysOff.map((day) => dayMappings[day]);
 
-  return dayOffNames.length > 0 ? `정기 휴무일 : ${dayOffNames.join(', ')}` : '정기 휴무일 없음';
+  return dayOffNames.length > 0
+    ? `정기 휴무일 : ${dayOffNames.join(', ')}`
+    : '정기 휴무일 없음';
 };
 
 function HairshopPage() {
@@ -28,6 +30,7 @@ function HairshopPage() {
   const [hairshopLocation, setHairshopLocation] = useState(null);
   const location = useLocation();
   const shop_seq = location.state.shop_seq;
+  const shop_name = location.state.shop_name;
   useEffect(() => {
     authAxios()
       .get(`/hairshop/${shop_seq}`)
@@ -51,22 +54,24 @@ function HairshopPage() {
   const itemTemplate = (product) => {
     console.log(hairshopLocation);
     return (
-      <div className="col-12">
-        <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-          <div className="flex flex-column sm:flex-column justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+      <div className='col-12'>
+        <div className='flex flex-column xl:flex-row xl:align-items-start p-4 gap-4'>
+          <div className='flex flex-column sm:flex-column justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
             <img
-              className="w-9 sm:w-16rem xl:w-20rem shadow-2 block xl:block mx-auto border-round"
+              className='w-9 sm:w-16rem xl:w-20rem shadow-2 block xl:block mx-auto border-round'
               src={product.shop_image}
             />
-            <div className="text-2xl font-bold text-900">{product.shop_name}</div>
+            <div className='text-2xl font-bold text-900'>
+              {product.shop_name}
+            </div>
 
-            <div className="flex">
+            <div className='flex'>
               <Rating
                 value={product.avg_review_score}
                 readOnly
                 cancel={false}
               ></Rating>
-              <p className="ml-2">({product.count_review})</p>
+              <p className='ml-2'>({product.count_review})</p>
             </div>
             <span>
               영업 시간 : {product.shop_start} ~ {product.shop_end}
@@ -76,19 +81,19 @@ function HairshopPage() {
             <div>
               <span>{product.shop_intro}</span>
               <i
-                className="pi pi-map-marker"
+                className='pi pi-map-marker'
                 onClick={() => checkKakaomap()}
               ></i>
             </div>
           </div>
-          <div className="flex flex-column align-items-center sm:align-items-start gap-3"></div>
+          <div className='flex flex-column align-items-center sm:align-items-start gap-3'></div>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="card">
+    <div className='card'>
       {product && itemTemplate(product)}
       <Dialog
         visible={kakaomapVisible}

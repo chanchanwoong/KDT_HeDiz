@@ -68,7 +68,10 @@ function HairshopList({ hairshopName }) {
           <div className='flex flex-column sm:flex-column justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
             <Link
               to={`/hairshop`}
-              state={{ shop_seq: product.shop_seq }}
+              state={{
+                shop_seq: product.shop_seq,
+                shop_name: product.shop_name,
+              }}
             >
               <img
                 className='w-9 sm:w-16rem xl:w-20rem shadow-2 block xl:block mx-auto border-round'

@@ -8,6 +8,7 @@ function HairstyleList() {
   const [products, setProducts] = useState([]);
   const location = useLocation();
   const shop_seq = location.state.shop_seq;
+  const shop_name = location.state.shop_name;
 
   useEffect(() => {
     authAxios()
@@ -40,6 +41,7 @@ function HairstyleList() {
               to={`/hairstyle`}
               state={{
                 shop_seq: shop_seq,
+                shop_name: shop_name,
                 style_seq: product.style_seq,
                 style_name: product.style_name,
               }}
@@ -55,8 +57,10 @@ function HairstyleList() {
                 to={`/hairstyle`}
                 state={{
                   shop_seq: shop_seq,
+                  shop_name: shop_name,
                   style_seq: product.style_seq,
                   style_name: product.style_name,
+                  style_time: product.style_time,
                 }}
               >
                 <div className='text-2xl font-bold text-900'>
