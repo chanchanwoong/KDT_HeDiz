@@ -36,7 +36,7 @@
         inner join t_hairstyle d on b.style_seq = d.style_seq
         inner join t_staff e on b.staff_seq = e.staff_seq
         where cust_seq=#{cust_seq}
-        order by review_date desc
+        order by review_date desc, review_score desc
     </select>
 
     <!--review 작성-->
