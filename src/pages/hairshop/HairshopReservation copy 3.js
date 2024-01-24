@@ -32,7 +32,7 @@ function HairshopReservation() {
   useEffect(() => {
     const request1 = authAxios().get(`hairshop/staff/${shop_seq}`);
     const request2 = authAxios().get(`hairshop/reservation/${shop_seq}/${style_seq}/${selectedDay}`);
-
+    // Axios.all 메소드를 사용하여 여러 개의 요청을 동시에 보냄
     axios
       .all([request1, request2])
       .then(
@@ -41,26 +41,16 @@ function HairshopReservation() {
           console.log('Response from request2:', res2.data);
 
           setStaff(res1.data);
-
-          if (res2.data && res2.data[0].reserv_time) {
-            setReservation(res2.data);
-            setReserveTime(res2.data[0].reserv_time);
-            console.log('asdsads');
-          } else {
-            console.log('Reservation data is undefined or missing reserv_time.');
-          }
-
-          // 이 부분에서 콘솔에 값이 출력됩니다.
-          console.log(res2.data.reserv_time);
+          setReservation(res2.data);
         })
       )
       .catch((error) => {
         console.error('Error in Axios.all:', error);
-        setReserveTime('');
       });
-  }, [shop_seq, style_seq, selectedDay]);
+  }, [selectedDay]);
 
-  const itemTemplate = (staff, index, reservation) => {
+  const itemTemplate = (staff, reservation, index) => {
+    console.log(reservation.reserv_time);
     return (
       <div
         className="col-12"
@@ -79,6 +69,7 @@ function HairshopReservation() {
           <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
             <div className="flex flex-column align-items-center sm:align-items-start gap-3">
               <div className="text-2xl font-bold text-900">{staff.staff_nickname}</div>
+
               <div className="flex align-items-center gap-3">
                 <span className="flex align-items-center gap-2">
                   <span className="font-semibold">{staff.staff_role}</span>
@@ -86,13 +77,14 @@ function HairshopReservation() {
               </div>
               <span>{staff.staff_intro}</span>
               <span>{reservation.reserv_time}</span>
+
               <div className="time-buttons">
-                {generateTimeSlots(reservation).map((timeSlot) => (
+                {generateTimeSlots().map((timeSlot) => (
                   <button
                     key={timeSlot.key}
                     className="btn btn-primary"
                     onClick={() => handleTimeButtonClick(timeSlot.key, reservation)}
-                    disabled={timeSlot.props.disabled}
+                    disabled={reservation.reserv_time || reservation.reserv_end_time}
                   >
                     {timeSlot.props.children}
                   </button>
@@ -108,8 +100,8 @@ function HairshopReservation() {
   const listTemplate = (items) => {
     if (!items || items.length === 0) return null;
 
-    let list = items.map((staff, index) => {
-      return itemTemplate(staff, index, reservation); // reservation 값을 전달
+    let list = items.map((staff, reservation, index) => {
+      return itemTemplate(staff, reservation, index);
     });
 
     return <div className="grid grid-nogutter">{list}</div>;
@@ -124,13 +116,12 @@ function HairshopReservation() {
     for (let time = startTime; time < endTime; time += interval) {
       const hours = Math.floor(time / 60);
       const minutes = time % 60;
-      const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+      const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 
       timeSlots.push(
         <button
           key={formattedTime}
           className="btn btn-primary"
-          disabled={formattedTime === reservTime}
         >
           {formattedTime}
         </button>
