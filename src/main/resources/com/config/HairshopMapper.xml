@@ -58,5 +58,6 @@
         LEFT JOIN t_hairstyle st ON re.style_seq = st.style_seq
         WHERE
         tr.shop_seq = #{shop_seq}
+        ORDER BY review_date DESC, review_score DESC
     </select>
 </mapper>
