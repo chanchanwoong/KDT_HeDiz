@@ -4,7 +4,6 @@ import HairshopPage from '../../components/common/HairshopPage';
 import StaffList from '../../components/common/StaffList';
 import HairstyleList from '../../components/common/HairstyleList';
 import ReviewList from '../../components/common/ReviewList';
-import ReservationButton from '../../components/common/ReservationButton';
 
 function HairshopDetailPage() {
   return (
