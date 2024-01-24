@@ -41,6 +41,7 @@
         SELECT
         tr.review_seq,
         th.shop_name,
+        cust_id,
         cu.cust_name,
         tr.review_score,
         tr.review_content,
