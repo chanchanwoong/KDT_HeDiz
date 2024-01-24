@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -20,10 +22,11 @@ public class ReservationDTO {
     private int cust_seq;
     private int shop_seq;
     private String reserv_request;
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDateTime reserv_date;
+    private LocalDate reserv_date;
     @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime reserv_time;
+    private LocalTime reserv_time;
     private int reserv_stat;
     private int staff_seq;
 
@@ -36,8 +39,14 @@ public class ReservationDTO {
     private String shop_name;
     private int style_price;
     @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime style_time;
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDateTime reserv_end_time;
+    private LocalTime style_time;
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalTime reserv_end_time;
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalTime shop_start;
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalTime shop_end;
     private String staff_intro;
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalTime hope_style_time;
 }

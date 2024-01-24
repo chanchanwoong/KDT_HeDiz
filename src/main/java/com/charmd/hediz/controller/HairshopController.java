@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Api
 @RestController
@@ -64,8 +67,11 @@ public class HairshopController {
         reservationFilterMap.put("shop_seq", shop_seq);
         reservationFilterMap.put("style_seq", style_seq);
         reservationFilterMap.put("day", day);
-        List<ReservationDTO> currentReservList = hairshopService.reservationFilter(reservationFilterMap);
-        return ResponseEntity.ok().body(currentReservList);
+        // 예약된 정보
+        Map<String, Map<String, Set<LocalTime>>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
+
+
+        return ResponseEntity.ok().body(possibleTime);
     }
 
 }

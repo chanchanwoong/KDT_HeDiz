@@ -21,6 +21,5 @@ public class StaffDTO {
     private String staff_intro;
     private String staff_nickname;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDateTime staff_off;
     private int shop_seq;
 }

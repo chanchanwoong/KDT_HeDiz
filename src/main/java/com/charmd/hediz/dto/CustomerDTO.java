@@ -21,7 +21,7 @@ public class CustomerDTO {
     private String cust_phone;
     private int cust_visit;
     private int cust_gender;
-
+    private int cust_level;
     // 집계함수 결과
     private int stat_cancel;
     private int stat_complete;

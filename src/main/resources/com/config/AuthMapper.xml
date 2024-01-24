@@ -13,8 +13,8 @@
 
     <!--회원가입-->
     <insert id="signUp" parameterType="CustomerDTO">
-        INSERT INTO T_CUSTOMER (cust_name, cust_id, cust_pw, cust_phone, cust_gender)
-        VALUES (#{cust_name}, #{cust_id}, #{cust_pw}, #{cust_phone}, #{cust_gender})
+        INSERT INTO T_CUSTOMER (cust_name, cust_id, cust_pw, cust_phone, cust_gender, cust_level)
+        VALUES (#{cust_name}, #{cust_id}, #{cust_pw}, #{cust_phone}, #{cust_gender}, 0)
     </insert>
 
     <!--id 중복 체크-->
