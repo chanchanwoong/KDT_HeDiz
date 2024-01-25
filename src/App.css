@@ -51,7 +51,9 @@ h2 {
 .p-panel-header {
   display: block;
 }
-
+.p-inputtext {
+  width: 100%;
+}
 .p-menu {
   padding: 0;
 }

@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
+import { authAxios } from 'api/AxiosAPI';
+import { useForm } from 'react-hook-form';
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
-import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { authAxios } from 'api/AxiosAPI';
 
 export default function staff() {
   const shop_seq = localStorage.getItem('shop_seq');
-  let emptyProduct = {
+  let defaultValues = {
     shop_seq: shop_seq,
     staff_seq: 0,
     staff_nickname: '',
@@ -23,41 +23,149 @@ export default function staff() {
     staff_image: null,
   };
 
-  const [products, setProducts] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
-  const [submitted, setSubmitted] = useState(false);
+  const accept = (msg) => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Success',
+      detail: msg,
+      life: 3000,
+    });
+  };
+
+  const reject = (msg) => {
+    toast.current.show({
+      severity: 'warn',
+      summary: 'Rejected',
+      detail: msg,
+      life: 3000,
+    });
+  };
+
+  const onCancelClick = () => {
+    reset(defaultValues);
+    setVisible(false);
+  };
+
+  const {
+    handleSubmit,
+    reset,
+    control,
+    register,
+    formState: { errors },
+  } = useForm();
+
+  const [visible, setVisible] = useState(false);
+  const [staffs, setStaffs] = useState(null);
+  const [product, setProduct] = useState(defaultValues);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [sendImgs, setSendImgs] = useState([]);
   const dt = useRef(null);
   const toast = useRef(null);
 
   useEffect(() => {
+    loadData();
+  }, []);
+
+  // 직원 불러오기 및 업데이트
+  const loadData = () => {
     authAxios()
-      .get(`/hairshop/staff/` + shop_seq)
+      .get(`/hairshop/staff/${shop_seq}`)
       .then((response) => {
-        console.log('Auth Response:', response.data);
-        setProducts(response.data);
+        setStaffs(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
       });
-  }, []);
-
-  const openNew = () => {
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setProductDialog(true);
   };
 
-  const hshop_seqeDialog = () => {
-    setSubmitted(false);
-    setProductDialog(false);
+  // 직원 등록
+  const onSubmit = async (data) => {
+    const requestData = {
+      ...data,
+      shop_seq,
+    };
+
+    authAxios()
+      .post(`/hairshop/staff`, requestData)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+        accept('직원을 등록했습니다. ');
+        reset(defaultValues);
+        setVisible(false);
+        loadData();
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+        reject('실패했습니다. ');
+      });
   };
 
-  const hshop_seqeDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
+  // 직원 수정
+  const onRowEditComplete = (e) => {
+    let _staffs = [...staffs];
+    let { newData, index } = e;
+    _staffs[index] = newData;
+
+    authAxios()
+      .put(`/hairshop/staff`, newData)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+        accept('직원 정보를 수정했습니다. ');
+        reset(defaultValues);
+        setVisible(false);
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+        reject('실패했습니다. ');
+      });
+    setStaffs(_staffs);
+  };
+  const textEditor = (options) => {
+    return (
+      <InputText
+        type='text'
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
+    );
+  };
+
+  // 직원 삭제
+  const deleteHairstyle = (e, rowData) => {
+    confirmPopup({
+      target: e.currentTarget,
+      message: '정말 삭제하시겠습니까?',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'reject',
+      acceptClassName: 'p-button-danger',
+      accept: () => {
+        authAxios()
+          .delete(`/hairshop/staff/${rowData.staff_seq}`)
+          .then((response) => {
+            console.log('Delete Response:', response.data);
+            accept('삭제를 완료했습니다. ');
+            loadData();
+          })
+          .catch((error) => {
+            console.error('Delete Error:', error);
+            reject('실패했습니다. ');
+          });
+      },
+    });
+  };
+  const deleteTemplate = (rowData) => {
+    return (
+      <>
+        <Button
+          onClick={(e) => deleteHairstyle(e, rowData)}
+          icon='pi pi-trash'
+          rounded
+          text
+          severity='secondary'
+          className='p-button-danger'
+        />
+      </>
+    );
   };
 
   // 이미지 업로드 코드
@@ -80,126 +188,8 @@ export default function staff() {
     reader.readAsDataURL(file);
   };
 
-  const saveProduct = async () => {
-    setSubmitted(true);
-
-    if (product.staff_nickname.trim()) {
-      product.staff_image = sendImgs;
-      let _products = [...products];
-      let _product = { ...product };
-
-      try {
-        if (product.staff_seq) {
-          const index = findIndexBystaff_seq(product.staff_seq);
-          _products[index] = _product;
-
-          await authAxios()
-            .put(`/hairshop/staff`, _product)
-            .then((response) => {
-              console.log('Auth Response:', response.data);
-            })
-            .catch((error) => {
-              console.error('Auth Error:', error);
-            });
-
-          toast.current.show({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Product Updated',
-            life: 3000,
-          });
-        } else {
-          _product.staff_seq = _products.length + 1;
-          _products.push(_product);
-
-          await authAxios()
-            .post(`/hairshop/staff`, _product)
-            .then((response) => {
-              console.log('Auth Response:', response.data);
-            })
-            .catch((error) => {
-              console.error('Auth Error:', error);
-            });
-
-          console.log(_product);
-          toast.current.show({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Product Created',
-            life: 3000,
-          });
-        }
-
-        setProducts(_products);
-        setProductDialog(false);
-        setProduct(emptyProduct);
-      } catch (error) {
-        console.error('Error saving product:', error);
-        // Handle error as needed
-      }
-    }
-  };
-
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
-  };
-
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
-  };
-
-  const deleteProduct = async () => {
-    let _products = products.filter(
-      (val) => val.staff_seq !== product.staff_seq
-    );
-
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Product Deleted',
-      life: 3000,
-    });
-
-    await authAxios()
-      .delete(`/hairshop/staff/` + product.staff_seq)
-      .then((response) => {
-        console.log('Auth Response:', response.data);
-      })
-      .catch((error) => {
-        console.error('Auth Error:', error);
-      });
-  };
-
-  const findIndexBystaff_seq = (staff_seq) => {
-    return products.findIndex((product) => product.staff_seq === staff_seq);
-  };
-
-  const onInputChange = (e, staff_nickname) => {
-    const val = (e.target && e.target.value) || '';
-    setProduct({ ...product, [staff_nickname]: val });
-  };
-
-  const leftToolbarTemplate = () => {
-    return (
-      <div className='flex flex-wrap gap-2'>
-        <Button
-          label='New'
-          icon='pi pi-plus'
-          severity='success'
-          onClick={openNew}
-        />
-      </div>
-    );
-  };
-
   const imageBodyTemplate = (rowData) => {
     const imageData = rowData.staff_image;
-
     return (
       <img
         src={imageData}
@@ -209,74 +199,6 @@ export default function staff() {
     );
   };
 
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <Button
-          icon='pi pi-pencil'
-          rounded
-          outlined
-          className='mr-2'
-          onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon='pi pi-trash'
-          rounded
-          outlined
-          severity='danger'
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
-      </React.Fragment>
-    );
-  };
-
-  const header = (
-    <div className='flex flex-wrap gap-2 align-items-center justify-content-between'>
-      <h4 className='m-0'>직원 관리</h4>
-      <span className='p-input-icon-left'>
-        <i className='pi pi-search' />
-        <InputText
-          type='search'
-          onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder='Search...'
-        />
-      </span>
-    </div>
-  );
-
-  const productDialogFooter = (
-    <React.Fragment>
-      <Button
-        label='Cancel'
-        icon='pi pi-times'
-        outlined
-        onClick={hshop_seqeDialog}
-      />
-      <Button
-        label='Save'
-        icon='pi pi-check'
-        onClick={saveProduct}
-      />
-    </React.Fragment>
-  );
-
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label='No'
-        icon='pi pi-times'
-        outlined
-        onClick={hshop_seqeDeleteProductDialog}
-      />
-      <Button
-        label='Yes'
-        icon='pi pi-check'
-        severity='danger'
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
-
   const onUpload = () => {
     toast.current.show({
       severity: 'info',
@@ -284,258 +206,205 @@ export default function staff() {
       detail: 'File Uploaded',
     });
   };
-  return (
-    <div>
-      <Toast ref={toast} />
-      <div className='card'>
-        <Toolbar
-          className='mb-4'
-          left={leftToolbarTemplate}
-        ></Toolbar>
 
-        <DataTable
-          ref={dt}
-          value={products}
-          dataKey='staff_seq'
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25]}
-          paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
-          currentPageReportTemplate='Showing {first} to {last} of {totalRecords} products'
-          globalFilter={globalFilter}
-          header={header}
-          size='small'
-        >
-          <Column
-            field='staff_image'
-            header='이미지'
-            body={imageBodyTemplate}
-          ></Column>
-          <Column
-            field='staff_nickname'
-            header='직원 닉네임'
-            sortable
-            staff={{ minWidth: '10rem' }}
-          ></Column>
-          <Column
-            field='staff_name'
-            header='직원 이름'
-            sortable
-            staff={{ minWidth: '8rem' }}
-          ></Column>
-          <Column
-            field='staff_role'
-            header='직급'
-            sortable
-            staff={{ minWidth: '10rem' }}
-          ></Column>
-          <Column
-            field='staff_phone'
-            header='직원 전화번호'
-            sortable
-            staff={{ minWidth: '10rem' }}
-          ></Column>
-          <Column
-            field='staff_intro'
-            header='직원 소개'
-            sortable
-            staff={{ minWidth: '10rem' }}
-          ></Column>
-          <Column
-            body={actionBodyTemplate}
-            exportable={false}
-            staff={{ minWidth: '12rem' }}
-          ></Column>
-        </DataTable>
-      </div>
+  return (
+    <div className='card h-full'>
+      <h2 className='flex align-items-center justify-content-between'>
+        <span>직원 관리</span>
+        <div>
+          <span className='p-input-icon-left mr-4'>
+            <i className='pi pi-search' />
+            <InputText
+              type='search'
+              onInput={(e) => setGlobalFilter(e.target.value)}
+              placeholder='검색'
+              className='p-inputtext-sm'
+            />
+          </span>
+          <Button
+            label='직원 등록'
+            icon='pi pi-plus'
+            size='small'
+            onClick={() => setVisible(true)}
+          />
+        </div>
+      </h2>
+      <DataTable
+        ref={dt}
+        value={staffs}
+        dataKey='staff_seq'
+        showGridlines
+        paginator
+        rows={10}
+        paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+        currentPageReportTemplate='총 {totalRecords}명의 직원이 검색되었습니다. '
+        globalFilter={globalFilter}
+        size='small'
+        // 수정 모드
+        editMode='row'
+        onRowEditComplete={onRowEditComplete}
+      >
+        <Column
+          field='staff_role'
+          header='직급'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='text-center'
+        ></Column>
+
+        <Column
+          field='staff_nickname'
+          header='직원 닉네임'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='text-center'
+        ></Column>
+
+        <Column
+          field='staff_intro'
+          header='직원 소개'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='pl-3'
+        ></Column>
+
+        <Column
+          field='staff_name'
+          header='직원 이름'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='text-center'
+        ></Column>
+
+        <Column
+          field='staff_phone'
+          header='직원 전화번호'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='text-center'
+        ></Column>
+
+        <Column
+          field='staff_image'
+          header='이미지'
+          body={imageBodyTemplate}
+        ></Column>
+
+        <Column
+          header='수정'
+          rowEditor={true}
+          headerStyle={{ minWidth: '6rem' }}
+          bodyStyle={{ textAlign: 'center' }}
+        ></Column>
+
+        <Column
+          header='삭제'
+          exportable={false}
+          className='text-center'
+          headerStyle={{ minWidth: '6rem' }}
+          body={deleteTemplate}
+        ></Column>
+      </DataTable>
+
+      <Toast ref={toast} />
+      <ConfirmPopup />
 
       <Dialog
-        visible={productDialog}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
         header='직원 등록'
-        modal
-        className='p-fluid'
-        footer={productDialogFooter}
-        onHide={hshop_seqeDialog}
+        className='p-fluid w-4'
+        visible={visible}
+        onHide={() => setVisible(false)}
       >
-        {product.staff_image && (
-          <img
-            src={product.staff_image}
-            className='product-staff block m-auto pb-3'
-          />
-        )}
-
-        <div>
-          <input
-            type='file'
-            multiple
-            style={{ display: 'none' }}
-            id='staff_image'
-            name='staff_image'
-            accept='.jpg'
-            onChange={handleImageUpload}
-          />
-          <label
-            className='btn btn-secondary border-0 bg_grey'
-            htmlFor='staff_image'
-          >
-            사진 추가
-          </label>
-        </div>
-
-        <div className='field'>
-          <label
-            htmlFor='staff_name'
-            className='font-bold'
-          >
-            직원 이름
-          </label>
-          <InputText
-            id='staff_name'
-            value={product.staff_name}
-            onChange={(e) => onInputChange(e, 'staff_name')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_name,
-            })}
-          />
-          {submitted && !product.staff_name && (
-            <small className='p-error'>Name is required.</small>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className='flex flex-column flex-wrap gap-4 mt-4'
+        >
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 이름</label>
+            <InputText
+              placeholder='직원 이름'
+              name='staff_name'
+              {...register('staff_name', { required: true })}
+            />
+          </div>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 이름</label>
+            <InputText
+              placeholder='직원 닉네임'
+              name='staff_nickname'
+              {...register('staff_nickname', { required: true })}
+            />
+          </div>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 직급</label>
+            <InputText
+              placeholder='직원 직급'
+              name='staff_role'
+              {...register('staff_role', { required: true })}
+            />
+          </div>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 전화번호</label>
+            <InputText
+              placeholder='직원 전화번호'
+              name='staff_phone'
+              {...register('staff_phone', { required: true })}
+            />
+          </div>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 소개</label>
+            <InputTextarea
+              autoResize
+              rows={5}
+              placeholder='직원 소개'
+              name='staff_intro'
+              {...register('staff_intro', { required: true })}
+            />
+          </div>
+          {product.staff_image && (
+            <img
+              src={product.staff_image}
+              className='product-staff block m-auto pb-3  w-4'
+            />
           )}
-        </div>
-        <div className='field'>
-          <label
-            htmlFor='staff_name'
-            className='font-bold'
-          >
-            직원 닉네임
-          </label>
-          <InputText
-            id='staff_nickname'
-            value={product.staff_nickname}
-            onChange={(e) => onInputChange(e, 'staff_nickname')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_nickname,
-            })}
-          />
-          {submitted && !product.staff_nickname && (
-            <small className='p-error'>Name is required.</small>
-          )}
-        </div>
 
-        <div className='field'>
-          <label
-            htmlFor='staff_role'
-            className='font-bold'
-          >
-            직원 직급
-          </label>
-          <InputText
-            id='staff_role'
-            value={product.staff_role}
-            onChange={(e) => onInputChange(e, 'staff_role')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_role,
-            })}
-          />
-          {submitted && !product.staff_role && (
-            <small className='p-error'>gender is required.</small>
-          )}
-        </div>
+          <div>
+            <input
+              type='file'
+              multiple
+              style={{ display: 'none' }}
+              id='staff_image'
+              name='staff_image'
+              accept='.jpg'
+              onChange={handleImageUpload}
+            />
+            <label
+              className='btn btn-secondary border-0 bg_grey text-bold'
+              htmlFor='staff_image'
+            >
+              사진 추가
+            </label>
+          </div>
 
-        <div className='field'>
-          <label
-            htmlFor='staff_phone'
-            className='font-bold'
-          >
-            직원 전화번호
-          </label>
-          <InputText
-            id='staff_phone'
-            value={product.staff_phone}
-            onChange={(e) => onInputChange(e, 'staff_phone')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_phone,
-            })}
-          />
-          {submitted && !product.staff_phone && (
-            <small className='p-error'>time is required.</small>
-          )}
-        </div>
-
-        <div className='field'>
-          <label
-            htmlFor='staff_intro'
-            className='font-bold'
-          >
-            직원 소개
-          </label>
-          <InputTextarea
-            id='staff_intro'
-            autoResize
-            rows={5}
-            cols={30}
-            value={product.staff_intro}
-            onChange={(e) => onInputChange(e, 'staff_intro')}
-            required
-            autoFocus
-            className={classNames({
-              'p-invalid': submitted && !product.staff_intro,
-            })}
-          />
-
-          {submitted && !product.staff_intro && (
-            <small className='p-error'>소개 is required.</small>
-          )}
-        </div>
-
-        {/* <div className='field'>
-          <label
-            htmlFor='staff_image'
-            className='font-bold'
-          >
-            직원 프로필 사진
-          </label>
-          <FileUpload
-            name='staff_image'
-            id='staff_image'
-            type='file'
-            mode='basic'
-            accept='.jpg'
-            maxFileSize={1000000}
-            onChange={handleImageUpload}
-            onUpload={}
-          />
-        </div> */}
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header='Confirm'
-        modal
-        footer={deleteProductDialogFooter}
-        onHide={hshop_seqeDeleteProductDialog}
-      >
-        <div className='confirmation-content'>
-          <i
-            className='pi pi-exclamation-triangle mr-3'
-            staff={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>
-              <b>{product.staff_nickname}</b>를 정말 삭제 하시겠습니까??
-            </span>
-          )}
-        </div>
+          <div className='flex justify-content-end gap-2'>
+            <Button
+              label='취소'
+              type='button'
+              onClick={onCancelClick}
+              size='small'
+              className='w-6rem'
+              outlined
+            />
+            <Button
+              label='등록'
+              type='button'
+              onClick={handleSubmit(onSubmit)}
+              size='small'
+              className='w-6rem'
+            />
+          </div>
+        </form>
       </Dialog>
     </div>
   );

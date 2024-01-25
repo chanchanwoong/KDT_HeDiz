@@ -35,78 +35,79 @@ function Management() {
   };
 
   return (
-    <Panel header='고객 방문 이력'>
-      <div className='card'>
-        <DataTable
-          value={customers}
-          paginator
-          rows={10}
-          paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
-          rowsPerPageOptions={[10, 25, 50]}
-        >
-          <Column
-            field='cust_name'
-            header='고객 이름'
-            style={{ minWidth: '14rem' }}
-          />
-          <Column
-            field='cust_id'
-            header='고객 아이디'
-            sortable
-            style={{ minWidth: '14rem' }}
-          />
-          <Column
-            field='cust_phone'
-            header='전화번호'
-            sortable
-            style={{ minWidth: '12rem' }}
-          />
+    <div className='card h-full'>
+      <h2 className='flex align-items-center justify-content-between'>
+        고객 방문 이력
+      </h2>
+      <DataTable
+        value={customers}
+        paginator
+        rows={10}
+        paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+        rowsPerPageOptions={[10, 25, 50]}
+      >
+        <Column
+          field='cust_name'
+          header='고객 이름'
+          style={{ minWidth: '14rem' }}
+        />
+        <Column
+          field='cust_id'
+          header='고객 아이디'
+          sortable
+          style={{ minWidth: '14rem' }}
+        />
+        <Column
+          field='cust_phone'
+          header='전화번호'
+          sortable
+          style={{ minWidth: '12rem' }}
+        />
 
-          {/* <Column
+        {/* <Column
             field='cust_gender'
             header='성별'
             sortable
             style={{ minWidth: '12rem' }}
             body={checkGender()}
           /> */}
-          {/* <Column
+        {/* <Column
             field='cust_visit'
             header='방문횟수'
             sortable
             style={{ minWidth: '12rem' }}
           /> */}
 
-          <Column
-            field='stat_complete'
-            header='정상 방문 횟수'
-            sortable
-            style={{ minWidth: '12rem' }}
-          />
-          <Column
-            field='stat_cancel'
-            header='예약 취소 횟수'
-            sortable
-            style={{ minWidth: '12rem' }}
-          />
-          <Column
-            field='stat_noshow'
-            header='노쇼 횟수'
-            sortable
-            style={{ minWidth: '12rem' }}
-          />
-          <Column
-            // field='stat_noshow'
-            header='전체 노쇼 횟수'
-            sortable
-            style={{ minWidth: '12rem' }}
-          />
-          <Column
-            headerStyle={{ width: '5rem', textAlign: 'center' }}
-            bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
-          />
-        </DataTable>
-      </div>
-    </Panel>
+        <Column
+          field='stat_complete'
+          header='정상 방문 횟수'
+          sortable
+          style={{ minWidth: '12rem' }}
+        />
+        <Column
+          field='stat_cancel'
+          header='예약 취소 횟수'
+          sortable
+          style={{ minWidth: '12rem' }}
+        />
+        <Column
+          field='stat_noshow'
+          header='노쇼 횟수'
+          sortable
+          style={{ minWidth: '12rem' }}
+        />
+        <Column
+          // field='stat_noshow'
+          header='전체 노쇼 횟수'
+          sortable
+          style={{ minWidth: '12rem' }}
+        />
+        <Column
+          headerStyle={{ width: '5rem', textAlign: 'center' }}
+          bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
+        />
+      </DataTable>
+    </div>
   );
 }
 

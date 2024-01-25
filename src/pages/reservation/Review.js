@@ -214,20 +214,24 @@ function Review() {
   };
 
   return (
-    <Panel
-      header={headerTemplate}
-      className='flex-none'
-    >
-      <div className='card'>
-        <DataView
-          value={products}
-          itemTemplate={itemTemplate}
-          paginator
-          rows={4}
-          header={headerDataTemplate()}
-          sortField={sortField}
-          sortOrder={sortOrder}
-        />
+    <div className='card h-full'>
+      <h2 className='flex align-items-center justify-content-between'>
+        리뷰 관리
+      </h2>
+      <div>
+        {products.length === 0 ? (
+          <div className='text-center'>데이터가 없습니다.</div>
+        ) : (
+          <DataView
+            value={products}
+            itemTemplate={itemTemplate}
+            paginator
+            rows={4}
+            header={headerDataTemplate()}
+            sortField={sortField}
+            sortOrder={sortOrder}
+          />
+        )}
       </div>
       <Dialog
         header='답글 달기'
@@ -261,7 +265,7 @@ function Review() {
           </div>
         </form>
       </Dialog>
-    </Panel>
+    </div>
   );
 }
 export default Review;

@@ -102,7 +102,6 @@ export default function AppTopbar({ onToggleSidebar }) {
   );
   const end = (
     <nav className='flex align-items-center justify-content-between gap-4'>
-      {/* 금일 예약 */}
       <Tooltip
         target='.realtimeReservation'
         mouseTrack

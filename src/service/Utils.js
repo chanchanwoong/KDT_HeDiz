@@ -22,3 +22,32 @@ export const formatTime = (timeString) => {
 
   return formattedTime;
 };
+
+// 숫자 000,000,000 형식으로 포맷
+export function formatNumberWithCommas(value) {
+  const parsedValue = parseFloat(value) || 0;
+  const formattedValue = parsedValue.toLocaleString('ko-KR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  return formattedValue;
+}
+
+// 소요시간 포맷
+export function formatTimeTaken(timeString) {
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  let formattedTime = '';
+
+  if (hours > 0) {
+    formattedTime += `${hours}시간`;
+  }
+  if (minutes > 0) {
+    formattedTime += ` ${minutes}분`;
+  }
+  if (seconds > 0) {
+    formattedTime += ` ${seconds}초`;
+  }
+
+  return formattedTime.trim();
+}

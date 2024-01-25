@@ -143,7 +143,7 @@ function ClosedDay() {
       temp_start: formatDate(data.date[0]),
       temp_end: formatDate(data.date[1]),
       temp_memo: data.temp_memo,
-      staff_seq: data.temp_staff.staff_seq,
+      staff_seq: data.staff_seq,
     };
     console.log('Auth Request:', reqeustData);
 

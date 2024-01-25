@@ -106,12 +106,6 @@ function AppSidebar() {
           url: 'reservation/review',
           template: itemRenderer,
         },
-        {
-          label: '쿠폰 발급',
-          icon: 'pi pi-gift',
-          url: 'customer/coupon',
-          template: itemRenderer,
-        },
       ],
     },
   ];

@@ -12,13 +12,15 @@ export default function Total() {
   const getValueAndSeverity = (status) => {
     switch (status) {
       case 0:
-        return { value: '방문 완료', severity: 'success' };
+        return { value: '예약 완료', severity: 'success' };
       case 1:
-        return { value: '예약 취소', severity: 'danger' };
+        return { value: '방문 완료', severity: 'danger' };
       case 2:
-        return { value: '거절', severity: 'info' };
+        return { value: '예약 취소', severity: 'info' };
+      case 3:
+        return { value: '노쇼', severity: 'danger' };
       default:
-        return { value: '', severity: null };
+        return { value: '대기', severity: null };
     }
   };
 
@@ -48,66 +50,58 @@ export default function Total() {
   }, []);
 
   return (
-    <Panel header='전체 예약 내역'>
-      <div className='card'>
-        <DataTable
-          value={reservation}
-          paginator
-          rows={10}
-          size='small'
-          paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
-          rowsPerPageOptions={[10, 25, 50]}
-        >
-          <Column
-            field='cust_name'
-            header='고객 이름'
-          />
-          <Column
-            field='staff_nickname'
-            header='담당 디자이너'
-            sortable
-          />
-
-          <Column
-            field='style_name'
-            header='헤어스타일'
-            sortable
-          />
-
-          <Column
-            field='reserv_date'
-            header='예약날짜'
-            sortable
-          />
-
-          <Column
-            field='reserv_time'
-            header='예약시간'
-            sortable
-          />
-
-          <Column
-            field='reserv_request'
-            header='요청사항'
-          />
-          <Column
-            field='reserv_stat'
-            header='예약상태'
-            sortable
-            body={statusBodyTemplate}
-          />
-          <Column
-            field='balance'
-            header='결제금액'
-            sortable
-            dataType='numeric'
-          />
-          <Column
-            headerStyle={{ width: '5rem', textAlign: 'center' }}
-            bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
-          />
-        </DataTable>
-      </div>
-    </Panel>
+    <div className='card h-full'>
+      <h2 className='flex align-items-center justify-content-between'>
+        전체 예약 내역
+      </h2>
+      <DataTable
+        value={reservation}
+        paginator
+        rows={10}
+        paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+        rowsPerPageOptions={[10, 25, 50]}
+      >
+        <Column
+          field='staff_nickname'
+          header='담당 디자이너'
+          sortable
+        />
+        <Column
+          field='cust_name'
+          header='고객 이름'
+        />
+        <Column
+          field='style_name'
+          header='헤어스타일'
+          sortable
+        />
+        <Column
+          field='reserv_date'
+          header='예약날짜'
+          sortable
+        />
+        <Column
+          field='reserv_time'
+          header='예약시간'
+          sortable
+        />
+        <Column
+          field='reserv_request'
+          header='요청사항'
+        />
+        <Column
+          field='reserv_stat'
+          header='예약상태'
+          sortable
+          body={statusBodyTemplate}
+        />
+        <Column
+          field='balance'
+          header='결제금액'
+          sortable
+          dataType='numeric'
+        />
+      </DataTable>
+    </div>
   );
 }

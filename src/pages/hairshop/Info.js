@@ -1,19 +1,22 @@
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
+import DaumPostcode from 'react-daum-postcode';
 
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
-import { Panel } from 'primereact/panel';
+import { Checkbox } from 'primereact/checkbox';
 
 function Info() {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
+  const toast = useRef(null);
   const [info, setInfo] = useState({});
   const [selectClosedDay, setSelectClosedDay] = useState([]);
-  const toast = useRef(null);
+  const [checked, setChecked] = useState(false);
+
   const closedDay = [
     { label: '휴무일 없음', value: '0' },
     { label: '일요일', value: '1' },
@@ -27,6 +30,15 @@ function Info() {
 
   const convertArrayToString = (array) => {
     return array.join(',');
+  };
+
+  const [isAddressModalOpen, setAddressModalOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const handleAddressSelect = (data) => {
+    const { address } = data;
+    setSelectedAddress(address);
+    setValue('shop_address', address);
+    setAddressModalOpen(false);
   };
 
   const onResetClick = () => {
@@ -116,12 +128,12 @@ function Info() {
   };
 
   return (
-    <Panel header='미용실 정보'>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-column flex-wrap gap-4'
-      >
-        <div className='card flex flex-column gap-4'>
+    <div className='card h-full'>
+      <h2 className='flex align-items-center justify-content-between'>
+        미용실 정보
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className='flex flex-column gap-4'>
           <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
               <i className='pi pi-home mr-2'></i> 상호명
@@ -148,25 +160,6 @@ function Info() {
           </div>
           <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
-              <i className='pi pi-calendar-minus mr-2'></i> 정기 휴무일
-            </span>
-            <MultiSelect
-              name='shop_regular'
-              value={selectClosedDay}
-              onChange={(e) => {
-                setSelectClosedDay(e.value);
-                const selectedDaysString = convertArrayToString(e.value);
-                setInfo({ ...info, shop_regular: selectedDaysString });
-              }}
-              options={closedDay}
-              optionLabel='label'
-              optionValue='value'
-              placeholder='정기 휴무일'
-              className='w-full md:w-20rem'
-            />
-          </div>
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
               <i className='pi pi-map-marker mr-2'></i> 주소
             </span>
             <InputText
@@ -174,7 +167,20 @@ function Info() {
               placeholder='주소'
               {...register('shop_address')}
             />
+            <Button
+              type='button'
+              label='주소 검색'
+              className='w-2 text-sm'
+              onClick={() => setAddressModalOpen(true)}
+            />
           </div>
+          {isAddressModalOpen && (
+            <DaumPostcode
+              onComplete={handleAddressSelect}
+              autoClose={false}
+              animation
+            />
+          )}
 
           <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
@@ -213,6 +219,46 @@ function Info() {
 
           <div className='p-inputgroup flex-1'>
             <span className='p-inputgroup-addon'>
+              <i className='pi pi-calendar-minus mr-2'></i> 정기 휴무일
+            </span>
+
+            <MultiSelect
+              name='shop_regular'
+              value={checked ? ['0'] : selectClosedDay}
+              onChange={(e) => {
+                setSelectClosedDay(e.value);
+                const selectedDaysString = convertArrayToString(e.value);
+                setInfo({ ...info, shop_regular: selectedDaysString });
+              }}
+              options={closedDay}
+              optionLabel='label'
+              optionValue='value'
+              placeholder='정기 휴무일'
+              className={`w-full md:w-20rem ${checked ? 'p-disabled' : ''}`}
+              disabled={checked}
+            />
+
+            <div className='flex align-items-center mt-2 ml-4'>
+              <Checkbox
+                onChange={(e) => {
+                  setChecked(e.checked);
+                  if (e.checked) {
+                    setSelectClosedDay(['0']);
+                  }
+                }}
+                checked={checked}
+              />
+              <label
+                htmlFor='ingredient1'
+                className='ml-2'
+              >
+                휴무일 없음
+              </label>
+            </div>
+          </div>
+
+          <div className='p-inputgroup flex-1'>
+            <span className='p-inputgroup-addon'>
               <i className='pi pi-hashtag mr-2'></i> 해시태그
             </span>
             <InputText
@@ -236,7 +282,7 @@ function Info() {
         </div>
 
         <Toast ref={toast} />
-        <div className='flex justify-content-end gap-2'>
+        <div className='flex justify-content-end gap-4 mt-6'>
           <Button
             label='초기화'
             type='button'
@@ -253,7 +299,7 @@ function Info() {
           />
         </div>
       </form>
-    </Panel>
+    </div>
   );
 }
 

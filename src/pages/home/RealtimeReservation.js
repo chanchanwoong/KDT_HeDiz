@@ -56,13 +56,15 @@ const RealtimeReservation = () => {
   const getValueAndSeverity = (status) => {
     switch (status) {
       case 0:
-        return { value: '방문 완료', severity: 'success' };
+        return { value: '예약 완료', severity: 'Success' };
       case 1:
-        return { value: '예약 취소', severity: 'danger' };
+        return { value: '방문 완료', severity: 'Info' };
       case 2:
-        return { value: '방문 예정', severity: 'danger' };
+        return { value: '예약 취소', severity: 'Warning' };
+      case 3:
+        return { value: '노쇼', severity: 'danger' };
       default:
-        return { value: '', severity: null };
+        return { value: '대기', severity: 'Success' };
     }
   };
 
@@ -180,7 +182,10 @@ const RealtimeReservation = () => {
               />
             </DataTable>
           </div>
-          <div className='col-4'>
+          <div
+            className='col-4'
+            style={{ minHeight: '800px' }}
+          >
             <FullCalendar
               locale='kr'
               plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
