@@ -40,10 +40,10 @@
     </select>
 
     <!--review 작성-->
-    <update id="reviewWrite">
+    <insert id="reviewWrite">
         insert into t_review (shop_seq, reserv_seq, review_score, review_content, review_photo, review_date)
         values (#{shop_seq}, #{reserv_seq}, #{review_score}, #{review_content}, #{review_photo}, #{review_date})
-    </update>
+    </insert>
 
     <!--review 삭제-->
     <delete id="reviewDelete">

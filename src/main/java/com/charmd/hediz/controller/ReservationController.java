@@ -23,10 +23,10 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationList);
     }
 
-    // 예약 삭제
-    @DeleteMapping("{reserv_seq}")
-    public ResponseEntity<?> deleteReservation(@PathVariable("reserv_seq") int reserv_seq){
-        int n = reservationService.deleteReservation(reserv_seq);
+    // 예약 상태 수정(reserv_stat = 0(예약 확정) -> reserv_stat = 2(예약 취소))
+    @PutMapping("{reserv_seq}")
+    public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq){
+        int n = reservationService.cancelReservation(reserv_seq);
         return ResponseEntity.ok().body(n==1);
     }
 }

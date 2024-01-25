@@ -18,7 +18,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public int deleteReservation(int reserv_seq) {
-        return dao.deleteReservation(reserv_seq);
+    public int cancelReservation(int reserv_seq) {
+        return dao.cancelReservation(reserv_seq);
     }
 }

@@ -14,7 +14,7 @@ public class ReservationDAO {
     public List<ReservationDTO> currentReservation(int cust_seq){
         return session.selectList("com.config.ReservationMapper.currentReservation", cust_seq);
     }
-    public int deleteReservation(int reserv_seq){
-        return session.delete("com.config.ReservationMapper.deleteReservation", reserv_seq);
+    public int cancelReservation(int reserv_seq){
+        return session.update("com.config.ReservationMapper.cancelReservation", reserv_seq);
     }
 }

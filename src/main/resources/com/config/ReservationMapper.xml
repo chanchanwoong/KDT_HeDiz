@@ -14,8 +14,8 @@
         order by reserv_date, reserv_time
     </select>
 
-    <!--예약 삭제-->
-    <delete id="deleteReservation" parameterType="int">
-        delete from t_reservation where reserv_seq=#{reserv_seq}
-    </delete>
+    <!--예약 취소-->
+    <update id="cancelReservation" parameterType="int">
+        update t_reservation set reserv_stat=2 where reserv_seq=#{reserv_seq}
+    </update>
 </mapper>
