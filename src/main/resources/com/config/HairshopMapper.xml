@@ -104,7 +104,7 @@
         WHERE
         c.shop_seq = #{shop_seq}
         AND (a.reserv_time BETWEEN b.shop_start AND b.shop_end OR a.reserv_time IS NULL)
-        AND (CONCAT(a.reserv_date, ' ', a.reserv_time) >= NOW() OR a.reserv_date IS NULL)
+<!--        AND (CONCAT(a.reserv_date, ' ', a.reserv_time) >= NOW() OR a.reserv_date IS NULL)-->
         ORDER BY
         a.reserv_date,
         a.reserv_time
