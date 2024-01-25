@@ -17,8 +17,8 @@ function HairshopReservation() {
   const style_name = location.state.style_name;
   const shop_seq = location.state.shop_seq;
   const style_seq = location.state.style_seq;
-  const style_time = location.state.style_time;
   const shop_name = location.state.shop_name;
+  const style_price = location.state.style_price;
   const [selectedDate, setSelectedDate] = useState('2024-01-25');
   const [staff, setStaff] = useState([]);
   const [reserv, setReserv] = useState([]);
@@ -189,7 +189,15 @@ function HairshopReservation() {
       </Panel>
       <Link
         to='/hairshop/payment'
-        state={{}}
+        state={{
+          cust_name: localStorage.getItem('cust_name'),
+          reserv_date: selectedDate,
+          reserv_time: time,
+          shop_name: shop_name,
+          staff_nickname: staff.staff_nickname,
+          style_name: style_name,
+          style_price: style_price,
+        }}
       >
         <Button>결제 화면으로</Button>
       </Link>

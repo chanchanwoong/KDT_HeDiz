@@ -10,7 +10,7 @@ function HairstyleDetailPage() {
   const style_name = location.state.style_name;
   const shop_seq = location.state.shop_seq;
   const style_seq = location.state.style_seq;
-  const style_time = location.state.style_time;
+  const style_price = location.state.style_price;
   const shop_name = location.state.shop_name;
   console.log('style이름', style_name);
 
@@ -33,7 +33,7 @@ function HairstyleDetailPage() {
           style_name: style_name,
           shop_seq: shop_seq,
           style_seq: style_seq,
-          style_time: style_time,
+          style_price: style_price,
           shop_name: shop_name,
         }}
       >
