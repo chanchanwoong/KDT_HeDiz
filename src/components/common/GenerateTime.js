@@ -1,4 +1,4 @@
-export const generateTimeSlots = ({ reserv }) => {
+export const generateTimeSlots = () => {
   const startTime = 9 * 60; // 9:00 in minutes
   const endTime = 18 * 60; // 18:00 in minutes
   const interval = 30; // 30 minutes interval
