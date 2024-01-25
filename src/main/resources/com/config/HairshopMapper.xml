@@ -64,18 +64,49 @@
 
     <!--예약_날짜 눌렀을 때 예약 가능 시간 확인-->
     <select id="reservationFilter" parameterType="hashmap" resultType="ReservationDTO">
-        select reserv_seq, cust_seq, staff_seq, staff_nickname, shop_start, reserv_date, reserv_time, style_time,
-        (select style_time from t_hairstyle where style_seq=#{style_seq}) as hope_style_time,
-        TIME_FORMAT(SEC_TO_TIME( (TIME_TO_SEC(reserv_time) + TIME_TO_SEC(style_time)) MOD (24 * 60 * 60)),'%H:%i:%s' ) AS reserv_end_time,
-        shop_end
-        from t_reservation a
-        inner join t_hairshop using(shop_seq)
-        inner join t_staff using(staff_seq)
-        inner join t_hairstyle using(style_seq)
-        where a.shop_seq = #{shop_seq} and
-        reserv_time between (select shop_start from t_hairshop where shop_seq=#{shop_seq}) and (select shop_end from t_hairshop where shop_seq=#{shop_seq}) and
-        concat(reserv_date, ' ', reserv_time) >= now() and
-        reserv_date = #{day}
-        order by reserv_date, reserv_time
+<!--        select reserv_seq, cust_seq, staff_seq, staff_nickname, shop_start, reserv_date, reserv_time, style_time,-->
+<!--        (select style_time from t_hairstyle where style_seq=#{style_seq}) as hope_style_time,-->
+<!--        TIME_FORMAT(SEC_TO_TIME( (TIME_TO_SEC(reserv_time) + TIME_TO_SEC(style_time)) MOD (24 * 60 * 60)),'%H:%i:%s' ) AS reserv_end_time,-->
+<!--        shop_end-->
+<!--        from t_reservation a-->
+<!--        inner join t_hairshop using(shop_seq)-->
+<!--        inner join t_staff using(staff_seq)-->
+<!--        inner join t_hairstyle using(style_seq)-->
+<!--        where a.shop_seq = #{shop_seq} and-->
+<!--        reserv_time between (select shop_start from t_hairshop where shop_seq=#{shop_seq}) and (select shop_end from t_hairshop where shop_seq=#{shop_seq}) and-->
+<!--        concat(reserv_date, ' ', reserv_time) >= now() and-->
+<!--        reserv_date = #{day}-->
+<!--        order by reserv_date, reserv_time-->
+        SELECT
+        a.reserv_seq,
+        a.cust_seq,
+        c.staff_seq,
+        c.staff_nickname,
+        b.shop_start,
+        a.reserv_date,
+        a.reserv_time,
+        d.style_time,
+        TIME_FORMAT(
+        SEC_TO_TIME( (TIME_TO_SEC(a.reserv_time) + TIME_TO_SEC(d.style_time)) MOD (24 * 60 * 60)),
+        '%H:%i:%s'
+        ) AS reserv_end_time,
+        b.shop_end,
+        (
+        SELECT d.style_time
+        FROM t_hairstyle d
+        WHERE d.style_seq = #{style_seq}
+        ) AS hope_style_time
+        FROM
+        t_staff c
+        LEFT JOIN t_reservation a ON c.staff_seq = a.staff_seq AND a.reserv_date = #{day}
+        LEFT JOIN t_hairshop b ON c.shop_seq = b.shop_seq
+        LEFT JOIN t_hairstyle d ON a.style_seq = d.style_seq
+        WHERE
+        c.shop_seq = #{shop_seq}
+        AND (a.reserv_time BETWEEN b.shop_start AND b.shop_end OR a.reserv_time IS NULL)
+        AND (CONCAT(a.reserv_date, ' ', a.reserv_time) >= NOW() OR a.reserv_date IS NULL)
+        ORDER BY
+        a.reserv_date,
+        a.reserv_time
     </select>
 </mapper>
