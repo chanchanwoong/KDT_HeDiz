@@ -39,7 +39,7 @@ public class MypageController {
     @PutMapping("profile")
     public ResponseEntity<?> updateMypage(@RequestBody CustomerDTO customerDto) {
         int n = mypageService.updateMypage(customerDto);
-        return ResponseEntity.ok().body(n + " 건 수정되었습니다.");
+        return ResponseEntity.ok().body(n==1);
     }
 
     // cust_seq에 따른 리뷰 조회

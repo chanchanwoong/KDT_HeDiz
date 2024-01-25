@@ -73,7 +73,6 @@ public class AuthController {
             return ResponseEntity.ok().body(false);
         }
         int n = authService.duplicateCheck(cust_id);
-        System.out.println("id 개수 : " + n);
         return ResponseEntity.ok().body(n == 0);
     }
 
@@ -98,7 +97,6 @@ public class AuthController {
         String newPw = new BCryptPasswordEncoder().encode(custPwMap.get("cust_pw"));
         custPwMap.put("cust_pw", newPw);
         int n = authService.changePassword(custPwMap);
-        if (n == 1) return ResponseEntity.ok().body(n);
-        else return ResponseEntity.ok().body(n);
+        return ResponseEntity.ok().body(n==1);
     }
 }

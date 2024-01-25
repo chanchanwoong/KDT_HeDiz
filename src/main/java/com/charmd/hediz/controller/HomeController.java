@@ -85,7 +85,4 @@ public class HomeController {
         Map<Integer, TreeSet<LocalTime>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
         return ResponseEntity.ok().body(possibleTime);
     }
-
-
-
 }
