@@ -1,6 +1,6 @@
 // 날짜 데이터 포맷
 // yyyy-MM-dd
-export const formatDate = (dateString) => {
+export function formatDate(dateString) {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   const [year, month, day] = new Date(dateString)
     .toLocaleDateString('ko-KR', options)
@@ -8,11 +8,11 @@ export const formatDate = (dateString) => {
     .map((part) => part.trim());
 
   return `${year}-${month}-${day}`;
-};
+}
 
 // 시간 데이터 포맷
 // (오전/오후) 00:00
-export const formatTime = (timeString) => {
+export function formatTime(timeString) {
   const options = { hour: 'numeric', minute: 'numeric', hour12: true };
 
   const formattedTime = new Date(`2022-01-01 ${timeString}`).toLocaleTimeString(
@@ -21,7 +21,7 @@ export const formatTime = (timeString) => {
   );
 
   return formattedTime;
-};
+}
 
 // 숫자 000,000,000 형식으로 포맷
 export function formatNumberWithCommas(value) {

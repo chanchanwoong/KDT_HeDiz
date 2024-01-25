@@ -1,7 +1,16 @@
-export const categoryOptions = [
-  { cate_name: '커트', cate_seq: 1 },
-  { cate_name: '펌', cate_seq: 2 },
-  { cate_name: '염색', cate_seq: 3 },
-  { cate_name: '클리닉', cate_seq: 4 },
-  { cate_name: '스타일링', cate_seq: 5 },
-];
+export function getReservationValue(status) {
+  switch (status) {
+    case 0:
+      return { value: '예약 완료', severity: 'success', color: '#049bff' };
+    case 1:
+      return { value: '방문 완료', severity: 'danger', color: '#4cc0c0' };
+    case 2:
+      return { value: '예약 취소', severity: 'info', color: '#ff9e40' };
+    case 3:
+      return { value: '노쇼', severity: 'danger', color: '#ff416a' };
+    case 4:
+      return { value: '대기', severity: 'danger', color: '#ffcd56' };
+    default:
+      return { value: '', severity: null };
+  }
+}

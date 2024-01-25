@@ -15,7 +15,7 @@ h4 {
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(5, minmax(100px, auto));
+  grid-template-rows: repeat(3, minmax(100px, auto));
   row-gap: 1.5rem;
   column-gap: 1.5rem;
 }
@@ -24,7 +24,7 @@ h4 {
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 2;
-  grid-row-end: 5;
+  grid-row-end: 4;
 }
 
 .container .item:nth-child(6) {
@@ -45,7 +45,7 @@ h4 {
   grid-column-start: 3;
   grid-column-end: 5;
   grid-row-start: 3;
-  grid-row-end: 5;
+  grid-row-end: 4;
 }
 
 .fc .fc-daygrid-day-number,

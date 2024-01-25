@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Clock from 'react-live-clock';
 import { authAxios } from 'api/AxiosAPI';
 import { formatTime } from 'service/Utils';
-
+import { getReservationValue } from 'service/CommonOptions';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -32,6 +32,7 @@ const RealtimeReservation = () => {
           extendedProps: {
             staff: event.staff_nickname,
             cust: event.cust_name,
+            reserv_stat: event.reserv_stat,
           },
         }));
         setEvents(formattedEvents);
@@ -42,41 +43,30 @@ const RealtimeReservation = () => {
   }, []);
 
   const eventContent = (eventInfo) => {
+    const { color } = getReservationValue(
+      eventInfo.event.extendedProps.reserv_stat
+    );
+    console.log(color);
     return (
-      <>
+      <div style={{ backgroundColor: color }}>
         <p>{eventInfo.timeText}</p>
         <p>
           {eventInfo.event.extendedProps.staff} /{' '}
           {eventInfo.event.extendedProps.cust}
         </p>
-      </>
+      </div>
     );
   };
 
-  const getValueAndSeverity = (status) => {
-    switch (status) {
-      case 0:
-        return { value: '예약 완료', severity: 'Success' };
-      case 1:
-        return { value: '방문 완료', severity: 'Info' };
-      case 2:
-        return { value: '예약 취소', severity: 'Warning' };
-      case 3:
-        return { value: '노쇼', severity: 'danger' };
-      default:
-        return { value: '대기', severity: 'Success' };
-    }
-  };
-
   const statusBodyTemplate = (rowData) => {
-    const { value: reserveValue, severity } = getValueAndSeverity(
+    const { value: reserveValue, color } = getReservationValue(
       rowData.reserv_stat
     );
 
     return (
       <Tag
         value={reserveValue}
-        severity={severity}
+        style={{ backgroundColor: color, width: '80px' }}
       />
     );
   };
@@ -93,8 +83,8 @@ const RealtimeReservation = () => {
   const reservationTimeTemplate = (rowData) => {
     return (
       <>
-        <p>{formatTime(rowData.reserv_time)}</p>
-        <p>- {formatTime(rowData.end_time)}</p>
+        <p>{formatTime(rowData.reserv_time)} -</p>
+        <p>{formatTime(rowData.end_time)}</p>
       </>
     );
   };
@@ -142,6 +132,7 @@ const RealtimeReservation = () => {
               <Column
                 field='reserv_seq'
                 header='예약번호'
+                className='text-center'
                 sortable
               />
               <Column
@@ -172,6 +163,7 @@ const RealtimeReservation = () => {
               <Column
                 field='reserv_request'
                 header='요청사항'
+                className='pl-4'
               />
               <Column
                 field='reserv_stat'
