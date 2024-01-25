@@ -42,7 +42,6 @@ async function BootpayAPI({ payinfo }) {
         console.log(response.receipt_id);
         const confirmedData = await Bootpay.confirm();
         if (confirmedData.event === 'done') {
-          // 결제 성공
         }
         break;
     }
