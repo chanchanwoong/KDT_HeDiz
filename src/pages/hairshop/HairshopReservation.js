@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Panel } from 'primereact/panel';
-import StaffList from '../../components/common/StaffList';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { authAxios } from '../../api/AxiosAPI';
 import { classNames } from 'primereact/utils';
 import { DataView } from 'primereact/dataview';
+import { Button } from 'primereact/button';
 import axios from 'axios';
 import {
   generateDates,
@@ -23,7 +23,30 @@ function HairshopReservation() {
   const [staff, setStaff] = useState([]);
   const [reserv, setReserv] = useState([]);
   const dates = generateDates();
+  const [time, setTime] = useState([]);
 
+  ///////////////////////////////////////    현재 날짜, 시간 구하기
+
+  const getToday = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const getCurrnetTime = () => {
+    const today = new Date();
+
+    var hours = ('0' + today.getHours()).slice(-2);
+    var minutes = ('0' + today.getMinutes()).slice(-2);
+    var seconds = ('0' + today.getSeconds()).slice(-2);
+
+    var timeString = hours + ':' + minutes + ':' + seconds;
+    return timeString;
+  };
+
+  console.log(getCurrnetTime());
   ///////////////////////////////////////    데이터 가져오기 (디자이너, 예약 가능 시간)
   ///////////////////////////////////////    StaffList 컴포넌트는 사용 X (코드 수정이 많음)
   useEffect(() => {
@@ -51,7 +74,8 @@ function HairshopReservation() {
   ///////////////////////////////////////    디자이너 리스트 생성부분
   ///////////////////////////////////////    시간 버튼을 생성시켜주는 components/common/GenerateTime.js 사용
   const itemTemplate = (staff, index, reserv) => {
-    console.log(reserv);
+    const curTime = getCurrnetTime();
+    const today = getToday();
     return (
       <div
         className='col-12'
@@ -82,12 +106,18 @@ function HairshopReservation() {
               </div>
               <span>{staff.staff_intro}</span>
               <div className='time-buttons'>
+                {/* generateTimeSlots 함수를 이용하여 시간 버튼 생성
+                    disable 조건 : reserv 안에 없는 시간이 버튼 에 포함 되는 경우,
+                                  오늘 날짜의 현재 시간이 지나면 예약 불가능       */}
                 {generateTimeSlots(reserv).map((timeSlot) => (
                   <button
                     key={timeSlot.key}
                     className='btn btn-primary'
                     onClick={() => handleTimeButtonClick(timeSlot.key, reserv)}
-                    disabled={!reserv.includes(timeSlot.key)}
+                    disabled={
+                      !reserv?.includes(timeSlot.key) ||
+                      (timeSlot.key < curTime && selectedDate.includes(today))
+                    }
                   >
                     {timeSlot.props.children}
                   </button>
@@ -117,6 +147,7 @@ function HairshopReservation() {
     // 선택한 시간에 대한 처리를 수행
     console.log('reservTime:', reservTime);
     console.log('Selected time:', selectedTime);
+    setTime(selectedTime);
   };
 
   return (
@@ -156,6 +187,12 @@ function HairshopReservation() {
           />
         </div>
       </Panel>
+      <Link
+        to='/hairshop/payment'
+        state={{}}
+      >
+        <Button>결제 화면으로</Button>
+      </Link>
     </div>
   );
 }

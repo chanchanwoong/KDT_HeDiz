@@ -1,3 +1,5 @@
+///////////////////// 시작시간 끝시간 받아오기
+
 export const generateTimeSlots = () => {
   const startTime = 9 * 60; // 9:00 in minutes
   const endTime = 18 * 60; // 18:00 in minutes
@@ -15,7 +17,6 @@ export const generateTimeSlots = () => {
       <button
         key={formattedTime}
         className='btn btn-primary'
-        // disabled={reserv.includes(formattedTime)}
       >
         {formattedTime}
       </button>
@@ -25,14 +26,6 @@ export const generateTimeSlots = () => {
 };
 
 export const generateDates = () => {
-  const getToday = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   const dates = [];
   const today = new Date();
   for (let i = 0; i < 14; i++) {
