@@ -84,7 +84,7 @@ public class AuthController {
         return ResponseEntity.ok().body(id);
     }
 
-    // cust_id, shop_name을 통해 계정있는지 확인
+    // cust_id, cust_name을 통해 계정있는지 확인
     @PostMapping("/check-password")
     public ResponseEntity<?> checkPassword(@RequestBody HashMap<String, String> custIdAndNameMap) {
         int n = authService.checkPassword(custIdAndNameMap);

@@ -27,7 +27,7 @@
         SELECT cust_id FROM T_CUSTOMER WHERE cust_name=#{cust_name} AND cust_phone=#{cust_phone}
     </select>
 
-    <!--id와 shop_name을 이용해서 DB에 있는지 확인-->
+    <!--id와 cust_name을 이용해서 DB에 있는지 확인-->
     <select id="checkPassword" parameterType="hashmap" resultType="int">
         SELECT count('cust_id') FROM T_CUSTOMER WHERE cust_id=#{cust_id} and cust_name=#{cust_name}
     </select>
