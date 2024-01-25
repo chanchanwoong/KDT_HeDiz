@@ -68,7 +68,7 @@ public class HairshopController {
         reservationFilterMap.put("style_seq", style_seq);
         reservationFilterMap.put("day", day);
         // 예약된 정보
-        Map<String, Map<String, Set<LocalTime>>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
+        Map<Integer, Set<LocalTime>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
 
 
         return ResponseEntity.ok().body(possibleTime);

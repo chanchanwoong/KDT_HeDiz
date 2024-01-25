@@ -64,7 +64,7 @@
 
     <!--예약_날짜 눌렀을 때 예약 가능 시간 확인-->
     <select id="reservationFilter" parameterType="hashmap" resultType="ReservationDTO">
-        select reserv_seq, cust_seq, staff_nickname, shop_start, reserv_date, reserv_time, style_time,
+        select reserv_seq, cust_seq, staff_seq, staff_nickname, shop_start, reserv_date, reserv_time, style_time,
         (select style_time from t_hairstyle where style_seq=#{style_seq}) as hope_style_time,
         TIME_FORMAT(SEC_TO_TIME( (TIME_TO_SEC(reserv_time) + TIME_TO_SEC(style_time)) MOD (24 * 60 * 60)),'%H:%i:%s' ) AS reserv_end_time,
         shop_end
