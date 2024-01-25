@@ -1,77 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
 import Logo from 'components/common/Logo';
-import { authAxios } from 'api/AxiosAPI';
-
 import { Menu } from 'primereact/menu';
-import { Password } from 'primereact/password';
-import { classNames } from 'primereact/utils';
 import { Badge } from 'primereact/badge';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-
 function AppSidebar() {
-  const [visible, setVisible] = useState(false);
-
-  const defaultValues = {
-    value: '',
-  };
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm();
-
-  const onCancelClick = () => {
-    reset(defaultValues);
-    setVisible(false);
-  };
-
-  const getFormErrorMessage = (name) => {
-    return errors[name] ? (
-      <small className='p-error'>{errors[name].message}</small>
-    ) : (
-      ''
-    );
-  };
-
-  const onSubmit = async (data) => {
-    const authData = {
-      before_password: data.before_password,
-      after_password: data.after_password,
-    };
-
-    console.log('authData >> ', authData);
-
-    authAxios()
-      .post(`/home/mypage/${localStorage.getItem('shop_seq')}`, authData)
-      .then((response) => {
-        console.log('Auth Response:', response.data);
-      })
-      .catch((error) => {
-        console.error('Auth Error:', error);
-      });
-  };
-
-  const footerContent = (
-    <div>
-      <Button
-        label='No'
-        icon='pi pi-times'
-        onClick={() => setVisible(false)}
-        className='p-button-text'
-      />
-      <Button
-        label='Yes'
-        icon='pi pi-check'
-        onClick={() => setVisible(false)}
-        autoFocus
-      />
-    </div>
-  );
-
   const itemRenderer = (item) => (
     <div className='p-menuitem-content'>
       <Link
@@ -100,10 +32,6 @@ function AppSidebar() {
         );
       },
     },
-
-    // {
-    //   separator: true,
-    // },
     {
       label: '바로가기',
       items: [
@@ -185,123 +113,6 @@ function AppSidebar() {
           template: itemRenderer,
         },
       ],
-    },
-    {
-      separator: true,
-    },
-    {
-      template: () => {
-        return (
-          <div className='pt-6 p-4'>
-            <Button
-              label='비밀번호 변경'
-              icon='pi pi-user-edit'
-              onClick={() => setVisible(true)}
-              size='small'
-              severity='secondary'
-            />
-            <Dialog
-              header='비밀번호 변경'
-              visible={visible}
-              onHide={() => setVisible(false)}
-              style={{ width: '30vw' }}
-              breakpoints={{ '960px': '75vw', '641px': '100vw' }}
-            >
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                method='post'
-                className='flex flex-column flex-wrap gap-4'
-              >
-                <div className='flex flex-column gap-2'>
-                  <Controller
-                    name='before_password'
-                    control={control}
-                    rules={{ required: '비밀번호를 입력해주세요' }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <Password
-                          id={field.name}
-                          value={field.value || ''}
-                          placeholder='현재 비밀번호'
-                          className={classNames({
-                            'p-invalid': fieldState.error,
-                          })}
-                          feedback={false}
-                          onChange={field.onChange}
-                          toggleMask
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                </div>
-                <div className='flex flex-column gap-2'>
-                  <Controller
-                    name='after_password'
-                    control={control}
-                    rules={{ required: '비밀번호를 입력해주세요' }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <Password
-                          id={field.name}
-                          value={field.value || ''}
-                          placeholder='비밀번호'
-                          className={classNames({
-                            'p-invalid': fieldState.error,
-                          })}
-                          feedback={false}
-                          onChange={field.onChange}
-                          toggleMask
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                </div>
-                <div className='flex flex-column gap-2'>
-                  <Controller
-                    name='after_password_check'
-                    control={control}
-                    rules={{ required: '비밀번호를 확인해주세요' }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <Password
-                          id={field.name}
-                          value={field.value || ''}
-                          placeholder='비밀번호'
-                          className={classNames({
-                            'p-invalid': fieldState.error,
-                          })}
-                          feedback={false}
-                          onChange={field.onChange}
-                          toggleMask
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                </div>
-                <div className='flex justify-content-end gap-2'>
-                  <Button
-                    label='취소'
-                    type='button'
-                    onClick={onCancelClick}
-                    size='small'
-                    className='w-6rem'
-                    outlined
-                  />
-                  <Button
-                    label='변경'
-                    type='submit'
-                    size='small'
-                    className='w-6rem'
-                  />
-                </div>
-              </form>
-            </Dialog>
-          </div>
-        );
-      },
     },
   ];
 
