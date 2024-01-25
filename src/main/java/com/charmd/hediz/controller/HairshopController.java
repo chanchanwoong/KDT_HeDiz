@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Api
 @RestController
@@ -68,7 +65,7 @@ public class HairshopController {
         reservationFilterMap.put("style_seq", style_seq);
         reservationFilterMap.put("day", day);
         // 예약된 정보
-        Map<Integer, Set<LocalTime>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
+        Map<Integer, TreeSet<LocalTime>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
 
 
         return ResponseEntity.ok().body(possibleTime);

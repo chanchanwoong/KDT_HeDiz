@@ -4,10 +4,7 @@ import com.charmd.hediz.dto.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface HairshopService {
     public HairshopDTO findHairshop(int shop_seq);
@@ -16,5 +13,5 @@ public interface HairshopService {
 
     public List<StaffDTO> findStaff(int shop_seq);
     public List<ReviewDTO> findReview(int shop_seq);
-    public Map<Integer, Set<LocalTime>> reservationFilter(HashMap<String, Object> reservationFilterMap);
+    Map<Integer, TreeSet<LocalTime>> reservationFilter(HashMap<String, Object> reservationFilterMap);
 }
