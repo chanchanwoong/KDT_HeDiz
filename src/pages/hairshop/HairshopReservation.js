@@ -28,6 +28,7 @@ function HairshopReservation() {
   const dates = generateDates();
   const [time, setTime] = useState([]);
   const [staffNickname, setStaffNickname] = useState('');
+  const [staffSeq, setStaffSeq] = useState('');
 
   ///////////////////////////////////////    현재 날짜, 시간 구하기
 
@@ -121,6 +122,7 @@ function HairshopReservation() {
                       handleTimeButtonClick(
                         timeSlot.key,
                         reserv,
+                        staff.staff_seq,
                         staff.staff_nickname
                       )
                     }
@@ -153,13 +155,19 @@ function HairshopReservation() {
   };
 
   // 클릭한 시간 값을 받아오는 함수
-  const handleTimeButtonClick = (selectedTime, reservTime, staff_nickname) => {
+  const handleTimeButtonClick = (
+    selectedTime,
+    reservTime,
+    staff_seq,
+    staff_nickname
+  ) => {
     // 선택한 시간에 대한 처리를 수행
     console.log('reservTime:', reservTime);
     console.log('Selected time:', selectedTime);
     console.log(staff_nickname);
     setTime(selectedTime);
     setStaffNickname(staff_nickname);
+    setStaffSeq(staff_seq);
   };
 
   return (
@@ -207,7 +215,9 @@ function HairshopReservation() {
           reserv_date: selectedDate,
           reserv_time: time,
           shop_name: shop_name,
+          staff_seq: staffSeq,
           staff_nickname: staffNickname,
+          style_seq: style_seq,
           style_name: style_name,
           style_price: style_price,
           shop_seq: shop_seq,

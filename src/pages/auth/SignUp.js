@@ -10,6 +10,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { SelectButton } from 'primereact/selectbutton';
+import { InputMask } from 'primereact/inputmask';
 
 function SignUp() {
   const toast = useRef(null);
@@ -277,7 +278,8 @@ function SignUp() {
                 rules={{ required: '연락처를 입력해주세요' }}
                 render={({ field, fieldState }) => (
                   <>
-                    <InputText
+                    <InputMask
+                      mask='999-9999-9999'
                       id={field.name}
                       value={field.value || ''}
                       placeholder='전화번호'

@@ -6,6 +6,7 @@ import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { authAxios } from '../../api/AxiosAPI';
 import { Panel } from 'primereact/panel';
+import { todayTime } from '../../components/common/GenerateTime';
 
 function WriteReview() {
   const [value, setValue] = useState(null);
@@ -19,25 +20,6 @@ function WriteReview() {
   console.log(reserv_seq, shop_seq, shop_name);
   console.log(value);
 
-  function todayTime() {
-    let date = new Date();
-    console.log(date);
-    let year = date.getFullYear(); //년도 구하기
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let hour = date.getHours();
-    let minute = date.getMinutes();
-    let second = date.getSeconds();
-
-    month = month >= 10 ? month : '0' + month;
-    day = day >= 10 ? day : '0' + day;
-    hour = hour >= 10 ? hour : '0' + hour;
-    minute = minute >= 10 ? minute : '0' + minute;
-    second = second >= 10 ? second : '0' + second;
-    return (
-      year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
-    );
-  }
   const handleImageUpload = (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) {
