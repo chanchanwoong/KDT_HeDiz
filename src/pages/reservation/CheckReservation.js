@@ -25,7 +25,6 @@ function CheckReservation() {
       .put(`mypage/realtime-reservation/${reserv_seq}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        setReservations(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
