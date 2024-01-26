@@ -13,5 +13,6 @@ public interface HairshopService {
 
     public List<StaffDTO> findStaff(int shop_seq);
     public List<ReviewDTO> findReview(int shop_seq);
-    Map<Integer, TreeSet<LocalTime>> reservationFilter(HashMap<String, Object> reservationFilterMap);
+    public Map<Integer, TreeSet<LocalTime>> reservationFilter(HashMap<String, Object> reservationFilterMap);
+    public int payment(PaymentDTO paymentDto);
 }

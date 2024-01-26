@@ -32,4 +32,7 @@ public class HairshopDAO {
     public List<ReservationDTO> reservationFilter(HashMap<String , Object> reservationFilterMap){
         return session.selectList("com.config.HairshopMapper.reservationFilter", reservationFilterMap);
     }
+    public int payment(PaymentDTO paymentDto){
+        return session.insert("com.config.HairshopMapper.payment", paymentDto);
+    }
 }

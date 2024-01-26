@@ -1,10 +1,7 @@
 package com.charmd.hediz.controller;
 
-import com.charmd.hediz.dto.HairshopDTO;
+import com.charmd.hediz.dto.*;
 
-import com.charmd.hediz.dto.HairstyleDTO;
-import com.charmd.hediz.dto.ReviewDTO;
-import com.charmd.hediz.dto.StaffDTO;
 import com.charmd.hediz.service.HairshopService;
 import com.charmd.hediz.service.HomeService;
 import io.swagger.annotations.Api;
@@ -84,5 +81,13 @@ public class HomeController {
         // 예약된 정보
         Map<Integer, TreeSet<LocalTime>> possibleTime = hairshopService.reservationFilter(reservationFilterMap);
         return ResponseEntity.ok().body(possibleTime);
+    }
+
+    // 결제 내역 저장
+    @PostMapping("payment")
+    public ResponseEntity<?> payment(@RequestBody PaymentDTO paymentDto){
+        System.out.println(paymentDto);
+        int n = hairshopService.payment(paymentDto);
+        return ResponseEntity.ok().body(n==1);
     }
 }
