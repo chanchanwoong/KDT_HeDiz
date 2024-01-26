@@ -4,14 +4,15 @@ import { classNames } from 'primereact/utils';
 import { authAxios } from '../../api/AxiosAPI';
 import { Panel } from 'primereact/panel';
 import { Link } from 'react-router-dom';
+import { Button } from 'primereact/button';
 
 function MyReservation() {
   const [products, setProducts] = useState([]);
   console.log(localStorage.getItem('cust_seq'));
   useEffect(() => {
     authAxios()
-      // .get(`mypage/reservation/${localStorage.getItem('cust_seq')}`)
-      .get(`mypage/reservation/1`)
+      .get(`mypage/reservation/${localStorage.getItem('cust_seq')}`)
+      // .get(`mypage/reservation/1`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProducts(response.data);
@@ -29,10 +30,7 @@ function MyReservation() {
       >
         <div
           className={classNames(
-            'flex flex-column xl:flex-row xl:align-items-start p-4 gap-4',
-            {
-              'border-top-1 surface-border': index !== 0,
-            }
+            'flex flex-column xl:flex-row xl:align-items-start p-4 gap-4'
           )}
         >
           <img
@@ -64,8 +62,7 @@ function MyReservation() {
                   shop_name: product.shop_name,
                 }}
               >
-                {' '}
-                리뷰 등록{' '}
+                <Button>리뷰 등록</Button>
               </Link>
             </div>
           </div>
@@ -75,7 +72,9 @@ function MyReservation() {
   };
 
   const listTemplate = (items) => {
-    if (!items || items.length === 0) return null;
+    if (!Array.isArray(items) || items.length === 0) {
+      return `현재 예약된 내역이 없네요 :) 예약을 시작해보세요!`;
+    }
 
     let list = items.map((product, index) => {
       return itemTemplate(product, index);
@@ -85,16 +84,14 @@ function MyReservation() {
   };
 
   return (
-    <Panel header='내 예약 내역'>
-      <div className='card'>
+    <>
+      <Panel header='내 예약 내역'>
         <DataView
           value={products}
           listTemplate={listTemplate}
-          emptyMessage='현재 예약된 내역이 없네요 :) 예약을 시작해보세요!'
-          style={{ width: '500px', height: '500px' }}
         />
-      </div>
-    </Panel>
+      </Panel>
+    </>
   );
 }
 

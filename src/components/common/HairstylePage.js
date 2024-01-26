@@ -10,7 +10,7 @@ function HairstylePage() {
 
   useEffect(() => {
     authAxios()
-      .get(`/hairshop/hairstyle/${shop_seq}/${style_seq}`)
+      .get(`/home/hairstyle/${shop_seq}/${style_seq}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProduct(response.data);

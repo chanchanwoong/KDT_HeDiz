@@ -11,7 +11,7 @@ function StaffList() {
 
   useEffect(() => {
     authAxios()
-      .get(`hairshop/staff/` + shop_seq)
+      .get(`home/staff/` + shop_seq)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProducts(response.data);

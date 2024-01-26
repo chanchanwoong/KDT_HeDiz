@@ -33,7 +33,7 @@ function HairshopPage() {
   const shop_name = location.state.shop_name;
   useEffect(() => {
     authAxios()
-      .get(`/hairshop/${shop_seq}`)
+      .get(`/home/${shop_seq}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProduct(response.data);

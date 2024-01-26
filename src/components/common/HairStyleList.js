@@ -9,10 +9,14 @@ function HairstyleList() {
   const location = useLocation();
   const shop_seq = location.state.shop_seq;
   const shop_name = location.state.shop_name;
+  const shop_start = location.state.shop_start;
+  const shop_end = location.state.shop_end;
+
+  console.log(shop_start, shop_end);
 
   useEffect(() => {
     authAxios()
-      .get(`hairshop/hairstyle/` + shop_seq)
+      .get(`home/hairstyle/` + shop_seq)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProducts(response.data);
@@ -42,6 +46,8 @@ function HairstyleList() {
               state={{
                 shop_seq: shop_seq,
                 shop_name: shop_name,
+                shop_start: shop_start,
+                shop_end: shop_end,
                 style_seq: product.style_seq,
                 style_name: product.style_name,
                 style_price: product.style_price,
@@ -59,6 +65,8 @@ function HairstyleList() {
                 state={{
                   shop_seq: shop_seq,
                   shop_name: shop_name,
+                  shop_start: shop_start,
+                  shop_end: shop_end,
                   style_seq: product.style_seq,
                   style_name: product.style_name,
                   style_price: product.style_price,

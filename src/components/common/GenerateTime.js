@@ -1,9 +1,10 @@
-///////////////////// 시작시간 끝시간 받아오기
-
-export const generateTimeSlots = () => {
-  const startTime = 9 * 60; // 9:00 in minutes
-  const endTime = 18 * 60; // 18:00 in minutes
+///// 시작시간 끝 시간을 받아와서 30분 단위로 버튼 생성
+export const generateTimeSlots = (shop_start, shop_end) => {
+  const startTime = parseTimeToMinutes(shop_start); // shop_start 값을 파싱하여 분 단위로 변환합니다.
+  const endTime = parseTimeToMinutes(shop_end); // 18:00 in minutes
   const interval = 30; // 30 minutes interval
+  console.log(shop_start, shop_end);
+  console.log(startTime, endTime);
 
   let timeSlots = [];
   for (let time = startTime; time < endTime; time += interval) {
@@ -25,6 +26,7 @@ export const generateTimeSlots = () => {
   return timeSlots;
 };
 
+///// 오늘 날짜를 기준으로 2주간의 년-월-일 리턴 (예약페이지에서 사용)
 export const generateDates = () => {
   const dates = [];
   const today = new Date();
@@ -36,4 +38,10 @@ export const generateDates = () => {
     dates.push(`${year}-${month}-${day}`);
   }
   return dates;
+};
+
+////// 가게 영업시간을 분으로 변환 시키기 위한 함수
+const parseTimeToMinutes = (time) => {
+  const [hours, minutes] = time.split(':');
+  return parseInt(hours) * 60 + parseInt(minutes);
 };

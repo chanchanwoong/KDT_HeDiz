@@ -6,7 +6,10 @@ import { classNames } from 'primereact/utils';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import axios from 'axios';
-import { generateDates, generateTimeSlots } from '../../components/common/GenerateTime';
+import {
+  generateDates,
+  generateTimeSlots,
+} from '../../components/common/GenerateTime';
 
 function HairshopReservation() {
   const location = useLocation();
@@ -16,6 +19,9 @@ function HairshopReservation() {
   const style_seq = location.state.style_seq;
   const shop_name = location.state.shop_name;
   const style_price = location.state.style_price;
+  const shop_start = location.state.shop_start;
+  const shop_end = location.state.shop_end;
+
   const [selectedDate, setSelectedDate] = useState('2024-01-25');
   const [staff, setStaff] = useState([]);
   const [reserv, setReserv] = useState([]);
@@ -48,8 +54,10 @@ function HairshopReservation() {
   ///////////////////////////////////////    데이터 가져오기 (디자이너, 예약 가능 시간)
   ///////////////////////////////////////    StaffList 컴포넌트는 사용 X (코드 수정이 많음)
   useEffect(() => {
-    const request1 = authAxios().get(`hairshop/staff/${shop_seq}`);
-    const request2 = authAxios().get(`hairshop/reservation/${shop_seq}/${style_seq}/${selectedDate}`);
+    const request1 = authAxios().get(`home/staff/${shop_seq}`);
+    const request2 = authAxios().get(
+      `home/reservation/${shop_seq}/${style_seq}/${selectedDate}`
+    );
 
     axios
       .all([request1, request2])
@@ -74,39 +82,51 @@ function HairshopReservation() {
     const today = getToday();
     return (
       <div
-        className="col-12"
+        className='col-12'
         key={staff.staff_seq}
       >
         <div
-          className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', {
-            'border-top-1 surface-border': index !== 0,
-          })}
+          className={classNames(
+            'flex flex-column xl:flex-row xl:align-items-start p-4 gap-4',
+            {
+              'border-top-1 surface-border': index !== 0,
+            }
+          )}
         >
           <img
-            className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+            className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
             src={staff.staff_image}
             alt={staff.staff_nickname}
           />
-          <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-            <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-              <div className="text-2xl font-bold text-900">{staff.staff_nickname}</div>
-              <div className="flex align-items-center gap-3">
-                <span className="flex align-items-center gap-2">
-                  <span className="font-semibold">{staff.staff_role}</span>
+          <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
+            <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
+              <div className='text-2xl font-bold text-900'>
+                {staff.staff_nickname}
+              </div>
+              <div className='flex align-items-center gap-3'>
+                <span className='flex align-items-center gap-2'>
+                  <span className='font-semibold'>{staff.staff_role}</span>
                 </span>
               </div>
               <span>{staff.staff_intro}</span>
-              <div className="time-buttons">
+              <div className='time-buttons'>
                 {/* generateTimeSlots 함수를 이용하여 시간 버튼 생성
                     disable 조건 : reserv 안에 없는 시간이 버튼 에 포함 되는 경우,
                                   오늘 날짜의 현재 시간이 지나면 예약 불가능       */}
-                {generateTimeSlots(reserv).map((timeSlot) => (
+                {generateTimeSlots(shop_start, shop_end).map((timeSlot) => (
                   <button
                     key={timeSlot.key}
-                    className="btn btn-primary"
-                    onClick={() => handleTimeButtonClick(timeSlot.key, reserv, staff.staff_nickname)}
+                    className='btn btn-primary'
+                    onClick={() =>
+                      handleTimeButtonClick(
+                        timeSlot.key,
+                        reserv,
+                        staff.staff_nickname
+                      )
+                    }
                     disabled={
-                      !reserv?.includes(timeSlot.key) || (timeSlot.key < curTime && selectedDate.includes(today))
+                      !reserv?.includes(timeSlot.key) ||
+                      (timeSlot.key < curTime && selectedDate.includes(today))
                     }
                   >
                     {timeSlot.props.children}
@@ -129,7 +149,7 @@ function HairshopReservation() {
       return itemTemplate(product, index, reserv[xxx]);
     });
 
-    return <div className="grid grid-nogutter">{list}</div>;
+    return <div className='grid grid-nogutter'>{list}</div>;
   };
 
   // 클릭한 시간 값을 받아오는 함수
@@ -144,14 +164,14 @@ function HairshopReservation() {
 
   return (
     <div>
-      <Panel header="예약하기">
-        <div className="flex flex-column">
+      <Panel header='예약하기'>
+        <div className='flex flex-column'>
           <span>매장이름: {shop_name}</span>
           <span>선택한 스타일: {style_name}</span>
           <span>가격 : {style_price} 원</span>
         </div>
       </Panel>
-      <Panel header="날짜선택">
+      <Panel header='날짜선택'>
         <div>
           {dates.map((date) => (
             <button
@@ -172,8 +192,8 @@ function HairshopReservation() {
           ))}
         </div>
       </Panel>
-      <Panel header="스타일리스트">
-        <div className="card">
+      <Panel header='스타일리스트'>
+        <div className='card'>
           <DataView
             value={staff}
             listTemplate={listTemplate}
@@ -181,7 +201,7 @@ function HairshopReservation() {
         </div>
       </Panel>
       <Link
-        to="/hairshop/payment"
+        to='/hairshop/payment'
         state={{
           cust_name: localStorage.getItem('cust_name'),
           reserv_date: selectedDate,
@@ -190,6 +210,7 @@ function HairshopReservation() {
           staff_nickname: staffNickname,
           style_name: style_name,
           style_price: style_price,
+          shop_seq: shop_seq,
         }}
       >
         <Button>결제 화면으로</Button>

@@ -1,10 +1,13 @@
 import { Bootpay } from '@bootpay/client-js';
+import { useEffect } from 'react';
+import { authAxios } from './AxiosAPI';
 
 async function BootpayAPI({ payinfo }) {
   try {
     const response = await Bootpay.requestPayment({
       application_id: '65af183ce57a7e001b410f13',
-      price: payinfo.stlye_price,
+      // price: payinfo.stlye_price,
+      price: 100,
       order_name: payinfo.style_name,
       order_id: 'TEST_ORDER_ID',
       tax_free: 0,
@@ -19,7 +22,8 @@ async function BootpayAPI({ payinfo }) {
           id: 'item_id',
           name: payinfo.style_name,
           qty: 1,
-          price: payinfo.stlye_price,
+          // price: payinfo.stlye_price,
+          price: 100,
         },
       ],
       extra: {
@@ -35,7 +39,6 @@ async function BootpayAPI({ payinfo }) {
         break;
       case 'done':
         console.log(response);
-        // 결제 완료 처리
 
         break;
       case 'confirm':

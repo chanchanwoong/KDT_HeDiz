@@ -51,6 +51,7 @@ function HairshopList({ hairshopName }) {
     }
   }, [hairshopName, products]);
 
+
   const itemTemplate = (product, index) => {
     return (
       <div
@@ -71,6 +72,8 @@ function HairshopList({ hairshopName }) {
               state={{
                 shop_seq: product.shop_seq,
                 shop_name: product.shop_name,
+                shop_start: product.shop_start,
+                shop_end: product.shop_end,
               }}
             >
               <img

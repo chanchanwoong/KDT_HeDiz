@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Rating } from 'primereact/rating';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { InputText } from 'primereact/inputtext';
 import { authAxios } from '../../api/AxiosAPI';
+import { Panel } from 'primereact/panel';
 
 function WriteReview() {
   const [value, setValue] = useState(null);
   const { register, handleSubmit, reset } = useForm();
   const [sendImgs, setSendImgs] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
   const reserv_seq = location.state.reserv_seq;
   const shop_seq = location.state.shop_seq;
   const shop_name = location.state.shop_name;
@@ -19,7 +20,7 @@ function WriteReview() {
   console.log(value);
 
   function todayTime() {
-    let date = new Date(); //date객체는 UTC로부터 지난시간을 밀리초로 나타내는 UNIX 타임스탬프를 담는다.
+    let date = new Date();
     console.log(date);
     let year = date.getFullYear(); //년도 구하기
     let month = date.getMonth() + 1;
@@ -41,10 +42,6 @@ function WriteReview() {
     const file = e.target.files && e.target.files[0];
     if (!file) {
       alert('파일을 선택해주세요.');
-      return;
-    }
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      alert('JPG 사진 파일만 가능합니다.');
       return;
     }
 
@@ -77,67 +74,55 @@ function WriteReview() {
       .catch((error) => {
         console.error('Error:', error);
       });
+
+    navigate('/mypage');
   };
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-column flex-wrap gap-4'
-      >
-        <div className='card flex justify-content-center'>
-          <Rating
-            value={value}
-            onChange={(e) => setValue(e.value)}
-            cancel={false}
-          />
-        </div>
-        <div>
-          <input
-            type='file'
-            multiple
-            style={{ display: 'none' }}
-            id='review_photo'
-            name='review_photo'
-            accept='.jpg'
-            onChange={handleImageUpload}
-          />
-          <label
-            className='btn btn-secondary border-0 bg_grey'
-            htmlFor='review_photo'
-          >
-            사진 추가
-          </label>
-        </div>
-        <div>
-          <InputTextarea
-            className='w--12'
-            placeholder='리뷰 내용을 입력해주세요'
-            {...register('review_content')}
-          />
-        </div>
-        <Button
-          label='리뷰 등록'
-          type='submit'
-          className='w-5'
-        />
-        <div className='flex justify-content-end gap-2'>
+      <Panel header='리뷰 등록'>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className='flex flex-column flex-wrap gap-4'
+        >
+          <div className='card flex'>
+            <Rating
+              value={value}
+              onChange={(e) => setValue(e.value)}
+              cancel={false}
+            />
+          </div>
+          <img src={`${sendImgs}`}></img>
+          <div>
+            <input
+              type='file'
+              style={{ display: 'none' }}
+              id='review_photo'
+              name='review_photo'
+              accept='image/*'
+              onChange={handleImageUpload}
+            />
+            <label
+              className='btn btn-secondary border-0 bg_grey'
+              htmlFor='review_photo'
+            >
+              사진 추가
+            </label>
+          </div>
+          <div>
+            <InputTextarea
+              className='w-12 '
+              placeholder='리뷰 내용을 입력해주세요'
+              {...register('review_content')}
+            />
+          </div>
           <Button
-            label='초기화'
-            type='button'
-            onClick={reset}
-            size='small'
-            className='w-6rem'
-            outlined
-          />
-          <Button
-            label='수정하기'
+            label='리뷰 등록'
             type='submit'
-            size='small'
-            className='w-6rem'
+            className='w-5'
           />
-        </div>
-      </form>
+        </form>
+      </Panel>
     </>
   );
 }

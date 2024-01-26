@@ -12,6 +12,8 @@ function HairstyleDetailPage() {
   const style_seq = location.state.style_seq;
   const style_price = location.state.style_price;
   const shop_name = location.state.shop_name;
+  const shop_start = location.state.shop_start;
+  const shop_end = location.state.shop_end;
   console.log('style이름', style_name);
 
   return (
@@ -35,6 +37,8 @@ function HairstyleDetailPage() {
           style_seq: style_seq,
           style_price: style_price,
           shop_name: shop_name,
+          shop_start: shop_start,
+          shop_end: shop_end,
         }}
       >
         <Button>예약하기</Button>

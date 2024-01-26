@@ -14,7 +14,7 @@ function ReviewList() {
 
   useEffect(() => {
     authAxios()
-      .get(`hairshop/review/` + shop_seq)
+      .get(`home/review/` + shop_seq)
       .then((response) => {
         console.log('Auth Response:', response.data);
         console.log(style_name);

@@ -10,8 +10,8 @@ function MyReview() {
   const [products, setProducts] = useState([]);
   useEffect(() => {
     authAxios()
-      //   .get(`mypage/review/${localStorage.getItem('cust_seq')}`)
-      .get(`mypage/review/1`)
+      .get(`mypage/review/${localStorage.getItem('cust_seq')}`)
+      // .get(`mypage/review/1`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProducts(response.data);
@@ -81,7 +81,7 @@ function MyReview() {
 
   const listTemplate = (items) => {
     if (!Array.isArray(items) || items.length === 0) {
-      return <div>No reviews available.</div>;
+      return <div>아직 리뷰가 없습니다. 리뷰를 작성해보세요</div>;
     }
 
     let list = items.map((product, index) => {
