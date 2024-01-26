@@ -31,6 +31,8 @@ function HairshopPayment() {
     cust_seq: localStorage.getItem('cust_seq'),
     shop_seq: shop_seq,
     reserv_request: reservRequest,
+    reserv_date: reserv_date,
+    reserv_time: reserv_time,
     pay_price: style_price,
     reserv_stat: '',
   };
