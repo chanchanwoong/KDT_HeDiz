@@ -83,6 +83,13 @@ public class HomeController {
         return ResponseEntity.ok().body(possibleTime);
     }
 
+    // 예약_예약 테이블에 저장
+    @PostMapping("reservation")
+    public ResponseEntity<?> reservation(@RequestBody ReservationDTO reservationDto){
+        int n = hairshopService.reservation(reservationDto);
+        return ResponseEntity.ok().body(n==1);
+    }
+
     // 결제 내역 저장
     @PostMapping("payment")
     public ResponseEntity<?> payment(@RequestBody PaymentDTO paymentDto){

@@ -93,9 +93,12 @@ public class HairshopServiceImpl implements HairshopService {
     }
 
     @Override
+    public int reservation(ReservationDTO reservationDto) {
+        return dao.reservation(reservationDto);
+    }
+
+    @Override
     public int payment(PaymentDTO paymentDto) {
         return dao.payment(paymentDto);
     }
-
-
 }
