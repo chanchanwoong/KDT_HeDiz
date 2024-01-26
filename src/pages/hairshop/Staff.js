@@ -72,6 +72,7 @@ export default function staff() {
       .get(`/hairshop/staff/${shop_seq}`)
       .then((response) => {
         setStaffs(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
@@ -131,7 +132,7 @@ export default function staff() {
   };
 
   // 직원 삭제
-  const deleteHairstyle = (e, rowData) => {
+  const onRowDeleteComplete = (e, rowData) => {
     confirmPopup({
       target: e.currentTarget,
       message: '정말 삭제하시겠습니까?',
@@ -157,7 +158,7 @@ export default function staff() {
     return (
       <>
         <Button
-          onClick={(e) => deleteHairstyle(e, rowData)}
+          onClick={(e) => onRowDeleteComplete(e, rowData)}
           icon='pi pi-trash'
           rounded
           text
@@ -194,7 +195,7 @@ export default function staff() {
       <img
         src={imageData}
         className='shadow-2 border-round'
-        style={{ width: '64px' }}
+        style={{ width: '128px' }}
       />
     );
   };
@@ -245,6 +246,13 @@ export default function staff() {
         onRowEditComplete={onRowEditComplete}
       >
         <Column
+          field='staff_image'
+          header='프로필 사진'
+          body={imageBodyTemplate}
+          className='text-center'
+        ></Column>
+
+        <Column
           field='staff_role'
           header='직급'
           sortable
@@ -282,12 +290,6 @@ export default function staff() {
           sortable
           editor={(options) => textEditor(options)}
           className='text-center'
-        ></Column>
-
-        <Column
-          field='staff_image'
-          header='이미지'
-          body={imageBodyTemplate}
         ></Column>
 
         <Column
@@ -356,20 +358,20 @@ export default function staff() {
             <label className='font-bold block mb-2'>직원 소개</label>
             <InputTextarea
               autoResize
-              rows={5}
+              rows={3}
               placeholder='직원 소개'
               name='staff_intro'
               {...register('staff_intro', { required: true })}
             />
           </div>
-          {product.staff_image && (
-            <img
-              src={product.staff_image}
-              className='product-staff block m-auto pb-3  w-4'
-            />
-          )}
 
           <div>
+            <label
+              className='btn btn-secondary border-0 bg_grey font-bold'
+              htmlFor='staff_image'
+            >
+              프로필 사진 등록
+            </label>
             <input
               type='file'
               multiple
@@ -379,12 +381,12 @@ export default function staff() {
               accept='.jpg'
               onChange={handleImageUpload}
             />
-            <label
-              className='btn btn-secondary border-0 bg_grey text-bold'
-              htmlFor='staff_image'
-            >
-              사진 추가
-            </label>
+            {product.staff_image && (
+              <img
+                src={product.staff_image}
+                className='product-staff block m-auto pb-3 w-4'
+              />
+            )}
           </div>
 
           <div className='flex justify-content-end gap-2'>

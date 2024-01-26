@@ -1,20 +1,23 @@
 import { useEffect, useState, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { authAxios } from 'api/AxiosAPI';
 import DaumPostcode from 'react-daum-postcode';
 
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
+import { Chips } from 'primereact/chips';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Checkbox } from 'primereact/checkbox';
 
 function Info() {
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const { register, handleSubmit, reset, setValue, control } = useForm();
   const toast = useRef(null);
   const [info, setInfo] = useState({});
   const [selectClosedDay, setSelectClosedDay] = useState([]);
+  const [tag, setTag] = useState([]);
+  const [inputTag, setInputTag] = useState('');
   const [checked, setChecked] = useState(false);
 
   const closedDay = [
@@ -45,23 +48,17 @@ function Info() {
     reset(info);
   };
 
-  const showSuccess = () => {
+  const showToast = (severity, detail) => {
     toast.current.show({
-      severity: 'success',
-      summary: 'Success',
-      detail: '미용실 정보 수정 성공',
+      severity,
+      summary: severity === 'success' ? 'Success' : 'Error',
+      detail,
       life: 3000,
     });
   };
 
-  const showError = () => {
-    toast.current.show({
-      severity: 'error',
-      summary: 'Error',
-      detail: '미용실 정보 수정 실패',
-      life: 3000,
-    });
-  };
+  const showSuccess = () => showToast('success', '미용실 정보 수정 성공');
+  const showError = () => showToast('error', '미용실 정보 수정 실패');
 
   useEffect(() => {
     reset({
@@ -80,7 +77,7 @@ function Info() {
             ? response.data.shop_regular.split(',')
             : []
         );
-
+        setTag(response.data.shop_tag ? response.data.shop_tag.split(',') : []);
         const serverData = {
           shop_register: response.data.shop_register,
           shop_name: response.data.shop_name,
@@ -88,7 +85,6 @@ function Info() {
           shop_phone: response.data.shop_phone,
           shop_start: response.data.shop_start,
           shop_end: response.data.shop_end,
-          shop_tag: response.data.shop_tag,
           shop_intro: response.data.shop_intro,
         };
 
@@ -110,6 +106,7 @@ function Info() {
       shop_name: info.shop_name,
       shop_register: info.shop_register,
       shop_regular: formatShopRegular,
+      shop_tag: tag.join(','),
       shop_seq: localStorage.getItem('shop_seq'),
     };
 
@@ -248,12 +245,7 @@ function Info() {
                 }}
                 checked={checked}
               />
-              <label
-                htmlFor='ingredient1'
-                className='ml-2'
-              >
-                휴무일 없음
-              </label>
+              <label className='ml-2'>휴무일 없음</label>
             </div>
           </div>
 
@@ -261,11 +253,16 @@ function Info() {
             <span className='p-inputgroup-addon'>
               <i className='pi pi-hashtag mr-2'></i> 해시태그
             </span>
-            <InputText
+
+            {/* <Chips
               name='shop_tag'
-              placeholder='태그'
+              value={tag}
+              onChange={(e) => {
+                setInputTag(e.value);
+                setInfo({ ...info, shop_tag: e.value });
+              }}
               {...register('shop_tag')}
-            />
+            /> */}
           </div>
 
           <div className='p-inputgroup flex-1'>
@@ -278,20 +275,6 @@ function Info() {
               rows={5}
               autoResize
               {...register('shop_intro')}
-            />
-          </div>
-
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-image mr-2'></i> 사진 업로드
-            </span>
-            <input
-              type='file'
-              multiple
-              // style={{ display: 'none' }}
-              name='style_image'
-              accept='.jpg'
-              // onChange={handleImageUpload}
             />
           </div>
         </div>

@@ -18,19 +18,13 @@ function Dashboard() {
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
 
-  const reservationTimeTemplate = (rowData) => {
-    return (
-      <>
-        <p>{formatTime(rowData.reserv_time)}</p>
-        <p>- {formatTime(rowData.end_time)}</p>
-      </>
-    );
-  };
-
   const reservationInfoTemplate = (rowData) => {
     return (
       <>
         <p className='font-semibold'>{rowData.style_name}</p>
+        <p>
+          {formatTime(rowData.reserv_time)} - {formatTime(rowData.end_time)}
+        </p>
         <p>{rowData.reserv_request}</p>
       </>
     );
@@ -48,7 +42,6 @@ function Dashboard() {
     calendar.setOption('plugins', [dayGridPlugin]);
     calendar.setOption('initialView', 'dayGridMonth');
 
-    // Axios.all 메소드를 사용하여 여러 개의 요청을 동시에 보냄
     axios
       .all([request1, request2])
       .then(
@@ -80,32 +73,33 @@ function Dashboard() {
       <div className={styles.container}>
         <div className={`${styles.item} card`}>
           <h4>예약완료</h4>
-          <h3>24</h3>
+          {/* <h3>24</h3> */}
         </div>
         <div className={`${styles.item} card`}>
           <h4>예약취소</h4>
-          <h3>2</h3>
+          {/* <h3>2</h3> */}
         </div>
         <div className={`${styles.item} card`}>
           <h4>노쇼</h4>
-          <h3>2</h3>
+          {/* <h3>2</h3> */}
         </div>
         <div className={`${styles.item} card`}>
           <h4>금월 매출</h4>
-          <h3>4</h3>
+          {/* <h3>4</h3> */}
         </div>
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
             <span>
-              <span className='mr-1 text-primary text-semiblod'>
-                {localStorage.getItem('shop_name')}
-              </span>
               실시간 예약
+              <Clock
+                format={'YY년 MM월 DD일 HH:mm:ss'}
+                ticking={true}
+                className='ml-2'
+              />
             </span>
-            <Clock
-              format={'YY년 MM월 DD일 HH:mm:ss'}
-              ticking={true}
-            />
+            <span className='mr-1 text-primary text-semiblod text-lg'>
+              {localStorage.getItem('shop_name')}
+            </span>
           </h2>
           <div>
             <DataTable
@@ -127,15 +121,13 @@ function Dashboard() {
                 className='text-center font-semibold'
               />
               <Column
-                field='reserv_time'
-                header='예약시간'
-                className='text-center'
-                body={reservationTimeTemplate}
-              />
-              <Column
                 field='reserv_request'
                 header='예약 정보'
                 body={reservationInfoTemplate}
+              />
+              <Column
+                field='resrv_stat'
+                header='예약 상태'
               />
             </DataTable>
           </div>
@@ -149,7 +141,7 @@ function Dashboard() {
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
             <span>휴무일</span>
-            <span>
+            <span className='text-lg'>
               <span className='mr-1 text-primary text-semiblod'>월요일</span>
               정기 휴무
             </span>

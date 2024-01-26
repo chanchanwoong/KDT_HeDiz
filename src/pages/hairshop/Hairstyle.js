@@ -128,7 +128,7 @@ export default function Hairstyle() {
       .put(`/hairshop/hairstyle`, newData)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        accept('헤어스타일을 수정했습니다. ');
+        accept('헤어스타일 정보를 수정했습니다. ');
         reset(defaultValues);
         setVisible(false);
       })
@@ -149,7 +149,7 @@ export default function Hairstyle() {
   };
 
   // 헤어스타일 삭제
-  const deleteHairstyle = (e, rowData) => {
+  const onRowDeleteComplete = (e, rowData) => {
     confirmPopup({
       target: e.currentTarget,
       message: '정말 삭제하시겠습니까?',
@@ -173,16 +173,14 @@ export default function Hairstyle() {
   };
   const deleteTemplate = (rowData) => {
     return (
-      <>
-        <Button
-          onClick={(e) => deleteHairstyle(e, rowData)}
-          icon='pi pi-trash'
-          rounded
-          text
-          severity='secondary'
-          className='p-button-danger'
-        />
-      </>
+      <Button
+        onClick={(e) => onRowDeleteComplete(e, rowData)}
+        icon='pi pi-trash'
+        rounded
+        text
+        severity='secondary'
+        className='p-button-danger'
+      />
     );
   };
 
@@ -243,6 +241,7 @@ export default function Hairstyle() {
           />
         </div>
       </h2>
+
       <DataTable
         ref={dt}
         value={hairstyles}
@@ -412,7 +411,7 @@ export default function Hairstyle() {
             <label className='font-bold block mb-2'>스타일 소개</label>
             <InputTextarea
               autoResize
-              rows={5}
+              rows={3}
               placeholder='소개'
               name='style_intro'
               {...register('style_intro', { required: true })}

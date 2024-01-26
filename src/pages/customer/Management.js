@@ -103,8 +103,16 @@ function Management() {
           style={{ minWidth: '12rem' }}
         />
         <Column
-          headerStyle={{ width: '5rem', textAlign: 'center' }}
-          bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
+          // field='stat_noshow'
+          header='고객 등급'
+          sortable
+          style={{ minWidth: '12rem' }}
+        />
+        <Column
+          // field='stat_noshow'
+          header='마지막 예약 정보'
+          sortable
+          style={{ minWidth: '12rem' }}
         />
       </DataTable>
     </div>
