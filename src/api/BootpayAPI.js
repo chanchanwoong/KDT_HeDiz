@@ -1,11 +1,11 @@
 import { Bootpay } from '@bootpay/client-js';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { authAxios } from './AxiosAPI';
 
-async function BootpayAPI({ payinfo }) {
+export async function BootpayAPI({ payinfo }) {
   try {
     const response = await Bootpay.requestPayment({
-      application_id: '65af183ce57a7e001b410f13',
+      application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
       // price: payinfo.stlye_price,
       price: 100,
       order_name: payinfo.style_name,
@@ -39,7 +39,6 @@ async function BootpayAPI({ payinfo }) {
         break;
       case 'done':
         console.log(response);
-
         break;
       case 'confirm':
         console.log(response.receipt_id);
@@ -56,4 +55,21 @@ async function BootpayAPI({ payinfo }) {
   }
 }
 
-export default BootpayAPI;
+export async function BootpayCancelAPI(receipt) {
+  Bootpay.setConfiguration({
+    application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
+    private_key: process.env.REACT_APP_BOOTPAY_PRIVATE_API_KEY,
+  });
+
+  try {
+    await Bootpay.getAccessToken();
+    const response = await Bootpay.cancelPayment({
+      receipt_id: receipt,
+      cancel_message: '예약 취소 되었습니다',
+    });
+    console.log(response);
+  } catch (e) {
+    // 발급 실패시 오류
+    console.log(e);
+  }
+}

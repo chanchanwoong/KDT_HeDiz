@@ -4,9 +4,12 @@ import { classNames } from 'primereact/utils';
 import { authAxios } from '../../api/AxiosAPI';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
+import { BootpayCancelAPI } from '../../api/BootpayAPI';
+import { useLocation } from 'react-router-dom';
 
 function CheckReservation() {
   const [reservations, setReservations] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     authAxios()
@@ -20,7 +23,7 @@ function CheckReservation() {
       });
   }, []);
 
-  const handleReservCancel = (reserv_seq) => {
+  const handleReservCancel = async (reserv_seq) => {
     authAxios()
       .put(`mypage/realtime-reservation/${reserv_seq}`)
       .then((response) => {
@@ -29,6 +32,11 @@ function CheckReservation() {
       .catch((error) => {
         console.error('Auth Error:', error);
       });
+    try {
+      await BootpayCancelAPI();
+    } catch (error) {
+      console.error('부트페이 API 호출 중 오류:', error);
+    }
   };
 
   const itemTemplate = (reservation, index) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Panel } from 'primereact/panel';
 import { useLocation } from 'react-router-dom';
-import BootpayAPI from '../../api/BootpayAPI';
+import { BootpayAPI } from '../../api/BootpayAPI';
 import { Button } from 'primereact/button';
 import { authAxios } from '../../api/AxiosAPI';
 import axios from 'axios';
@@ -22,6 +22,7 @@ function HairshopPayment() {
   const style_name = location.state.style_name;
   const style_price = location.state.style_price;
   const [reservRequest, setReservRequest] = useState('');
+  const [receiptID, setReceiptID] = useState('');
   ////////////// 백엔드 서버에 보낼 정보들
   const payinfo = {
     style_seq: style_seq,
@@ -57,6 +58,7 @@ function HairshopPayment() {
             console.log('Response from request1:', res1.data);
             console.log('Response from request2:', res2.data);
           }),
+
           navigate('/reservation')
         )
         .catch((error) => {
