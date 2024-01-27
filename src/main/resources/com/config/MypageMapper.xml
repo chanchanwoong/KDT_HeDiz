@@ -6,7 +6,7 @@
 
     <!--mypage 조회-->
     <select id="findMypage" resultType="CustomerDTO">
-        select cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender from t_customer where cust_seq=#{cust_seq}
+        select cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender, cust_level from t_customer where cust_seq=#{cust_seq}
     </select>
 
     <!--예약 정보 조회-->

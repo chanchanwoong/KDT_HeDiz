@@ -98,15 +98,37 @@
     </select>
 
     <!--예약_예약 테이블에 저장-->
-    <insert id="reservation" parameterType="ReservationDTO">
-        insert into t_reservation (style_seq, cust_seq, shop_seq, reserv_request, reserv_date, reserv_time, reserv_stat, staff_seq, receipt_id)
-        values (#{style_seq}, #{cust_seq}, #{shop_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{reserv_stat}, #{staff_seq}, #{receipt_id})
+    <insert id="reservation" parameterType="PayinfoDTO">
+        insert into t_reservation (style_seq, cust_seq, shop_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id)
+        values (#{style_seq}, #{cust_seq}, #{shop_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id})
     </insert>
 
+    <!--예약 테이블에 저장한 reserv_seq 조회-->
+    <select id="findReservSeq" parameterType="PayinfoDTO" resultType="int">
+        select reserv_seq from T_RESERVATION where receipt_id=#{receipt_id}
+    </select>
+
+    <!--최종 결제 정보 조회-->
+    <select id="getPayinfo" parameterType="PayinfoDTO" resultType="PayinfoDTO">
+        SELECT T_CUSTOMER.cust_name, T_CUSTOMER.cust_phone,
+        #{reserv_date} AS reserv_date,
+        #{reserv_time} AS reserv_time,
+        T_HAIRSHOP.shop_name, T_STAFF.staff_name, T_HAIRSTYLE.style_name, T_HAIRSTYLE.style_price,
+        (CASE
+        WHEN T_CUSTOMER.cust_level = 1
+        THEN T_HAIRSTYLE.style_price * 0.9
+        ELSE T_HAIRSTYLE.style_price
+        END) AS pay_price
+        FROM T_CUSTOMER
+        JOIN T_HAIRSHOP ON T_CUSTOMER.cust_seq = #{cust_seq} AND T_HAIRSHOP.shop_seq = #{shop_seq}
+        JOIN T_STAFF ON T_STAFF.staff_seq = #{staff_seq}
+        JOIN T_HAIRSTYLE ON T_HAIRSTYLE.style_seq = #{style_seq}
+    </select>
+
     <!--결제 내역 저장-->
-    <insert id="payment" parameterType="PaymentDTO">
-        insert into t_payment(shop_seq, cust_seq, pay_price, pay_date)
-        values(#{shop_seq}, #{cust_seq}, #{pay_price}, now())
+    <insert id="payment" parameterType="PayinfoDTO">
+        insert into t_payment(shop_seq, cust_seq, reserv_seq, pay_price, pay_date)
+        values(#{shop_seq}, #{cust_seq}, #{reserv_seq}, #{pay_price}, now())
     </insert>
 
 </mapper>

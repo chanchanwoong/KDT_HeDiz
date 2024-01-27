@@ -83,19 +83,20 @@ public class HomeController {
         return ResponseEntity.ok().body(possibleTime);
     }
 
-    // 예약_예약 테이블에 저장
+    // 예약_날짜 누르고 예약하기 버튼을 누른 후 결제 정보 보여주는 API
+    // 결제 금액은 cust_level에 따라 변화 필요
+    @PostMapping("payinfo")
+    public ResponseEntity<?> payinfo(@RequestBody PayinfoDTO payinfoDto){
+        System.out.println("입력 결제정보 > " + payinfoDto);
+        payinfoDto = hairshopService.getPayinfo(payinfoDto);
+        System.out.println("최종 결제정보 > " + payinfoDto);
+        return ResponseEntity.ok().body(payinfoDto);
+    }
+
+    // 예약_최종 결제 후 결제 테이블과 예약 테이블에 저장
     @PostMapping("reservation")
-    public ResponseEntity<?> reservation(@RequestBody ReservationDTO reservationDto){
-        int n = hairshopService.reservation(reservationDto);
-        return ResponseEntity.ok().body(n==1);
+    public ResponseEntity<?> reservation(@RequestBody PayinfoDTO payinfoDto){
+        int n = hairshopService.reservation(payinfoDto);
+        return ResponseEntity.ok().body(n==2);
     }
-
-    // 결제 내역 저장
-    @PostMapping("payment")
-    public ResponseEntity<?> payment(@RequestBody PaymentDTO paymentDto){
-        System.out.println(paymentDto);
-        int n = hairshopService.payment(paymentDto);
-        return ResponseEntity.ok().body(n==1);
-    }
-
 }

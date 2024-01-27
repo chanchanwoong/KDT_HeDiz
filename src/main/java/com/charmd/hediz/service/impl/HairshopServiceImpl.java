@@ -6,6 +6,7 @@ import com.charmd.hediz.service.HairshopService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,12 +94,28 @@ public class HairshopServiceImpl implements HairshopService {
     }
 
     @Override
-    public int reservation(ReservationDTO reservationDto) {
-        return dao.reservation(reservationDto);
+    public PayinfoDTO getPayinfo(PayinfoDTO payinfoDto) {
+        return dao.getPayinfo(payinfoDto);
     }
 
     @Override
-    public int payment(PaymentDTO paymentDto) {
-        return dao.payment(paymentDto);
+    @Transactional
+    // 결제 데이터, 예약 데이터 저장
+    public int reservation(PayinfoDTO payinfoDto) {
+        int numberOfReservation = 0;
+        int numberOfPay = 0;
+        System.out.println("넣기 전 payinfoDto > " + payinfoDto);
+
+        // T_reservation에 넣을 데이터 : style_seq, cust_seq, shop_seq, reserv_request,
+        // reserv_date, reserv_time, reserv_stat(0으로 가야함), receipt_id, staff_seq
+        numberOfReservation = dao.reservation(payinfoDto);
+
+        // reserv_seq는 위 과정에서 나온 결과를 넣어야 함.
+        int reserv_seq = dao.findReservSeq(payinfoDto);
+        payinfoDto.setReserv_seq(reserv_seq);
+
+        // T_payment에 넣은 데이터 : shop_seq, cust_seq, reserv_seq, pay_price, pay_date, pay_stat
+        numberOfPay = dao.payment(payinfoDto);
+        return numberOfReservation + numberOfPay;
     }
 }
