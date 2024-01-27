@@ -63,7 +63,7 @@ export function todayTime() {
   return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
 }
 
-///////////////////////////////////////    현재 날짜, 시간 구하기
+///////////////////////////////////////    현재 날짜, 현재 시간 구하기
 
 export const getToday = () => {
   const today = new Date();

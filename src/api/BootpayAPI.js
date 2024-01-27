@@ -52,22 +52,3 @@ export async function BootpayAPI({ payinfo }) {
     throw e; // 예외를 다시 던져서 호출한 쪽에서 처리할 수 있도록 함
   }
 }
-
-export async function BootpayCancelAPI({ reserv_receipt }) {
-  Bootpay.setConfiguration({
-    application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
-    private_key: process.env.REACT_APP_BOOTPAY_PRIVATE_API_KEY,
-  });
-
-  try {
-    await Bootpay.getAccessToken();
-    const response = await Bootpay.cancelPayment({
-      receipt_id: reserv_receipt,
-      cancel_message: '예약 취소 되었습니다',
-    });
-    console.log(response);
-  } catch (e) {
-    // 발급 실패시 오류
-    console.log(e);
-  }
-}
