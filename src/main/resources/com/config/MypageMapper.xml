@@ -18,6 +18,7 @@
         (select staff_nickname from t_staff where staff_seq = tr.staff_seq) as staff_nickname
         from t_reservation tr
         where cust_seq = #{cust_seq}
+        order by reserv_date desc, reserv_time desc
     </select>
 
     <!--mypage 수정-->
@@ -44,6 +45,12 @@
         insert into t_review (shop_seq, reserv_seq, review_score, review_content, review_photo, review_date)
         values (#{shop_seq}, #{reserv_seq}, #{review_score}, #{review_content}, #{review_photo}, #{review_date})
     </insert>
+
+    <!--review 수정-->
+    <update id="reviewUpdate" parameterType="ReviewDTO">
+        update t_review set review_score=#{review_score}, review_content=#{review_content}, review_photo=#{review_photo}
+        where review_seq = #{review_seq}
+    </update>
 
     <!--review 삭제-->
     <delete id="reviewDelete">

@@ -40,6 +40,11 @@ public class MypageServiceImpl implements MypageService {
     }
 
     @Override
+    public int reviewUpdate(ReviewDTO reviewDto) {
+        return dao.reviewUpdate(reviewDto);
+    }
+
+    @Override
     public int reviewDelete(int review_seq) {
         return dao.reviewDelete(review_seq);
     }

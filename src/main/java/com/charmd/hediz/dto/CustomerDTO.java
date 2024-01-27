@@ -22,8 +22,4 @@ public class CustomerDTO {
     private int cust_visit;
     private int cust_gender;
     private int cust_level;
-    // 집계함수 결과
-    private int stat_cancel;
-    private int stat_complete;
-    private int stat_noshow;
 }

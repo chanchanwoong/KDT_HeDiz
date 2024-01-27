@@ -56,6 +56,13 @@ public class MypageController {
         return ResponseEntity.ok().body(reviewDto);
     }
 
+    // cust_seq에 따른 리뷰 수정
+    @PutMapping("review")
+    public ResponseEntity<?> reviewUpdate(@RequestBody ReviewDTO reviewDto){
+        int n = mypageService.reviewUpdate(reviewDto);
+        return ResponseEntity.ok().body(n==1);
+    }
+
     // cust_seq에 따른 리뷰 삭제
     @DeleteMapping("review/{review_seq}")
     public ResponseEntity<?> reviewDelete(@PathVariable("review_seq") int review_seq){
