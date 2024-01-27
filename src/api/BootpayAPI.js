@@ -1,6 +1,4 @@
 import { Bootpay } from '@bootpay/client-js';
-import { useEffect, useState } from 'react';
-import { authAxios } from './AxiosAPI';
 
 export async function BootpayAPI({ payinfo }) {
   try {
@@ -55,7 +53,7 @@ export async function BootpayAPI({ payinfo }) {
   }
 }
 
-export async function BootpayCancelAPI(receipt) {
+export async function BootpayCancelAPI({ reserv_receipt }) {
   Bootpay.setConfiguration({
     application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
     private_key: process.env.REACT_APP_BOOTPAY_PRIVATE_API_KEY,
@@ -64,7 +62,7 @@ export async function BootpayCancelAPI(receipt) {
   try {
     await Bootpay.getAccessToken();
     const response = await Bootpay.cancelPayment({
-      receipt_id: receipt,
+      receipt_id: reserv_receipt,
       cancel_message: '예약 취소 되었습니다',
     });
     console.log(response);

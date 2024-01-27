@@ -10,14 +10,12 @@ export const generateTimeSlots = (shop_start, shop_end) => {
   for (let time = startTime; time < endTime; time += interval) {
     const hours = Math.floor(time / 60);
     const minutes = time % 60;
-    const formattedTime = `${String(hours).padStart(2, '0')}:${String(
-      minutes
-    ).padStart(2, '0')}:00`;
+    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
 
     timeSlots.push(
       <button
         key={formattedTime}
-        className='btn btn-primary'
+        className="btn btn-primary"
       >
         {formattedTime}
       </button>
@@ -62,7 +60,28 @@ export function todayTime() {
   hour = hour >= 10 ? hour : '0' + hour;
   minute = minute >= 10 ? minute : '0' + minute;
   second = second >= 10 ? second : '0' + second;
-  return (
-    year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
-  );
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
 }
+
+///////////////////////////////////////    현재 날짜, 시간 구하기
+
+export const getToday = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+export const getCurrnetTime = () => {
+  const today = new Date();
+
+  var hours = ('0' + today.getHours()).slice(-2);
+  var minutes = ('0' + today.getMinutes()).slice(-2);
+  var seconds = ('0' + today.getSeconds()).slice(-2);
+
+  var timeString = hours + ':' + minutes + ':' + seconds;
+  return timeString;
+};
+
+console.log(getCurrnetTime());

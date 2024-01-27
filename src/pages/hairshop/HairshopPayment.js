@@ -36,18 +36,25 @@ function HairshopPayment() {
     reserv_time: reserv_time,
     pay_price: style_price,
     reserv_stat: '',
+    receipt_id: '',
   };
   ////////////// axios 요청
   const handleBootpay = async () => {
-    console.log(reservRequest);
     try {
-      await BootpayAPI({ payinfo });
+      const response = await BootpayAPI({ payinfo });
+      console.log(response.data);
+      const receipt_id = response.data.receipt_id;
+      console.log(response.data.receipt_id);
+      console.log(receipt_id);
 
       // 결제에 성공하면 예약 목록에 예약 추가
       const request1 = authAxios().post('/home/reservation', {
         ...payinfo,
         reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
+        receipt_id: receipt_id,
       });
+      console.log(request1);
+      console.log(payinfo);
       // 결제에 성공하면 결제 테이블에 컬럼 추가
       const request2 = authAxios().post('/home/payment', payinfo);
 
@@ -55,6 +62,8 @@ function HairshopPayment() {
         .all([request1, request2])
         .then(
           axios.spread((res1, res2) => {
+            console.log('Response from request1:', res1);
+            console.log('Response from request2:', res2);
             console.log('Response from request1:', res1.data);
             console.log('Response from request2:', res2.data);
           }),
@@ -72,14 +81,14 @@ function HairshopPayment() {
   return (
     <>
       <h2>결제하기</h2>
-      <Panel header='예약정보'>
-        <div className='flex flex-column font-semibold'>
+      <Panel header="예약정보">
+        <div className="flex flex-column font-semibold">
           <span>구매자 이름 : {cust_name} </span>
           <span>예약 날짜 : {reserv_date} </span>
-          <div className='flex '>
+          <div className="flex ">
             요청 사항 :
             <InputTextarea
-              name='reserv_request'
+              name="reserv_request"
               value={reservRequest}
               onChange={(e) => setReservRequest(e.target.value)}
             />
