@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Panel } from 'primereact/panel';
 import { Link, useLocation } from 'react-router-dom';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
 import { classNames } from 'primereact/utils';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import axios from 'axios';
-import { generateDates, generateTimeSlots, getToday, getCurrnetTime } from '../../components/common/GenerateTime';
+import { generateDates, generateTimeSlots, getToday, getCurrnetTime } from 'components/common/GenerateTime';
 
 function HairshopReservation() {
   const location = useLocation();
-
+  ///////// 결제 페이지에 필요한 데이터들
   const style_name = location.state.style_name;
   const shop_seq = location.state.shop_seq;
   const style_seq = location.state.style_seq;
@@ -19,7 +19,7 @@ function HairshopReservation() {
   const shop_start = location.state.shop_start;
   const shop_end = location.state.shop_end;
 
-  const [selectedDate, setSelectedDate] = useState('2024-01-25');
+  const [selectedDate, setSelectedDate] = useState(getToday());
   const [staff, setStaff] = useState([]);
   const [reserv, setReserv] = useState([]);
   const dates = generateDates();
@@ -52,7 +52,9 @@ function HairshopReservation() {
   ///////////////////////////////////////    디자이너 리스트 생성부분
   ///////////////////////////////////////    시간 버튼을 생성시켜주는 components/common/GenerateTime.js 사용
   const itemTemplate = (staff, index, reserv) => {
+    console.log(reserv);
     const curTime = getCurrnetTime();
+    console.log(curTime);
     const today = getToday();
     return (
       <div
@@ -81,7 +83,9 @@ function HairshopReservation() {
               <div className="time-buttons">
                 {/* generateTimeSlots 함수를 이용하여 시간 버튼 생성
                     disable 조건 : reserv 안에 없는 시간이 버튼 에 포함 되는 경우,
-                                  오늘 날짜의 현재 시간이 지나면 예약 불가능       */}
+                                  오늘 날짜의 현재 시간이 지나면 예약 불가능       
+                    generateTimeSlots : 가게 오픈시간과 마감시간을 전달받아서 timeSlot이라는 배열에 넣음
+                    그 후 map함수로 timeSlot을 돌면서 버튼을 생성 */}
                 {generateTimeSlots(shop_start, shop_end).map((timeSlot) => (
                   <button
                     key={timeSlot.key}
@@ -107,6 +111,7 @@ function HairshopReservation() {
 
     let list = items.map((product, index) => {
       let xxx = index + 1;
+      console.log(reserv[xxx]);
 
       return itemTemplate(product, index, reserv[xxx]);
     });
@@ -116,7 +121,7 @@ function HairshopReservation() {
 
   // 클릭한 시간 값을 받아오는 함수
   const handleTimeButtonClick = (selectedTime, reservTime, staff_seq, staff_nickname) => {
-    // 선택한 시간에 대한 처리를 수행
+    // 선택한 시간에 대한 처리를 수행, time에 현재시간, staff_nickname staff_seq 를 저장
     console.log('reservTime:', reservTime);
     console.log('Selected time:', selectedTime);
     console.log(staff_nickname);
@@ -136,6 +141,8 @@ function HairshopReservation() {
       </Panel>
       <Panel header="날짜선택">
         <div>
+          {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
+                      map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
           {dates.map((date) => (
             <button
               key={date}
@@ -163,6 +170,7 @@ function HairshopReservation() {
           />
         </div>
       </Panel>
+      {/*url 이동할 때 state에 값을 저장하여 보내기, 결제 페이지에서 필요한 정보들 */}
       <Link
         to="/hairshop/payment"
         state={{

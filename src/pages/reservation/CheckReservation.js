@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
 import { Button } from 'primereact/button';
 import { Panel } from 'primereact/panel';
-import { BootpayCancelAPI } from '../../api/BootpayAPI';
 
 function CheckReservation() {
   const [reservations, setReservations] = useState([]);
 
+  ///// 내 예약 목록을 확인하는 axios ( 실시간 확인 )
   useEffect(() => {
     authAxios()
       .get(`mypage/realtime-reservation/${localStorage.getItem('cust_seq')}`)
@@ -21,6 +21,8 @@ function CheckReservation() {
       });
   }, []);
 
+  ///// 예약 취소를 누를 경우 발생하는 핸들러
+  ///// 예약 seq 와 영수증 id를 받아와서 예약 상태를 2로 변경하고 결제를 취소
   const handleReservCancel = (reserv_seq, receipt_id) => {
     console.log(receipt_id);
     authAxios()
@@ -34,6 +36,7 @@ function CheckReservation() {
       });
   };
 
+  ///// 목록 생성 템플릿
   const itemTemplate = (reservation, index) => {
     return (
       <div
@@ -81,6 +84,7 @@ function CheckReservation() {
     return <div className="grid grid-nogutter">{list}</div>;
   };
 
+  ////////////////////////////////////////////////////////
   return (
     <Panel header="현재 예약 중인 가게">
       <div className="card">

@@ -2,6 +2,7 @@ import { Bootpay } from '@bootpay/client-js';
 
 export async function BootpayAPI({ payinfo }) {
   try {
+    /////////// 부트페이에 요청 하는 API
     const response = await Bootpay.requestPayment({
       application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
       // price: payinfo.stlye_price,

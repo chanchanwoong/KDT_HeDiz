@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
 import { Panel } from 'primereact/panel';
 import { Link } from 'react-router-dom';
 import { Button } from 'primereact/button';
@@ -9,6 +9,8 @@ import { Button } from 'primereact/button';
 function MyReservation() {
   const [products, setProducts] = useState([]);
   console.log(localStorage.getItem('cust_seq'));
+
+  ///// 내 예약 목록 받아오기 위한 axios (get) (과거 전체 예약 내역)
   useEffect(() => {
     authAxios()
       .get(`mypage/reservation/${localStorage.getItem('cust_seq')}`)
@@ -21,41 +23,35 @@ function MyReservation() {
         console.error('Auth Error:', error);
       });
   }, []);
-
+  //////////////////// 목록 생성을 위한 템플릿
   const itemTemplate = (product, index) => {
     return (
       <div
-        className='col-12'
+        className="col-12"
         key={product.reserv_seq}
       >
-        <div
-          className={classNames(
-            'flex flex-column xl:flex-row xl:align-items-start p-4 gap-4'
-          )}
-        >
+        <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4')}>
           <img
-            className='w-3 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
+            className="w-3 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
             src={product.shop_image}
             alt={product.shop_image}
           />
-          <div className='flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4'>
-            <div className='flex flex-column align-items-center sm:align-items-start gap-3'>
-              <div className='text-2xl font-bold text-900'>
-                {product.shop_name}
-              </div>
+          <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+            <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+              <div className="text-2xl font-bold text-900">{product.shop_name}</div>
               <span>{product.staff_nickname}</span>
               <div>
-                <span className='mr-3'>{product.reserv_date}</span>
+                <span className="mr-3">{product.reserv_date}</span>
                 <span>{product.reserv_time}</span>
               </div>
-              <div className='flex align-items-center gap-3'>
-                <span className='flex align-items-center gap-2'>
-                  <span className='font-semibold'>{product.style_name}</span>
+              <div className="flex align-items-center gap-3">
+                <span className="flex align-items-center gap-2">
+                  <span className="font-semibold">{product.style_name}</span>
                 </span>
               </div>
               <span>{product.review_content}</span>
               <Link
-                to='/mypage/write-review'
+                to="/mypage/write-review"
                 state={{
                   reserv_seq: product.reserv_seq,
                   shop_seq: product.shop_seq,
@@ -80,12 +76,12 @@ function MyReservation() {
       return itemTemplate(product, index);
     });
 
-    return <div className='grid grid-nogutter'>{list}</div>;
+    return <div className="grid grid-nogutter">{list}</div>;
   };
 
   return (
     <>
-      <Panel header='내 예약 내역'>
+      <Panel header="내 예약 내역">
         <DataView
           value={products}
           listTemplate={listTemplate}

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { nonAuthAxios } from '../../api/AxiosAPI';
-import Logo from '../../components/common/Logo';
+import { nonAuthAxios } from 'api/AxiosAPI';
+import Logo from 'components/common/Logo';
 import { Controller, useForm } from 'react-hook-form';
 import { classNames } from 'primereact/utils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -85,11 +85,7 @@ function SignUp() {
   };
 
   const getFormErrorMessage = (name) => {
-    return errors[name] ? (
-      <small className='p-error'>{errors[name].message}</small>
-    ) : (
-      ''
-    );
+    return errors[name] ? <small className="p-error">{errors[name].message}</small> : '';
   };
 
   // 아이디 중복 체크 핸들러
@@ -151,29 +147,29 @@ function SignUp() {
   };
 
   return (
-    <main className='flex flex-column bg-white p-6 w-auto border-round-lg gap-4 w-4 align-items-center'>
-      <Logo size='text-4xl' />
+    <main className="flex flex-column bg-white p-6 w-auto border-round-lg gap-4 w-4 align-items-center">
+      <Logo size="text-4xl" />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-column'
+        className="flex flex-column"
       >
-        <div className='flex'>
+        <div className="flex">
           {/* Step1. 회원가입 */}
-          <div className=' flex flex-column gap-4'>
-            <div className='flex flex-column gap-2'></div>
-            <div className='flex flex-column gap-2'>
+          <div className=" flex flex-column gap-4">
+            <div className="flex flex-column gap-2"></div>
+            <div className="flex flex-column gap-2">
               <Controller
-                name='cust_id'
+                name="cust_id"
                 control={control}
                 rules={{ required: '아이디는 필수입력 항목입니다.' }}
                 render={({ field, fieldState }) => (
                   <>
-                    <div className='p-inputgroup flex-1'>
+                    <div className="p-inputgroup flex-1">
                       <InputText
                         id={field.name}
                         value={field.value || ''}
-                        placeholder='아이디'
+                        placeholder="아이디"
                         className={classNames({
                           'p-invalid': fieldState.error || !isIdAvailable,
                         })}
@@ -183,33 +179,29 @@ function SignUp() {
                         }}
                       />
                       <Button
-                        label='중복확인'
-                        type='button'
+                        label="중복확인"
+                        type="button"
                         onClick={handleIdCheck}
                       />
                     </div>
                     {idCheckMessage && (
-                      <small
-                        className={isIdAvailable ? 'p-success' : 'p-error'}
-                      >
-                        {idCheckMessage}
-                      </small>
+                      <small className={isIdAvailable ? 'p-success' : 'p-error'}>{idCheckMessage}</small>
                     )}
                     {getFormErrorMessage(field.name)}
                   </>
                 )}
               />
             </div>
-            <div className='flex flex-column gap-2'>
+            <div className="flex flex-column gap-2">
               <Controller
-                name='cust_pw'
+                name="cust_pw"
                 control={control}
                 rules={{ required: '비밀번호는 필수입력 항목입니다.' }}
                 render={({ field, fieldState }) => (
                   <>
                     <Password
                       value={field.value || ''}
-                      placeholder='비밀번호'
+                      placeholder="비밀번호"
                       className={classNames({ 'p-invalid': fieldState.error })}
                       onChange={(e) => {
                         field.onChange(e);
@@ -223,16 +215,16 @@ function SignUp() {
                 )}
               />
             </div>
-            <div className='flex flex-column gap-2'>
+            <div className="flex flex-column gap-2">
               <Controller
-                name='cust_pw_check'
+                name="cust_pw_check"
                 control={control}
                 rules={{ required: '비밀번호는 필수입력 항목입니다.' }}
                 render={({ field, fieldState }) => (
                   <>
                     <Password
                       value={field.value || ''}
-                      placeholder='비밀번호 확인'
+                      placeholder="비밀번호 확인"
                       className={classNames({ 'p-invalid': fieldState.error })}
                       onChange={(e) => {
                         field.onChange(e);
@@ -242,16 +234,14 @@ function SignUp() {
                       toggleMask
                     />
                     {getFormErrorMessage(field.name)}
-                    {passwordMatchError && (
-                      <small className='p-error'>{passwordMatchError}</small>
-                    )}
+                    {passwordMatchError && <small className="p-error">{passwordMatchError}</small>}
                   </>
                 )}
               />
             </div>
-            <div className='flex flex-column gap-2'>
+            <div className="flex flex-column gap-2">
               <Controller
-                name='cust_name'
+                name="cust_name"
                 control={control}
                 rules={{ required: '이름을 입력해주세요' }}
                 render={({ field, fieldState }) => (
@@ -259,7 +249,7 @@ function SignUp() {
                     <InputText
                       id={field.name}
                       value={field.value || ''}
-                      placeholder='이름'
+                      placeholder="이름"
                       className={classNames({
                         'p-invalid': fieldState.error,
                       })}
@@ -270,18 +260,18 @@ function SignUp() {
                 )}
               />
             </div>
-            <div className='flex flex-column gap-2'>
+            <div className="flex flex-column gap-2">
               <Controller
-                name='cust_phone'
+                name="cust_phone"
                 control={control}
                 rules={{ required: '연락처를 입력해주세요' }}
                 render={({ field, fieldState }) => (
                   <>
                     <InputMask
-                      mask='999-9999-9999'
+                      mask="999-9999-9999"
                       id={field.name}
                       value={field.value || ''}
-                      placeholder='전화번호'
+                      placeholder="전화번호"
                       className={classNames({
                         'p-invalid': fieldState.error,
                       })}
@@ -293,9 +283,9 @@ function SignUp() {
               />
             </div>
 
-            <div className='flex flex-column gap-2'>
+            <div className="flex flex-column gap-2">
               <Controller
-                name='cust_gender'
+                name="cust_gender"
                 control={control}
                 rules={{ required: '성별을 입력해주세요' }}
                 render={({ field, fieldState }) => (
@@ -303,7 +293,7 @@ function SignUp() {
                     <SelectButton
                       id={field.name}
                       value={field.value || ''}
-                      placeholder='성별'
+                      placeholder="성별"
                       options={['남', '여']}
                       className={classNames({
                         'p-invalid': fieldState.error,
@@ -318,25 +308,25 @@ function SignUp() {
           </div>
         </div>
 
-        <div className='mt-6 flex align-center justify-content-between'>
+        <div className="mt-6 flex align-center justify-content-between">
           <Button
-            type='button'
-            severity='help'
-            className='w-5'
+            type="button"
+            severity="help"
+            className="w-5"
             outlined
           >
             <Link
-              to='/auth/sign-in'
-              className='text-purple-500 font-semibold cursor-pointer no-underline w-full'
+              to="/auth/sign-in"
+              className="text-purple-500 font-semibold cursor-pointer no-underline w-full"
             >
               로그인페이지
             </Link>
           </Button>
           <Toast ref={toast} />
           <Button
-            label='회원가입'
-            type='submit'
-            className='w-5'
+            label="회원가입"
+            type="submit"
+            className="w-5"
           />
         </div>
       </form>

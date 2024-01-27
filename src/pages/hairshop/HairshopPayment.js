@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Panel } from 'primereact/panel';
 import { useLocation } from 'react-router-dom';
-import { BootpayAPI } from '../../api/BootpayAPI';
+import { BootpayAPI } from 'api/BootpayAPI';
 import { Button } from 'primereact/button';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
 import axios from 'axios';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { useNavigate } from 'react-router-dom';
@@ -36,7 +36,7 @@ function HairshopPayment() {
     reserv_time: reserv_time,
     pay_price: style_price,
     reserv_stat: '',
-    receipt_id: '',
+    receipt_id: '', // 결제 취소에 사용할 영수증 id (결제 완료 시 발급됨)
   };
   ////////////// axios 요청
   const handleBootpay = async () => {
