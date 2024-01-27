@@ -26,6 +26,8 @@ function HairshopReservation() {
   const [time, setTime] = useState([]);
   const [staffNickname, setStaffNickname] = useState('');
   const [staffSeq, setStaffSeq] = useState('');
+  /////////////
+  const [staffIndex, setStaffIndex] = useState('');
 
   ///////////////////////////////////////    데이터 가져오기 (디자이너, 예약 가능 시간)
   ///////////////////////////////////////    StaffList 컴포넌트는 사용 X (코드 수정이 많음)
@@ -39,9 +41,12 @@ function HairshopReservation() {
         axios.spread((res1, res2) => {
           console.log('Response from request1:', res1.data);
           console.log('Response from request2:', res2.data);
+          //// res2.data는 다른 response와 다르게 JSON 형태로 값을 받아옴
+          //// staff_seq : [가능한 시간]
 
           setStaff(res1.data);
           setReserv(res2.data);
+          setStaffIndex(res1.data[0].staff_seq);
         })
       )
       .catch((error) => {
@@ -109,11 +114,12 @@ function HairshopReservation() {
   const listTemplate = (items) => {
     if (!items || items.length === 0) return null;
 
+    /// 초기에 staff_seq 를 받아와 key값 첫번째에 저장해서 값을 읽어옴 (JSON 형태이기 때문에 staff_seq = key 값)
     let list = items.map((product, index) => {
-      let xxx = index + 1;
-      console.log(reserv[xxx]);
+      let staffIndex = staffIndex;
+      console.log(reserv[staffIndex]);
 
-      return itemTemplate(product, index, reserv[xxx]);
+      return itemTemplate(product, index, reserv[staffIndex]);
     });
 
     return <div className="grid grid-nogutter">{list}</div>;
