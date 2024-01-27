@@ -16,14 +16,4 @@ public class HomeServiceImpl implements HomeService {
     public List<HairshopDTO> findAllHairshop() {
         return dao.findAllHairshop();
     }
-
-//    @Override
-//    public List<HairshopDTO> findHairshopWithFilter(HashMap<String, String> filterMap) {
-//        return dao.findHairshopWithFilter(filterMap);
-//    }
-
-//    @Override
-//    public List<HairshopDTO> findHairshopUsingKeyword(String keyword) {
-//        return dao.findHairshopUsingKeyword(keyword);
-//    }
 }

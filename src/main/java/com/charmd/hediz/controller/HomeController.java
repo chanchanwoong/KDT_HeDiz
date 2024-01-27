@@ -17,7 +17,7 @@ import java.util.TreeSet;
 
 @Api
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/")
 public class HomeController {
 
     @Autowired
@@ -33,21 +33,21 @@ public class HomeController {
     }
 
     // 특정 미용실 정보 조회
-    @GetMapping("{shop_seq}")
+    @GetMapping("hairshop/{shop_seq}")
     public ResponseEntity<?> findHairshop(@PathVariable("shop_seq") int shop_seq) {
         HairshopDTO hairshopDto = hairshopService.findHairshop(shop_seq);
         return ResponseEntity.ok().body(hairshopDto);
     }
 
     // 특정 미용실 헤어스타일 조회
-    @GetMapping("hairstyle/{shop_seq}")
+    @GetMapping("hairshop/{shop_seq}/hairstyle")
     public ResponseEntity<?> findHairstyle(@PathVariable("shop_seq") int shop_seq) {
         List<HairstyleDTO> hairstyleList = hairshopService.findHairstyle(shop_seq);
         return ResponseEntity.ok().body(hairstyleList);
     }
 
     // 특정 미용실 헤어스타일 중 특정 헤어스타일 정보 조회
-    @GetMapping("hairstyle/{shop_seq}/{style_seq}")
+    @GetMapping("/hairshop/{shop_seq}/hairstyle/{style_seq}")
     public ResponseEntity<?> findHairstyleInfor(@PathVariable("shop_seq") int shop_seq, @PathVariable("style_seq") int style_seq) {
         HashMap<String, Integer> shopAndStyleMap = new HashMap<>();
         shopAndStyleMap.put("shop_seq", shop_seq);
@@ -58,21 +58,21 @@ public class HomeController {
 
 
     // 특정 미용실 직원 조회
-    @GetMapping("staff/{shop_seq}")
+    @GetMapping("/hairshop/{shop_seq}/staff")
     public ResponseEntity<?> findStaff(@PathVariable("shop_seq") int shop_seq) {
         List<StaffDTO> staffList = hairshopService.findStaff(shop_seq);
         return ResponseEntity.ok().body(staffList);
     }
 
     // 특정 미용실 리뷰 조회
-    @GetMapping("review/{shop_seq}")
+    @GetMapping("/hairshop/{shop_seq}/review")
     public ResponseEntity<?> findReview(@PathVariable("shop_seq") int shop_seq) {
         List<ReviewDTO> reviewList = hairshopService.findReview(shop_seq);
         return ResponseEntity.ok().body(reviewList);
     }
 
     // 예약_날짜 눌렀을 때 예약 가능 시간 확인
-    @GetMapping("reservation/{shop_seq}/{style_seq}/{day}")
+    @GetMapping("/hairshop/reservation/{shop_seq}/{style_seq}/{day}")
     public ResponseEntity<?> reservationFilter(@PathVariable("shop_seq") int shop_seq, @PathVariable("style_seq") int style_seq, @PathVariable("day") String day) {
         HashMap<String, Object> reservationFilterMap = new HashMap<>();
         reservationFilterMap.put("shop_seq", shop_seq);
@@ -87,9 +87,7 @@ public class HomeController {
     // 결제 금액은 cust_level에 따라 변화 필요
     @PostMapping("payinfo")
     public ResponseEntity<?> payinfo(@RequestBody PayinfoDTO payinfoDto){
-        System.out.println("입력 결제정보 > " + payinfoDto);
         payinfoDto = hairshopService.getPayinfo(payinfoDto);
-        System.out.println("최종 결제정보 > " + payinfoDto);
         return ResponseEntity.ok().body(payinfoDto);
     }
 
