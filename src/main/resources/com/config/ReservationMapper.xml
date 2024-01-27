@@ -5,7 +5,7 @@
 <mapper namespace="com.config.ReservationMapper">
     <!--예약 상황 조회-->
     <select id="currentReservation" resultType="ReservationDTO">
-        select reserv_seq, shop_name, staff_nickname, style_name, reserv_request, reserv_date, reserv_time
+        select reserv_seq, shop_name, staff_nickname, style_name, reserv_request, reserv_date, reserv_time, receipt_id
         from t_reservation a
         inner join t_hairshop b on a.shop_seq = b.shop_seq
         inner join t_staff c on a.staff_seq = c.staff_seq
@@ -14,8 +14,18 @@
         order by reserv_date, reserv_time
     </select>
 
-    <!--예약 취소-->
-    <update id="cancelReservation" parameterType="int">
-        update t_reservation set reserv_stat=2 where reserv_seq=#{reserv_seq}
+    <!--receipt_id 조회-->
+    <select id="getReceiptId">
+        select receipt_id from t_reservation where reserv_seq=#{reserv_seq}
+    </select>
+
+    <!--reserv_stat 취소로 변경 -->
+    <update id="changeReservStat" parameterType="int">
+        update t_reservation set reserv_stat=2, receipt_id='cancel' where reserv_seq=#{reserv_seq}
+    </update>
+
+    <!--pay_stat 취소로 변경-->
+    <update id="changePayStat" parameterType="int">
+        update t_payment set pay_stat=1 where reserv_seq=#{reserv_seq}
     </update>
 </mapper>

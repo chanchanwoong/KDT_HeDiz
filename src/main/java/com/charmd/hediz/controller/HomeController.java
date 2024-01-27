@@ -97,4 +97,5 @@ public class HomeController {
         int n = hairshopService.payment(paymentDto);
         return ResponseEntity.ok().body(n==1);
     }
+
 }

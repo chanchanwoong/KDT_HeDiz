@@ -70,10 +70,13 @@ public class MypageController {
         return ResponseEntity.ok().body(reservationList);
     }
 
-    // 예약 상태 수정(reserv_stat = 0(예약 확정) -> reserv_stat = 2(예약 취소))
+    // 예약 상태 수정
+    // reserv_stat = 0(예약 확정) -> reserv_stat = 2(예약 취소)
+    // pay_stat = 0(결제) -> 1(취소)
     @PutMapping("realtime-reservation/{reserv_seq}")
-    public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq){
-        int n = reservationService.cancelReservation(reserv_seq);
-        return ResponseEntity.ok().body(n==1);
+    public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq, @RequestBody String receipt_id ){
+        int n = reservationService.cancelReservation(reserv_seq, receipt_id);
+        return ResponseEntity.ok().body(n==3);
     }
+
 }

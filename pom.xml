@@ -90,6 +90,24 @@
 			<version>3.0.3</version>
 			<scope>test</scope>
 		</dependency>
+		<!--Bootpay 사용을 위한 의존성-->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>LATEST</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>LATEST</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.github.bootpay/backend -->
+		<dependency>
+			<groupId>io.github.bootpay</groupId>
+			<artifactId>backend</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

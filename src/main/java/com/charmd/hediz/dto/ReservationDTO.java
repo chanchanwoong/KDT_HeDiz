@@ -29,6 +29,7 @@ public class ReservationDTO {
     private LocalTime reserv_time;
     private int reserv_stat;
     private int staff_seq;
+    private String receipt_id;
 
     // join column
     private String cust_name;

@@ -99,8 +99,8 @@
 
     <!--예약_예약 테이블에 저장-->
     <insert id="reservation" parameterType="ReservationDTO">
-        insert into t_reservation (style_seq, cust_seq, shop_seq, reserv_request, reserv_date, reserv_time, reserv_stat, staff_seq)
-        values (#{style_seq}, #{cust_seq}, #{shop_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{reserv_stat}, #{staff_seq})
+        insert into t_reservation (style_seq, cust_seq, shop_seq, reserv_request, reserv_date, reserv_time, reserv_stat, staff_seq, receipt_id)
+        values (#{style_seq}, #{cust_seq}, #{shop_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{reserv_stat}, #{staff_seq}, #{receipt_id})
     </insert>
 
     <!--결제 내역 저장-->
