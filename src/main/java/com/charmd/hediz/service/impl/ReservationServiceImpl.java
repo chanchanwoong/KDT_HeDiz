@@ -28,6 +28,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public int cancelReservation(int reserv_seq, String receipt_id) {
+        String extracted_text = receipt_id.replace("{", "").replace("}", ""); // 중괄호 제거
+        String[] arr = extracted_text.split(":");  // 세미콜론 기준 문자열 나누기
+        String result = arr[1].replaceAll("\"", ""); // 빈 문자열 "" 제거
+
+
         // receipt_id를 통해 결제취소 요청
         HashMap<String, Object> res = null;
         int numberOfCancel = 0;
@@ -38,7 +43,7 @@ public class ReservationServiceImpl implements ReservationService {
                 System.out.println("토큰 에러 발생");
             }
             Cancel cancel = new Cancel();
-            cancel.receiptId = receipt_id;
+            cancel.receiptId = result;
             cancel.cancelUsername = "HeDiz";
             cancel.cancelMessage = "예약 취소";
             res = bootpay.receiptCancel(cancel);
