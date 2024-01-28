@@ -7,8 +7,6 @@ import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 import { generateDates, generateTimeSlots, getToday, getCurrnetTime } from 'components/common/GenerateTime';
-import { useRecoilValue } from 'recoil';
-import { custLevelState } from 'api/Recoil';
 
 function HairshopReservation() {
   const location = useLocation();
@@ -29,8 +27,6 @@ function HairshopReservation() {
   const [staffNickname, setStaffNickname] = useState('');
   const [staffSeq, setStaffSeq] = useState('');
   const [staffIndex, setStaffIndex] = useState();
-  const custLevel = useRecoilValue(custLevelState);
-  const discountedPrice = custLevel === 1 ? style_price * 0.9 : style_price;
   ///////////////////////////////////////    데이터 가져오기 (디자이너, 예약 가능 시간)
   ///////////////////////////////////////    StaffList 컴포넌트는 사용 X (코드 수정이 많음)
   useEffect(() => {
@@ -187,7 +183,7 @@ function HairshopReservation() {
           staff_nickname: staffNickname,
           style_seq: style_seq,
           style_name: style_name,
-          style_price: custLevel === 1 ? discountedPrice : style_price,
+          style_price: style_price,
           shop_seq: shop_seq,
         }}
       >

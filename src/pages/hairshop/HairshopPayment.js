@@ -6,8 +6,6 @@ import { Button } from 'primereact/button';
 import { authAxios } from 'api/AxiosAPI';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { custLevelState } from 'api/Recoil';
 
 function HairshopPayment() {
   const navigate = useNavigate();
@@ -23,7 +21,6 @@ function HairshopPayment() {
   const style_name = location.state.style_name;
   const style_price = location.state.style_price;
   const [reservRequest, setReservRequest] = useState('');
-  const custLevel = useRecoilValue(custLevelState);
   console.log(style_price);
   ////////////// 백엔드 서버에 보낼 정보들
   const payinfo = {
@@ -40,22 +37,6 @@ function HairshopPayment() {
     reserv_stat: '',
     receipt_id: '', // 결제 취소에 사용할 영수증 id (결제 완료 시 발급됨)
   };
-
-  function determineCustomerLevel(custLevel) {
-    let cust_level;
-
-    console.log(custLevel);
-    if (custLevel === 1) {
-      cust_level = 'vip';
-    } else {
-      cust_level = '일반고객';
-    }
-
-    // console.log(cust_level); // 필요한 경우 주석 해제하여 사용
-    return cust_level;
-  }
-
-  console.log(determineCustomerLevel(custLevel));
 
   ////////////// axios 요청
 
