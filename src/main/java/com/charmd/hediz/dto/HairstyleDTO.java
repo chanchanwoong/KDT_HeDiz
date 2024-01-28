@@ -22,4 +22,5 @@ public class HairstyleDTO {
 
     // join column
     private String cate_name;
+    private String shop_name;
 }

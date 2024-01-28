@@ -17,16 +17,23 @@
 
     <!--특정 미용실의 헤어스타일 조회-->
     <select id="findHairstyle" resultType="HairstyleDTO">
-        select style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
-        from T_HAIRSTYLE inner join T_CATEGORY using(cate_seq)
-        where shop_seq=#{shop_seq}
+        SELECT style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
+        FROM T_HAIRSTYLE
+        INNER JOIN T_CATEGORY USING(cate_seq)
+        WHERE shop_seq = #{shop_seq}
+        ORDER BY cate_seq, style_name;
+
     </select>
 
     <!--특정 미용실 헤어스타일 중 특정 헤어스타일 정보 조회-->
     <select id="findHairstyleInfor" resultType="HairstyleDTO" parameterType="hashmap">
-        select style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
-        from T_HAIRSTYLE inner join T_CATEGORY using(cate_seq)
-        where shop_seq=#{shop_seq} and style_seq=#{style_seq}
+        SELECT b.shop_name, style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
+        FROM T_HAIRSTYLE AS a
+        INNER JOIN T_HAIRSHOP AS b
+        ON a.shop_seq = b.shop_seq
+        INNER JOIN T_CATEGORY USING(cate_seq)
+        WHERE b.shop_seq = #{shop_seq} AND style_seq = #{style_seq}
+        ORDER BY cate_seq, style_name;
     </select>
 
     <!--특정 미용실의 직원 조회-->
