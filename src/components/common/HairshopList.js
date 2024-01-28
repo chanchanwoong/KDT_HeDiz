@@ -30,7 +30,7 @@ function HairshopList({ hairshopName }) {
   /// 헤어샵 리스트 받아오는 axios (get)
   useEffect(() => {
     authAxios()
-      .get(`/home`)
+      .get(`/`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProducts(response.data);

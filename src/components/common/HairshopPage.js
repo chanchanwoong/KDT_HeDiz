@@ -32,7 +32,7 @@ function HairshopPage() {
 
   useEffect(() => {
     authAxios()
-      .get(`/home/${shop_seq}`)
+      .get(`/hairshop/${shop_seq}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProduct(response.data);

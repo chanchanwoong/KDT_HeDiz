@@ -27,13 +27,13 @@ function HairshopReservation() {
   const [staffNickname, setStaffNickname] = useState('');
   const [staffSeq, setStaffSeq] = useState('');
   /////////////
-  const [staffIndex, setStaffIndex] = useState('');
+  const [staffIndex, setStaffIndex] = useState();
 
   ///////////////////////////////////////    데이터 가져오기 (디자이너, 예약 가능 시간)
   ///////////////////////////////////////    StaffList 컴포넌트는 사용 X (코드 수정이 많음)
   useEffect(() => {
-    const request1 = authAxios().get(`home/staff/${shop_seq}`);
-    const request2 = authAxios().get(`home/reservation/${shop_seq}/${style_seq}/${selectedDate}`);
+    const request1 = authAxios().get(`hairshop/${shop_seq}/staff`);
+    const request2 = authAxios().get(`hairshop/reservation/${shop_seq}/${style_seq}/${selectedDate}`);
 
     axios
       .all([request1, request2])
@@ -116,9 +116,6 @@ function HairshopReservation() {
 
     /// 초기에 staff_seq 를 받아와 key값 첫번째에 저장해서 값을 읽어옴 (JSON 형태이기 때문에 staff_seq = key 값)
     let list = items.map((product, index) => {
-      let staffIndex = staffIndex;
-      console.log(reserv[staffIndex]);
-
       return itemTemplate(product, index, reserv[staffIndex]);
     });
 

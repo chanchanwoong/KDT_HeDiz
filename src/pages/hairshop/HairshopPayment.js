@@ -39,6 +39,7 @@ function HairshopPayment() {
     receipt_id: '', // 결제 취소에 사용할 영수증 id (결제 완료 시 발급됨)
   };
   ////////////// axios 요청
+
   const handleBootpay = async () => {
     try {
       const response = await BootpayAPI({ payinfo });
@@ -46,30 +47,13 @@ function HairshopPayment() {
       const receipt_id = response.data.receipt_id;
       console.log(response.data.receipt_id);
       console.log(receipt_id);
-
-      // 결제에 성공하면 예약 목록에 예약 추가
-      const request1 = authAxios().post('/home/reservation', {
-        ...payinfo,
-        reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
-        receipt_id: receipt_id,
-      });
-      console.log(request1);
-      console.log(payinfo);
-      // 결제에 성공하면 결제 테이블에 컬럼 추가
-      const request2 = authAxios().post('/home/payment', payinfo);
-
-      axios
-        .all([request1, request2])
-        .then(
-          axios.spread((res1, res2) => {
-            console.log('Response from request1:', res1);
-            console.log('Response from request2:', res2);
-            console.log('Response from request1:', res1.data);
-            console.log('Response from request2:', res2.data);
-          }),
-
-          navigate('/reservation')
-        )
+      authAxios()
+        .post('/reservation', {
+          ...payinfo,
+          reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
+          receipt_id: receipt_id,
+        })
+        .then(navigate('/reservation'))
         .catch((error) => {
           console.error('axios 요청 중 오류:', error);
         });
