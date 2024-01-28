@@ -4,6 +4,8 @@ import { Rating } from 'primereact/rating';
 import { classNames } from 'primereact/utils';
 import { authAxios } from '../../api/AxiosAPI';
 import { Link } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { custLevelState } from 'api/Recoil';
 
 const getRegularDayOff = (value) => {
   const daysOff = value.split(',').map(Number);
@@ -26,20 +28,21 @@ const getRegularDayOff = (value) => {
 function HairshopList({ hairshopName }) {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-
+  const [custLevel, setCustLevel] = useRecoilState(custLevelState);
   /// 헤어샵 리스트 받아오는 axios (get)
   useEffect(() => {
     authAxios()
-      .get(`/`)
+      .get(`/${localStorage.getItem('cust_seq')}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setProducts(response.data);
+        setCustLevel(response.data[0].cust_level);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
       });
   }, []);
-
+  console.log(custLevel);
   useEffect(() => {
     if (hairshopName && hairshopName.trim() !== '') {
       const filtered = products.filter((product) => product.shop_name.includes(hairshopName));

@@ -13,9 +13,10 @@ import { InputMask } from 'primereact/inputmask';
 function Mypage() {
   const { register, handleSubmit, reset } = useForm();
   const [info, setInfo] = useState({});
+
   const toast = useRef(null);
 
-  // [GET] 미용실 정보 조회
+  // [GET] 마이페이지 정보 조회
   useEffect(() => {
     authAxios()
       .get(`/mypage/profile/${localStorage.getItem('cust_seq')}`, {
@@ -44,7 +45,6 @@ function Mypage() {
         console.error('Auth Error:', error);
       });
   }, []);
-
   const onResetClick = () => {
     reset(info);
   };

@@ -4,9 +4,10 @@ import { useLocation } from 'react-router-dom';
 import { BootpayAPI } from 'api/BootpayAPI';
 import { Button } from 'primereact/button';
 import { authAxios } from 'api/AxiosAPI';
-import axios from 'axios';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { custLevelState } from 'api/Recoil';
 
 function HairshopPayment() {
   const navigate = useNavigate();
@@ -22,7 +23,8 @@ function HairshopPayment() {
   const style_name = location.state.style_name;
   const style_price = location.state.style_price;
   const [reservRequest, setReservRequest] = useState('');
-  const [receiptID, setReceiptID] = useState('');
+  const custLevel = useRecoilValue(custLevelState);
+  console.log(style_price);
   ////////////// 백엔드 서버에 보낼 정보들
   const payinfo = {
     style_seq: style_seq,
@@ -38,6 +40,23 @@ function HairshopPayment() {
     reserv_stat: '',
     receipt_id: '', // 결제 취소에 사용할 영수증 id (결제 완료 시 발급됨)
   };
+
+  function determineCustomerLevel(custLevel) {
+    let cust_level;
+
+    console.log(custLevel);
+    if (custLevel === 1) {
+      cust_level = 'vip';
+    } else {
+      cust_level = '일반고객';
+    }
+
+    // console.log(cust_level); // 필요한 경우 주석 해제하여 사용
+    return cust_level;
+  }
+
+  console.log(determineCustomerLevel(custLevel));
+
   ////////////// axios 요청
 
   const handleBootpay = async () => {
@@ -50,6 +69,7 @@ function HairshopPayment() {
       authAxios()
         .post('/reservation', {
           ...payinfo,
+
           reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
           receipt_id: receipt_id,
         })
@@ -59,13 +79,14 @@ function HairshopPayment() {
         });
     } catch (error) {
       console.error('부트페이 API 호출 중 오류:', error);
+      console.log(payinfo.pay_price);
     }
   };
 
   return (
     <>
       <h2>결제하기</h2>
-      <Panel header="예약정보">
+      <Panel header="결제정보">
         <div className="flex flex-column font-semibold">
           <span>구매자 이름 : {cust_name} </span>
           <span>예약 날짜 : {reserv_date} </span>
@@ -81,7 +102,7 @@ function HairshopPayment() {
           <span>매장 이름 : {shop_name} </span>
           <span>담당 디자이너 : {staff_nickname} </span>
           <span>스타일 이름 : {style_name} </span>
-          <span>가격 : {style_price} </span>
+          <span>가격 : {style_price}원 </span>
         </div>
       </Panel>
       <Button onClick={handleBootpay}>결제 하기</Button>
