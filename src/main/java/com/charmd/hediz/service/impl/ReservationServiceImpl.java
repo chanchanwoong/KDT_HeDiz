@@ -36,6 +36,8 @@ public class ReservationServiceImpl implements ReservationService {
         // receipt_id를 통해 결제취소 요청
         HashMap<String, Object> res = null;
         int numberOfCancel = 0;
+        int numberOfReservStat = 0;
+        int numberOfPayStat = 0;
         try {
             Bootpay bootpay = new Bootpay("65af183ce57a7e001b410f16", "McUesnjacysjVSlaFBsWJL/fZqD3GUcQq1v8SbXplzQ=");
             HashMap<String, Object> token = bootpay.getAccessToken();
@@ -47,19 +49,19 @@ public class ReservationServiceImpl implements ReservationService {
             cancel.cancelUsername = "HeDiz";
             cancel.cancelMessage = "예약 취소";
             res = bootpay.receiptCancel(cancel);
-            numberOfCancel++;
             if (res.get("error_code") == null) { //success
                 System.out.println("receiptCancel success: " + res);
+                numberOfCancel++;
+                // reserv_stat을 0에서 2로 변경 && receipt_id를 "cancle" 변경
+                numberOfReservStat = dao.changeReservStat(reserv_seq);
+                // pay_stat : 0 -> 1
+                numberOfPayStat = dao.changePayStat(reserv_seq);
             } else {
                 System.out.println("receiptCancel false: " + res);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // reserv_stat을 0에서 2로 변경 && receipt_id를 "cancle" 변경
-        int numberOfReservStat = dao.changeReservStat(reserv_seq);
-        // pay_stat : 0 -> 1
-        int numberOfPayStat = dao.changePayStat(reserv_seq);
         return numberOfCancel + numberOfReservStat + numberOfPayStat;
     }
 }
