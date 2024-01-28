@@ -26,9 +26,14 @@ public class HomeController {
     private HairshopService hairshopService;
 
     // 모든 미용실 조회
-    @GetMapping("{cust_seq:[\\d]+}")
-    public ResponseEntity<?> findAllHairshop(@PathVariable("cust_seq") int cust_seq) {
-        List<HairshopDTO> hairshopList = homeService.findAllHairshop(cust_seq);
+//    @GetMapping("{cust_seq:[\\d]+}")
+//    public ResponseEntity<?> findAllHairshop(@PathVariable("cust_seq") int cust_seq) {
+//        List<HairshopDTO> hairshopList = homeService.findAllHairshop(cust_seq);
+//        return ResponseEntity.ok().body(hairshopList);
+//    }
+    @GetMapping("")
+    public ResponseEntity<?> findAllHairshop() {
+        List<HairshopDTO> hairshopList = homeService.findAllHairshop();
         return ResponseEntity.ok().body(hairshopList);
     }
 

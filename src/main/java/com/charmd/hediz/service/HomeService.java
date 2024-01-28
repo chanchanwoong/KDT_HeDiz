@@ -5,5 +5,5 @@ import com.charmd.hediz.dto.HairshopDTO;
 import java.util.List;
 
 public interface HomeService {
-    public List<HairshopDTO> findAllHairshop(int cust_seq);
+    public List<HairshopDTO> findAllHairshop();
 }
