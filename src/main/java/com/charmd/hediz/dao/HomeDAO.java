@@ -12,14 +12,7 @@ public class HomeDAO {
     @Autowired
     SqlSessionTemplate session;
 
-    public List<HairshopDTO> findAllHairshop(){
-        return session.selectList("com.config.HomeMapper.findAllHairshop");
+    public List<HairshopDTO> findAllHairshop(int cust_seq){
+        return session.selectList("com.config.HomeMapper.findAllHairshop", cust_seq);
     }
-//    public List<HairshopDTO> findHairshopWithFilter(HashMap<String, String> filterMap){
-//        return session.selectList("com.config.HomeMapper.findHairshopWithFilter", filterMap);
-//    }
-
-//    public List<HairshopDTO> findHairshopUsingKeyword(String keyword){
-//        return session.selectList("com.config.HomeMapper.findHairshopUsingKeyword", keyword);
-//    }
 }

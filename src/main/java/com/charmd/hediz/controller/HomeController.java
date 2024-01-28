@@ -26,9 +26,9 @@ public class HomeController {
     private HairshopService hairshopService;
 
     // 모든 미용실 조회
-    @GetMapping("")
-    public ResponseEntity<?> findAllHairshop() {
-        List<HairshopDTO> hairshopList = homeService.findAllHairshop();
+    @GetMapping("{cust_seq:[\\d]+}")
+    public ResponseEntity<?> findAllHairshop(@PathVariable("cust_seq") int cust_seq) {
+        List<HairshopDTO> hairshopList = homeService.findAllHairshop(cust_seq);
         return ResponseEntity.ok().body(hairshopList);
     }
 
@@ -86,15 +86,15 @@ public class HomeController {
     // 예약_날짜 누르고 예약하기 버튼을 누른 후 결제 정보 보여주는 API
     // 결제 금액은 cust_level에 따라 변화 필요
     @PostMapping("payinfo")
-    public ResponseEntity<?> payinfo(@RequestBody PayinfoDTO payinfoDto){
+    public ResponseEntity<?> payinfo(@RequestBody PayinfoDTO payinfoDto) {
         payinfoDto = hairshopService.getPayinfo(payinfoDto);
         return ResponseEntity.ok().body(payinfoDto);
     }
 
     // 예약_최종 결제 후 결제 테이블과 예약 테이블에 저장
     @PostMapping("reservation")
-    public ResponseEntity<?> reservation(@RequestBody PayinfoDTO payinfoDto){
+    public ResponseEntity<?> reservation(@RequestBody PayinfoDTO payinfoDto) {
         int n = hairshopService.reservation(payinfoDto);
-        return ResponseEntity.ok().body(n==2);
+        return ResponseEntity.ok().body(n == 2);
     }
 }

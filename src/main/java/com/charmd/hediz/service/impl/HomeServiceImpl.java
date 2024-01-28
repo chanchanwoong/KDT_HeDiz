@@ -13,7 +13,7 @@ public class HomeServiceImpl implements HomeService {
     @Autowired
     HomeDAO dao;
     @Override
-    public List<HairshopDTO> findAllHairshop() {
-        return dao.findAllHairshop();
+    public List<HairshopDTO> findAllHairshop(int cust_seq) {
+        return dao.findAllHairshop(cust_seq);
     }
 }

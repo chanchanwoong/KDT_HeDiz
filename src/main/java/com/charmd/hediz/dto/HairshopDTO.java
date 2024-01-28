@@ -36,4 +36,6 @@ public class HairshopDTO {
     // 별점 평균 및 개수
     private double avg_review_score;
     private int count_review;
+
+    private int cust_level;
 }
