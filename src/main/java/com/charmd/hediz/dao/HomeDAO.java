@@ -13,6 +13,6 @@ public class HomeDAO {
     SqlSessionTemplate session;
 
     public List<HairshopDTO> findAllHairshop(){
-        return session.selectList("com.config.HomeMapper.findAllHairshop");
+        return session.selectList("com.config.HairshopMapper.findAllHairshop");
     }
 }

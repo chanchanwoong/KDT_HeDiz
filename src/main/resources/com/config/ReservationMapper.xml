@@ -6,12 +6,13 @@
     <!--예약 상황 조회-->
     <select id="currentReservation" resultType="ReservationDTO">
         select reserv_seq, shop_name, staff_nickname, style_name, reserv_request, reserv_date, reserv_time, receipt_id
-        from t_reservation a
-        inner join t_hairshop b on a.shop_seq = b.shop_seq
-        inner join t_staff c on a.staff_seq = c.staff_seq
-        inner join t_hairstyle d on a.style_seq = d.style_seq
-        where cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) <![CDATA[> now()]]> and reserv_stat = 0
-        order by reserv_date, reserv_time
+        FROM t_reservation tr
+        LEFT JOIN t_hairstyle st ON tr.style_seq = st.style_seq
+        LEFT JOIN t_hairshop hs ON st.shop_seq = hs.shop_seq
+        LEFT JOIN t_customer cu ON tr.cust_seq = cu.cust_seq
+        LEFT JOIN t_staff s ON tr.staff_seq = s.staff_seq
+        where cu.cust_seq = 9 and concat(reserv_date, ' ', reserv_time) > now() and reserv_stat = 0
+        order by reserv_date, reserv_time;
     </select>
 
     <!--receipt_id 조회-->
