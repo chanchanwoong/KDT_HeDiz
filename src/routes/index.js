@@ -7,7 +7,7 @@ import SignUp from '../pages/auth/SignUp';
 
 // 메인화면
 import MainLayout from '../layout/MainLayout';
-import Home from '../pages/home/Home';
+import Home from 'pages/home/home';
 import Reservation from '../pages/reservation/CheckReservation';
 
 //헤어샵 페이지
