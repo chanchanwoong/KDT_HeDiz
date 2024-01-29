@@ -39,7 +39,7 @@ public class MypageController {
     @PutMapping("profile")
     public ResponseEntity<?> updateMypage(@RequestBody CustomerDTO customerDto) {
         int n = mypageService.updateMypage(customerDto);
-        return ResponseEntity.ok().body(n==1);
+        return ResponseEntity.ok().body(n == 1);
     }
 
     // cust_seq에 따른 리뷰 조회
@@ -52,27 +52,32 @@ public class MypageController {
     // cust_seq에 따른 리뷰 작성
     @PostMapping("review")
     public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDto) {
-        int n = mypageService.reviewWrite(reviewDto);
-        return ResponseEntity.ok().body(reviewDto);
+        int n = 0;
+        // reserv_stat = 1 (방문완료) 경우에만 리뷰 작성 가능하다.
+        int reserv_stat = mypageService.getReservStat(reviewDto.getReserv_seq());
+        if (reserv_stat == 1) {
+            n = mypageService.reviewWrite(reviewDto);
+        }
+        return ResponseEntity.ok().body(n == 1);
     }
 
     // cust_seq에 따른 리뷰 수정
     @PutMapping("review")
-    public ResponseEntity<?> reviewUpdate(@RequestBody ReviewDTO reviewDto){
+    public ResponseEntity<?> reviewUpdate(@RequestBody ReviewDTO reviewDto) {
         int n = mypageService.reviewUpdate(reviewDto);
-        return ResponseEntity.ok().body(n==1);
+        return ResponseEntity.ok().body(n == 1);
     }
 
     // cust_seq에 따른 리뷰 삭제
     @DeleteMapping("review/{review_seq}")
-    public ResponseEntity<?> reviewDelete(@PathVariable("review_seq") int review_seq){
+    public ResponseEntity<?> reviewDelete(@PathVariable("review_seq") int review_seq) {
         int n = mypageService.reviewDelete(review_seq);
-        return ResponseEntity.ok().body(n==1);
+        return ResponseEntity.ok().body(n == 1);
     }
 
     // 예약 상황 조회 (작업 미시작 예약 조회)
     @GetMapping("realtime-reservation/{cust_seq}")
-    public ResponseEntity<?> currentReservation(@PathVariable("cust_seq") int cust_seq){
+    public ResponseEntity<?> currentReservation(@PathVariable("cust_seq") int cust_seq) {
         List<ReservationDTO> reservationList = reservationService.currentReservation(cust_seq);
         return ResponseEntity.ok().body(reservationList);
     }
@@ -81,9 +86,9 @@ public class MypageController {
     // reserv_stat = 0(예약 확정) -> reserv_stat = 2(예약 취소)
     // pay_stat = 0(결제) -> 1(취소)
     @PutMapping("realtime-reservation/{reserv_seq}")
-    public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq, @RequestBody String receipt_id ){
+    public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq, @RequestBody String receipt_id) {
         int n = reservationService.cancelReservation(reserv_seq, receipt_id);
-        return ResponseEntity.ok().body(n==3);
+        return ResponseEntity.ok().body(n == 3);
     }
 
 }

@@ -26,6 +26,9 @@ public class MypageDAO {
     public List<ReviewDTO> review(int cust_seq){
         return session.selectList("com.config.MypageMapper.review", cust_seq);
     }
+    public int getReservStat(int reserv_seq){
+        return session.selectOne("com.config.MypageMapper.getReservStat", reserv_seq);
+    }
     public int reviewWrite(ReviewDTO reviewDto){
         return session.insert("com.config.MypageMapper.reviewWrite", reviewDto);
     }

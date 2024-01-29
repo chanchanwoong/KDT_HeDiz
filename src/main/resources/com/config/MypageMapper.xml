@@ -40,10 +40,15 @@
         order by review_date desc, review_score desc
     </select>
 
+    <!--reserv_stat 조회-->
+    <select id="getReservStat" parameterType="int" resultType="int">
+        select reserv_stat from t_review inner join t_reservation using(reserv_seq) where reserv_seq=#{reserv_seq}
+    </select>
+
     <!--review 작성-->
     <insert id="reviewWrite">
-        insert into t_review (shop_seq, reserv_seq, review_score, review_content, review_photo, review_date)
-        values (#{shop_seq}, #{reserv_seq}, #{review_score}, #{review_content}, #{review_photo}, #{review_date})
+        insert into t_review (reserv_seq, review_score, review_content, review_photo, review_date)
+        values (#{reserv_seq}, #{review_score}, #{review_content}, #{review_photo}, #{review_date})
     </insert>
 
     <!--review 수정-->

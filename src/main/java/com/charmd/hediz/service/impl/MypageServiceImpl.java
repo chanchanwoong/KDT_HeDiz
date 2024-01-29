@@ -35,6 +35,11 @@ public class MypageServiceImpl implements MypageService {
     }
 
     @Override
+    public int getReservStat(int reserv_seq) {
+        return dao.getReservStat(reserv_seq);
+    }
+
+    @Override
     public int reviewWrite(ReviewDTO reviewDto) {
         return dao.reviewWrite(reviewDto);
     }
