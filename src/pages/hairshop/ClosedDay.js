@@ -143,7 +143,7 @@ function ClosedDay() {
       temp_start: formatDate(data.date[0]),
       temp_end: formatDate(data.date[1]),
       temp_memo: data.temp_memo,
-      staff_seq: data.staff_seq,
+      staff_seq: data.temp_staff,
     };
     console.log('Auth Request:', reqeustData);
 
@@ -214,6 +214,7 @@ function ClosedDay() {
                           {...field}
                           options={staff}
                           optionLabel='staff_nickname'
+                          optionValue='staff_seq'
                           placeholder='직원을 선택해주세요'
                           disabled={checked} // 전체 휴무일 경우 Dropdown 비활성화
                         />

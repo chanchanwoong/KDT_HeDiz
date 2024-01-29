@@ -9,6 +9,8 @@ import { authAxios } from 'api/AxiosAPI';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import DashboardChart from 'components/common/DashboardChart';
+import { getReservationValue } from 'service/CommonOptions';
+import { Tag } from 'primereact/tag';
 
 function Dashboard() {
   const [reservation, setReservation] = useState([]);
@@ -27,6 +29,19 @@ function Dashboard() {
         </p>
         <p>{rowData.reserv_request}</p>
       </>
+    );
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    const { value: reserveValue, color } = getReservationValue(
+      rowData.reserv_stat
+    );
+
+    return (
+      <Tag
+        value={reserveValue}
+        style={{ backgroundColor: color, width: '80px' }}
+      />
     );
   };
 
@@ -126,8 +141,9 @@ function Dashboard() {
                 body={reservationInfoTemplate}
               />
               <Column
-                field='resrv_stat'
+                field='reserv_stat'
                 header='예약 상태'
+                body={statusBodyTemplate}
               />
             </DataTable>
           </div>
