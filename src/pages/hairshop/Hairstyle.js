@@ -11,6 +11,7 @@ import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
+import { InputMask } from 'primereact/inputmask';
 
 export default function Hairstyle() {
   const shop_seq = localStorage.getItem('shop_seq');
@@ -392,13 +393,17 @@ export default function Hairstyle() {
             />
           </div>
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>소요시간</label>
-            <InputText
-              placeholder='소요시간'
+            <label className='font-bold block mb-2'>
+              소요시간 {`(2:30 = 2시간 30분)`}
+            </label>
+            <InputMask
+              mask='9:99'
+              placeholder='예: 1시간 30분'
               name='style_time'
               {...register('style_time', { required: true })}
             />
           </div>
+
           <div className='flex-auto'>
             <label className='font-bold block mb-2'>시술대상</label>
             <InputText
@@ -419,15 +424,17 @@ export default function Hairstyle() {
           </div>
 
           <div>
-            <label className='font-bold block mb-2'>이미지 업로드</label>
-            <input
-              type='file'
-              multiple
-              style={{ display: 'none' }}
-              name='style_image'
-              accept='.jpg'
-              onChange={handleImageUpload}
-            />
+            <label className='font-bold block mb-2'>
+              이미지 업로드
+              <input
+                type='file'
+                multiple
+                style={{ display: 'none' }}
+                name='style_image'
+                accept='.jpg'
+                onChange={handleImageUpload}
+              />
+            </label>
           </div>
           {product.style_image && (
             <img

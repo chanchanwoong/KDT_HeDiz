@@ -67,7 +67,7 @@ function ClosedDay() {
 
   const updateCalendarEvents = () => {
     authAxios()
-      .get(`/hairshop/closed-day/${localStorage.getItem('shop_seq')}`)
+      .get(`/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
         setClosedDay(response.data);
@@ -136,38 +136,68 @@ function ClosedDay() {
 
   // [POST] 임시 휴무일 추가
   const onSubmit = (data) => {
-    console.log(data);
-
     const reqeustData = {
-      shop_seq: localStorage.getItem('shop_seq'),
+      // shop_seq: localStorage.getItem('shop_seq'),
       temp_start: formatDate(data.date[0]),
       temp_end: formatDate(data.date[1]),
       temp_memo: data.temp_memo,
-      staff_seq: data.temp_staff,
+      // staff_seq: data.temp_staff,
     };
     console.log('Auth Request:', reqeustData);
 
-    authAxios()
-      .post('/hairshop/closed-day/', reqeustData)
-      .then((response) => {
-        console.log('Auth Response:', response.data);
-        setEvents((prevEvents) => [
-          ...prevEvents,
-          {
-            title: `${response.data.staff_nickname}: ${response.data.temp_memo}`,
-            start: `${response.data.temp_start}`,
-            end: `${response.data.temp_end}`,
-            description: response.data.temp_memo,
-          },
-        ]);
-        updateCalendarEvents();
-        showSuccess();
-        reset();
-      })
-      .catch((error) => {
-        console.error('Auth Error:', error);
-        showError();
-      });
+    if (checked) {
+      // 전체 휴무(미용실 휴무)
+      console.log('전체 휴무');
+      reqeustData.shop_seq = localStorage.getItem('shop_seq');
+      console.log(reqeustData);
+      authAxios()
+        .post('/hairshop/closed-day/all', reqeustData)
+        .then((response) => {
+          console.log('Auth Response (전체 휴무):', response.data);
+          setEvents((prevEvents) => [
+            ...prevEvents,
+            {
+              title: `미용실 휴무: ${response.data.temp_memo}`,
+              start: `${response.data.temp_start}`,
+              end: `${response.data.temp_end}`,
+              description: response.data.temp_memo,
+            },
+          ]);
+          updateCalendarEvents();
+          showSuccess();
+          reset();
+        })
+        .catch((error) => {
+          console.error('Auth Error (전체 휴무):', error);
+          showError();
+        });
+    } else {
+      // 직원 휴무
+      console.log('직원 휴무');
+      reqeustData.staff_seq = data.temp_staff;
+      console.log(reqeustData);
+      authAxios()
+        .post('/hairshop/closed-day', reqeustData)
+        .then((response) => {
+          console.log('Auth Response:', response.data);
+          setEvents((prevEvents) => [
+            ...prevEvents,
+            {
+              title: `${response.data.staff_nickname}: ${response.data.temp_memo}`,
+              start: `${response.data.temp_start}`,
+              end: `${response.data.temp_end}`,
+              description: response.data.temp_memo,
+            },
+          ]);
+          updateCalendarEvents();
+          showSuccess();
+          reset();
+        })
+        .catch((error) => {
+          console.error('Auth Error:', error);
+          showError();
+        });
+    }
   };
 
   return (
@@ -223,7 +253,7 @@ function ClosedDay() {
                           <Checkbox
                             onChange={(e) => {
                               setChecked(e.checked);
-                              field.onChange(checked ? null : undefined);
+                              // field.onChange(checked ? null : undefined);
                             }}
                             checked={checked}
                           />

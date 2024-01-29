@@ -425,7 +425,7 @@ function SignUp() {
                         })}
                         onChange={field.onChange}
                         timeOnly
-                        step={30}
+                        stepMinute={30}
                       />
                       {getFormErrorMessage(field.name)}
                     </>
@@ -450,6 +450,7 @@ function SignUp() {
                         })}
                         onChange={field.onChange}
                         timeOnly
+                        stepMinute={30}
                       />
                       {getFormErrorMessage(field.name)}
                     </>

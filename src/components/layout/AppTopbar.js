@@ -56,6 +56,7 @@ export default function AppTopbar({ onToggleSidebar }) {
       .catch((error) => {
         console.error('Auth Error:', error);
       });
+    setVisible(false);
   };
 
   const accept = () => {

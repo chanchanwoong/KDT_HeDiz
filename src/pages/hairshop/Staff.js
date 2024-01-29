@@ -84,11 +84,13 @@ export default function staff() {
     const requestData = {
       ...data,
       shop_seq,
+      staff_image: sendImgs,
     };
 
     authAxios()
       .post(`/hairshop/staff`, requestData)
       .then((response) => {
+        console.log(requestData);
         console.log('Auth Response:', response.data);
         accept('직원을 등록했습니다. ');
         reset(defaultValues);
@@ -184,6 +186,7 @@ export default function staff() {
     let reader = new FileReader();
     reader.onload = () => {
       setSendImgs(reader.result);
+      console.log(sendImgs);
       setProduct({ ...product, staff_image: reader.result });
     };
     reader.readAsDataURL(file);

@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
-import { Panel } from 'primereact/panel';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -20,19 +16,9 @@ function Review() {
 
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
-  const [sortKey, setSortKey] = useState('');
-  const [sortOrder, setSortOrder] = useState(0);
-  const [sortField, setSortField] = useState('');
-  const [averageScore, setAverageScore] = useState();
   const [replyModal, setReplyModal] = useState();
   const [userReview, setUserReview] = useState();
-  const token = localStorage.getItem('jwtauthtoken');
   const shop_seq = localStorage.getItem('shop_seq');
-
-  const sortOptions = [
-    { staff_name: 'Price High to Low', value: '!price' },
-    { staff_name: 'Price Low to High', value: 'price' },
-  ];
 
   const showDialog = () => {
     setReplyModal(true);
@@ -52,12 +38,6 @@ function Review() {
       .get(`/reservation/review/` + shop_seq)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        const totalScore = response.data.reduce(
-          (sum, product) => sum + product.review_score,
-          0
-        );
-        const averageScore = totalScore / response.data.length;
-        setAverageScore(averageScore);
         setProducts(response.data);
       })
       .catch((error) => {
@@ -65,52 +45,9 @@ function Review() {
       });
   }, []);
 
-  const onSortChange = (event) => {
-    const value = event.value;
-
-    if (value.indexOf('!') === 0) {
-      setSortOrder(-1);
-      setSortField(value.substring(1, value.length));
-      setSortKey(value);
-    } else {
-      setSortOrder(1);
-      setSortField(value);
-      setSortKey(value);
-    }
-  };
-
-  const headerTemplate = () => {
-    return (
-      <div className='flex justify-content-between align-items-center'>
-        <span>리뷰 관리</span>
-        <div className='flex align-items-center gap-4'>
-          <span className='flex align-items-end gap-2 font-normal text-xl'>
-            <span className='font-bold text-primary'>
-              {averageScore && averageScore.toFixed(1)}
-            </span>{' '}
-            / 5
-          </span>
-          <Rating
-            value={averageScore || 0}
-            readOnly
-            cancel={false}
-          ></Rating>
-        </div>
-      </div>
-    );
-  };
-
   const headerDataTemplate = () => {
     return (
       <div className='flex justify-content-between align-items-center'>
-        <Dropdown
-          options={sortOptions}
-          value={sortKey}
-          optionLabel='label'
-          placeholder='Sort By Price'
-          onChange={onSortChange}
-          className='w-full sm:w-14rem'
-        />
         <span className='text-lg font-semibold'>
           총 {products.length} 개의 리뷰가 있습니다.
         </span>
@@ -228,8 +165,6 @@ function Review() {
             paginator
             rows={4}
             header={headerDataTemplate()}
-            sortField={sortField}
-            sortOrder={sortOrder}
           />
         )}
       </div>

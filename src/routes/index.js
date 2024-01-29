@@ -26,7 +26,6 @@ import Review from 'pages/reservation/Review';
 
 // customer__고객 관리
 import Management from 'pages/customer/Management';
-import Coupon from 'pages/customer/Coupon';
 
 const router = createBrowserRouter([
   {
@@ -147,15 +146,6 @@ const router = createBrowserRouter([
               <PrivateRoute
                 element={<Management />}
                 path='/customer/management'
-              />
-            ),
-          },
-          {
-            path: 'coupon',
-            element: (
-              <PrivateRoute
-                element={<Coupon />}
-                path='/customer/coupon'
               />
             ),
           },
