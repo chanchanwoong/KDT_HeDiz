@@ -159,13 +159,12 @@ function Schedule() {
 
   const listTemplate = (items) => {
     if (!items || items.length === 0) return null;
-
-    let currentIndex = staffIndex;
+    const staffSeqList = staff.map((staff) => staff.staff_seq);
     let list = items.map((product, index) => {
-      console.log(currentIndex);
-      return itemTemplate(product, index, reservDate[currentIndex++]);
+      const staffSeq = staffSeqList[index];
+      const reservDateForStaff = reservDate[staffSeq];
+      return itemTemplate(product, index, reservDateForStaff);
     });
-
     return <div className='grid grid-nogutter'>{list}</div>;
   };
 
