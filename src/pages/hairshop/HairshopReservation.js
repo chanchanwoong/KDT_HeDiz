@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Panel } from 'primereact/panel';
 import { Link, useLocation } from 'react-router-dom';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
 import { classNames } from 'primereact/utils';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
@@ -9,11 +9,13 @@ import axios from 'axios';
 import {
   generateDates,
   generateTimeSlots,
-} from '../../components/common/GenerateTime';
+  getToday,
+  getCurrnetTime,
+} from 'components/common/GenerateTime';
 
 function HairshopReservation() {
   const location = useLocation();
-
+  ///////// 결제 페이지에 필요한 데이터들
   const style_name = location.state.style_name;
   const shop_seq = location.state.shop_seq;
   const style_seq = location.state.style_seq;
@@ -22,42 +24,20 @@ function HairshopReservation() {
   const shop_start = location.state.shop_start;
   const shop_end = location.state.shop_end;
 
-  const [selectedDate, setSelectedDate] = useState('2024-01-25');
+  const [selectedDate, setSelectedDate] = useState(getToday());
   const [staff, setStaff] = useState([]);
   const [reserv, setReserv] = useState([]);
   const dates = generateDates();
   const [time, setTime] = useState([]);
   const [staffNickname, setStaffNickname] = useState('');
   const [staffSeq, setStaffSeq] = useState('');
-
-  ///////////////////////////////////////    현재 날짜, 시간 구하기
-
-  const getToday = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const getCurrnetTime = () => {
-    const today = new Date();
-
-    var hours = ('0' + today.getHours()).slice(-2);
-    var minutes = ('0' + today.getMinutes()).slice(-2);
-    var seconds = ('0' + today.getSeconds()).slice(-2);
-
-    var timeString = hours + ':' + minutes + ':' + seconds;
-    return timeString;
-  };
-
-  console.log(getCurrnetTime());
+  const [staffIndex, setStaffIndex] = useState();
   ///////////////////////////////////////    데이터 가져오기 (디자이너, 예약 가능 시간)
   ///////////////////////////////////////    StaffList 컴포넌트는 사용 X (코드 수정이 많음)
   useEffect(() => {
-    const request1 = authAxios().get(`home/staff/${shop_seq}`);
+    const request1 = authAxios().get(`hairshop/${shop_seq}/staff`);
     const request2 = authAxios().get(
-      `home/reservation/${shop_seq}/${style_seq}/${selectedDate}`
+      `hairshop/reservation/${shop_seq}/${style_seq}/${selectedDate}`
     );
 
     axios
@@ -66,9 +46,12 @@ function HairshopReservation() {
         axios.spread((res1, res2) => {
           console.log('Response from request1:', res1.data);
           console.log('Response from request2:', res2.data);
+          //// res2.data는 다른 response와 다르게 JSON 형태로 값을 받아옴
+          //// staff_seq : [가능한 시간]
 
           setStaff(res1.data);
           setReserv(res2.data);
+          setStaffIndex(res1.data[0].staff_seq);
         })
       )
       .catch((error) => {
@@ -113,7 +96,9 @@ function HairshopReservation() {
               <div className='time-buttons'>
                 {/* generateTimeSlots 함수를 이용하여 시간 버튼 생성
                     disable 조건 : reserv 안에 없는 시간이 버튼 에 포함 되는 경우,
-                                  오늘 날짜의 현재 시간이 지나면 예약 불가능       */}
+                                  오늘 날짜의 현재 시간이 지나면 예약 불가능       
+                    generateTimeSlots : 가게 오픈시간과 마감시간을 전달받아서 timeSlot이라는 배열에 넣음
+                    그 후 map함수로 timeSlot을 돌면서 버튼을 생성 */}
                 {generateTimeSlots(shop_start, shop_end).map((timeSlot) => (
                   <button
                     key={timeSlot.key}
@@ -145,10 +130,11 @@ function HairshopReservation() {
   const listTemplate = (items) => {
     if (!items || items.length === 0) return null;
 
-    let list = items.map((product, index) => {
-      let xxx = index + 1;
+    let currentIndex = staffIndex;
 
-      return itemTemplate(product, index, reserv[xxx]);
+    let list = items.map((product, index) => {
+      console.log(currentIndex);
+      return itemTemplate(product, index, reserv[currentIndex++]);
     });
 
     return <div className='grid grid-nogutter'>{list}</div>;
@@ -161,7 +147,7 @@ function HairshopReservation() {
     staff_seq,
     staff_nickname
   ) => {
-    // 선택한 시간에 대한 처리를 수행
+    // 선택한 시간에 대한 처리를 수행, time에 현재시간, staff_nickname staff_seq 를 저장
     console.log('reservTime:', reservTime);
     console.log('Selected time:', selectedTime);
     console.log(staff_nickname);
@@ -181,6 +167,8 @@ function HairshopReservation() {
       </Panel>
       <Panel header='날짜선택'>
         <div>
+          {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
+                      map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
           {dates.map((date) => (
             <button
               key={date}
@@ -208,6 +196,7 @@ function HairshopReservation() {
           />
         </div>
       </Panel>
+      {/*url 이동할 때 state에 값을 저장하여 보내기, 결제 페이지에서 필요한 정보들 */}
       <Link
         to='/hairshop/payment'
         state={{

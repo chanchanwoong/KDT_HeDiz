@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Panel } from 'primereact/panel';
 import { useLocation } from 'react-router-dom';
-import BootpayAPI from '../../api/BootpayAPI';
+import { BootpayAPI } from 'api/BootpayAPI';
 import { Button } from 'primereact/button';
-import { authAxios } from '../../api/AxiosAPI';
-import axios from 'axios';
+import { authAxios } from 'api/AxiosAPI';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +21,7 @@ function HairshopPayment() {
   const style_name = location.state.style_name;
   const style_price = location.state.style_price;
   const [reservRequest, setReservRequest] = useState('');
+  console.log(style_price);
   ////////////// 백엔드 서버에 보낼 정보들
   const payinfo = {
     style_seq: style_seq,
@@ -31,51 +31,50 @@ function HairshopPayment() {
     cust_seq: localStorage.getItem('cust_seq'),
     shop_seq: shop_seq,
     reserv_request: reservRequest,
+    reserv_date: reserv_date,
+    reserv_time: reserv_time,
     pay_price: style_price,
     reserv_stat: '',
+    receipt_id: '', // 결제 취소에 사용할 영수증 id (결제 완료 시 발급됨)
   };
+
   ////////////// axios 요청
+
   const handleBootpay = async () => {
-    console.log(reservRequest);
     try {
-      await BootpayAPI({ payinfo });
+      const response = await BootpayAPI({ payinfo });
+      console.log(response.data);
+      const receipt_id = response.data.receipt_id;
+      console.log(response.data.receipt_id);
+      console.log(receipt_id);
+      authAxios()
+        .post('/reservation', {
+          ...payinfo,
 
-      // 결제에 성공하면 예약 목록에 예약 추가
-      const request1 = authAxios().post('/home/reservation', {
-        ...payinfo,
-        reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
-      });
-      // 결제에 성공하면 결제 테이블에 컬럼 추가
-      const request2 = authAxios().post('/home/payment', payinfo);
-
-      axios
-        .all([request1, request2])
-        .then(
-          axios.spread((res1, res2) => {
-            console.log('Response from request1:', res1.data);
-            console.log('Response from request2:', res2.data);
-          }),
-          navigate('/reservation')
-        )
+          reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
+          receipt_id: receipt_id,
+        })
+        .then(navigate('/reservation'))
         .catch((error) => {
           console.error('axios 요청 중 오류:', error);
         });
     } catch (error) {
       console.error('부트페이 API 호출 중 오류:', error);
+      console.log(payinfo.pay_price);
     }
   };
 
   return (
     <>
       <h2>결제하기</h2>
-      <Panel header='예약정보'>
-        <div className='flex flex-column font-semibold'>
+      <Panel header="결제정보">
+        <div className="flex flex-column font-semibold">
           <span>구매자 이름 : {cust_name} </span>
           <span>예약 날짜 : {reserv_date} </span>
-          <div className='flex '>
+          <div className="flex ">
             요청 사항 :
             <InputTextarea
-              name='reserv_request'
+              name="reserv_request"
               value={reservRequest}
               onChange={(e) => setReservRequest(e.target.value)}
             />
@@ -84,7 +83,7 @@ function HairshopPayment() {
           <span>매장 이름 : {shop_name} </span>
           <span>담당 디자이너 : {staff_nickname} </span>
           <span>스타일 이름 : {style_name} </span>
-          <span>가격 : {style_price} </span>
+          <span>가격 : {style_price}원 </span>
         </div>
       </Panel>
       <Button onClick={handleBootpay}>결제 하기</Button>

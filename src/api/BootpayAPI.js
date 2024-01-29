@@ -1,13 +1,12 @@
 import { Bootpay } from '@bootpay/client-js';
-import { useEffect } from 'react';
-import { authAxios } from './AxiosAPI';
 
-async function BootpayAPI({ payinfo }) {
+export async function BootpayAPI({ payinfo }) {
   try {
+    /////////// 부트페이에 요청 하는 API
     const response = await Bootpay.requestPayment({
-      application_id: '65af183ce57a7e001b410f13',
-      // price: payinfo.stlye_price,
-      price: 100,
+      application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
+      price: payinfo.pay_price,
+      // price: 100,
       order_name: payinfo.style_name,
       order_id: 'TEST_ORDER_ID',
       tax_free: 0,
@@ -22,8 +21,8 @@ async function BootpayAPI({ payinfo }) {
           id: 'item_id',
           name: payinfo.style_name,
           qty: 1,
-          // price: payinfo.stlye_price,
-          price: 100,
+          price: payinfo.pay_price,
+          // price: 100,
         },
       ],
       extra: {
@@ -39,7 +38,6 @@ async function BootpayAPI({ payinfo }) {
         break;
       case 'done':
         console.log(response);
-
         break;
       case 'confirm':
         console.log(response.receipt_id);
@@ -55,5 +53,3 @@ async function BootpayAPI({ payinfo }) {
     throw e; // 예외를 다시 던져서 호출한 쪽에서 처리할 수 있도록 함
   }
 }
-
-export default BootpayAPI;

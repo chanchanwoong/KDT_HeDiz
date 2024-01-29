@@ -1,5 +1,4 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import PrivateRoute from './PrivateRoute';
 
 // 로그인 페이지
 import AuthLayout from '../layout/AuthLayout';

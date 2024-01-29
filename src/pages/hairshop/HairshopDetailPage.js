@@ -1,9 +1,9 @@
 import { Divider } from 'primereact/divider';
 import { TabPanel, TabView } from 'primereact/tabview';
-import HairshopPage from '../../components/common/HairshopPage';
-import StaffList from '../../components/common/StaffList';
+import HairshopPage from 'components/common/HairshopPage';
+import StaffList from 'components/common/StaffList';
 import HairstyleList from 'components/common/HairStyleList';
-import ReviewList from '../../components/common/ReviewList';
+import ReviewList from 'components/common/ReviewList';
 
 function HairshopDetailPage() {
   return (

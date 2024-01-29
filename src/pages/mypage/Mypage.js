@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { authAxios } from '../../api/AxiosAPI';
+import { authAxios } from 'api/AxiosAPI';
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
@@ -13,9 +13,10 @@ import { InputMask } from 'primereact/inputmask';
 function Mypage() {
   const { register, handleSubmit, reset } = useForm();
   const [info, setInfo] = useState({});
+
   const toast = useRef(null);
 
-  // [GET] 미용실 정보 조회
+  // [GET] 마이페이지 정보 조회
   useEffect(() => {
     authAxios()
       .get(`/mypage/profile/${localStorage.getItem('cust_seq')}`, {
@@ -44,11 +45,12 @@ function Mypage() {
         console.error('Auth Error:', error);
       });
   }, []);
-
   const onResetClick = () => {
     reset(info);
   };
 
+  ///// submit을 누르면 발생하는 이벤트
+  ///// 내 정보 수정을 위한 axios 요청 (put)
   const onSubmit = (data) => {
     let genderSelect = '';
     if (info.cust_gender === '남') {
@@ -56,6 +58,7 @@ function Mypage() {
     } else {
       genderSelect = 1;
     }
+    ///// 백에 보낼 데이터
     const requestData = {
       ...data,
       cust_seq: localStorage.getItem('cust_seq'),
@@ -79,57 +82,57 @@ function Mypage() {
 
   return (
     <>
-      <span className='font-bold text-3xl'>마이페이지</span>
-      <div className='flex justify-content-between'>
+      <span className="font-bold text-3xl">마이페이지</span>
+      <div className="flex justify-content-between">
         <span>{localStorage.getItem('cust_name')}님 안녕하세요</span>
       </div>
-      <Panel header='내 정보'>
+      <Panel header="내 정보">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='flex flex-column flex-wrap gap-4'
+          className="flex flex-column flex-wrap gap-4"
         >
-          <div className='card flex flex-column gap-4'>
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-home mr-2'></i> 이름
+          <div className="card flex flex-column gap-4">
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-home mr-2"></i> 이름
               </span>
               <InputText
-                name='cust_name'
+                name="cust_name"
                 defaultValue={info.cust_name}
                 {...register('cust_name')}
                 disabled
               />
             </div>
 
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-phone mr-2'></i> 아이디
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-phone mr-2"></i> 아이디
               </span>
               <InputText
-                name='cust_id'
+                name="cust_id"
                 {...register('cust_id')}
                 disabled
               />
             </div>
 
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-hashtag mr-2'></i> 연락처
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-hashtag mr-2"></i> 연락처
               </span>
               <InputMask
-                name='cust_phone'
-                mask='999-9999-9999'
+                name="cust_phone"
+                mask="999-9999-9999"
                 maxLength={13}
                 {...register('cust_phone')}
               />
             </div>
 
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-comment mr-2'></i> 성별
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-comment mr-2"></i> 성별
               </span>
               <InputText
-                name='cust_gender'
+                name="cust_gender"
                 {...register('cust_gender')}
                 disabled
               />
@@ -137,29 +140,29 @@ function Mypage() {
           </div>
 
           <Toast ref={toast} />
-          <div className='flex justify-content-end gap-2'>
+          <div className="flex justify-content-end gap-2">
             <Button
-              label='초기화'
-              type='button'
+              label="초기화"
+              type="button"
               onClick={onResetClick}
-              size='small'
-              className='w-6rem'
+              size="small"
+              className="w-6rem"
               outlined
             />
             <Button
-              label='수정하기'
-              type='submit'
-              size='small'
-              className='w-6rem'
+              label="수정하기"
+              type="submit"
+              size="small"
+              className="w-6rem"
             />
           </div>
         </form>
       </Panel>
       <Divider />
-      <div className='flex flex-column'>
+      <div className="flex flex-column">
         <MyReview />
-        <Link to='/mypage/review'>내 리뷰</Link>
-        <Link to='/mypage/list'>내 예약 내역</Link>
+        <Link to="/mypage/review">내 리뷰</Link>
+        <Link to="/mypage/list">내 예약 내역</Link>
       </div>
     </>
   );
