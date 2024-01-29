@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Toast } from 'primereact/toast';
 
 export default function PrivateRoute({ element, path }) {
   const navigate = useNavigate();
