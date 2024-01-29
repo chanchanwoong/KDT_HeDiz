@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { authAxios } from 'api/AxiosAPI';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Panel } from 'primereact/panel';
 
 function Management() {
   const [customers, setCustomers] = useState([]);
@@ -19,19 +18,14 @@ function Management() {
       });
   }, []);
 
-  const checkGender = (rowData) => {
-    const getGenderLabel = (gender) => {
-      switch (gender) {
-        case '1':
-          return '남자';
-        case '2':
-          return '여자';
-        default:
-          return '';
-      }
-    };
+  const renderCustomerLevel = (rowData) => {
+    const custLevel = rowData.cust_level;
 
-    return getGenderLabel(rowData.cust_gender);
+    if (custLevel === 1) {
+      return <span className='vip-label'>VIP</span>;
+    } else {
+      return <span>일반고객</span>;
+    }
   };
 
   return (
@@ -97,19 +91,20 @@ function Management() {
           style={{ minWidth: '12rem' }}
         />
         <Column
-          // field='stat_noshow'
+          field='all_shop_noshow'
           header='전체 노쇼 횟수'
           sortable
           style={{ minWidth: '12rem' }}
         />
         <Column
-          // field='stat_noshow'
+          field='cust_level'
           header='고객 등급'
           sortable
           style={{ minWidth: '12rem' }}
+          body={renderCustomerLevel}
         />
         <Column
-          // field='stat_noshow'
+          field='last_reserv_date'
           header='마지막 예약 정보'
           sortable
           style={{ minWidth: '12rem' }}
