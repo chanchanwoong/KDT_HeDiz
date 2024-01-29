@@ -6,8 +6,8 @@ export async function BootpayAPI({ payinfo }) {
     /////////// 부트페이에 요청 하는 API
     const response = await Bootpay.requestPayment({
       application_id: process.env.REACT_APP_BOOTPAY_API_KEY,
-      // price: payinfo.stlye_price,
-      price: 100,
+      price: payinfo.pay_price,
+      // price: 100,
       order_name: payinfo.style_name,
       order_id: 'TEST_ORDER_ID',
       tax_free: 0,
@@ -22,8 +22,8 @@ export async function BootpayAPI({ payinfo }) {
           id: 'item_id',
           name: payinfo.style_name,
           qty: 1,
-          // price: payinfo.stlye_price,
-          price: 100,
+          price: payinfo.pay_price,
+          // price: 100,
         },
       ],
       extra: {

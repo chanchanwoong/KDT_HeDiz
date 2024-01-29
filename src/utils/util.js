@@ -25,6 +25,15 @@ export function getReservationStat(stat) {
   return statMappings[stat];
 }
 
+// 고객 등급
+export function getCustomerLevel(level) {
+  const levelMappings = {
+    0: '일반 고객',
+    1: 'VIP',
+  };
+  return levelMappings[level];
+}
+
 // 소수점 1까지 포맷
 export function formatDecimal(value) {
   const floatValue = parseFloat(value) || 0;
@@ -46,6 +55,10 @@ export function formatNumberWithCommas(value) {
 
 // 소요시간 포맷
 export function formatTime(timeString) {
+  if (!timeString) {
+    return '시간 정보가 없습니다';
+  }
+
   const [hours, minutes, seconds] = timeString.split(':').map(Number);
   let formattedTime = '';
 
@@ -82,4 +95,17 @@ export function formatHourMinute(timeString) {
   }
 
   return formattedTime.trim();
+}
+
+export function formatDate(dateString) {
+  const dateParts = dateString.split('-').map(Number);
+  if (dateParts.length !== 3) {
+    return '날짜 형식 오류';
+  }
+
+  const year = dateParts[0];
+  const month = dateParts[1];
+  const day = dateParts[2];
+
+  return `${year}년 ${month}월 ${day}일`;
 }

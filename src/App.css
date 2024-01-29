@@ -124,6 +124,9 @@ main {
 .p-panel .p-panel-header {
   padding: 0.85rem 1rem;
 }
+.p-panel .p-panel-header span {
+  font-size: 0.9rem;
+}
 .p-tabmenu-nav a {
   width: 100%;
   justify-content: center;
