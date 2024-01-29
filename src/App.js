@@ -1,15 +1,13 @@
 import './App.css';
+import { ReservationProvider } from 'context/ReservationContext';
 import { RouterProvider } from 'react-router-dom';
 import router from './routes';
-import { RecoilRoot } from 'recoil';
 
 function App() {
   return (
-    <>
-      <RecoilRoot>
-        <RouterProvider router={router} />
-      </RecoilRoot>
-    </>
+    <ReservationProvider>
+      <RouterProvider router={router} />
+    </ReservationProvider>
   );
 }
 
