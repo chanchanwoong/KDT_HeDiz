@@ -1,59 +1,163 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+:root {
+  --font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif !important;
 }
-
-a {
-  text-decoration-line: none;
-}
-
-.p-inputtext.p-component.p-password-input.p-password-input {
-  width: 100%;
-}
-
-.p-menubar-button {
-  display: none !important;
-}
-
-.p-inputgroup-addon {
-  min-width: 180px;
-  justify-content: start;
-}
-
-.p-panel-header {
-  display: block;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+#root {
+  height: 100vh;
   min-height: 100vh;
+  position: relative;
+}
+html {
+  font-size: 14px;
+}
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+b {
+  margin-right: 0.6rem;
+}
+img {
+  width: 100%;
+  border-radius: 0.4rem;
+}
+header {
+  width: auto;
+  /* height: 100px; */
+  margin: 0 auto;
+  background-color: #fff;
+  border-bottom: 1px solid #f1f3f6;
+  z-index: 9;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
+}
+main {
+  padding: 20px;
+  height: 100%;
+}
+.logo {
+  font-family: 'Lobster', sans-serif;
+}
+.active {
+  font-weight: 800;
+  color: #8b5cf6;
+}
+.wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: #fff;
+  width: auto;
+  position: relative;
+  min-height: 100%;
+  box-shadow: 0px 4px 30px rgba(221, 224, 255, 0.54);
+}
+.list__info {
+  width: 100%;
+  display: flex;
   align-items: center;
+  justify-content: space-around;
+  margin: 30px 0;
+}
+.list__info li {
+  width: 100%;
+  text-align: center;
+  border-right: 1px solid #f1f3f6;
+  cursor: pointer;
+}
+.list__info li:last-child {
+  border: none;
+}
+.btn__submit {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 0;
+  border-radius: 0;
+}
+.btn__time {
+  padding: 4px 10px;
+  text-align: center;
+  /* width: 60px; */
+}
+.img__staff img {
+  width: 80px;
+  margin: 0 1.2rem;
+}
+
+/* primereact */
+.p-inputtext.p-inputtext-sm {
+  width: 100%;
+}
+.p-password-input {
+  width: 100%;
+}
+.p-divider.p-divider-horizontal:before {
+  border-top: 1px solid #f1f3f6;
+}
+.p-panel .p-panel-header {
+  padding: 0.85rem 1rem;
+}
+.p-tabmenu-nav a {
+  width: 100%;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.p-tabview .p-tabview-panels {
+  padding: 0;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem,
+.p-tabview .p-tabview-nav li {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.p-unselectable-text:hover {
+  border: none !important;
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background-color: inherit;
+}
+.p-tabmenu .p-tabmenu-nav {
+  border: none !important;
+}
+.p-rating {
+  gap: 0.1rem;
+}
+.p-sidebar-bottom .p-sidebar {
+  max-width: 480px;
+  height: 56%;
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+}
+.p-sidebar-bottom .p-sidebar.sidebar__reservation {
+  height: 35%;
+}
+.p-sidebar-bottom .p-sidebar-content {
+  overflow: hidden;
 }
