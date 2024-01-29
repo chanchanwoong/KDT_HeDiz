@@ -65,12 +65,12 @@ function WriteReview() {
 
   return (
     <>
-      <Panel header="리뷰 등록">
+      <Panel header='리뷰 등록'>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-column flex-wrap gap-4"
+          className='flex flex-column flex-wrap gap-4'
         >
-          <div className="card flex">
+          <div className='card flex'>
             <Rating
               value={value}
               onChange={(e) => setValue(e.value)}
@@ -80,31 +80,31 @@ function WriteReview() {
           <img src={`${sendImgs}`}></img>
           <div>
             <input
-              type="file"
+              type='file'
               style={{ display: 'none' }}
-              id="review_photo"
-              name="review_photo"
-              accept="image/*"
+              id='review_photo'
+              name='review_photo'
+              accept='image/*'
               onChange={handleImageUpload}
             />
             <label
-              className="btn btn-secondary border-0 bg_grey"
-              htmlFor="review_photo"
+              className='btn btn-secondary border-0 bg_grey'
+              htmlFor='review_photo'
             >
               사진 추가
             </label>
           </div>
           <div>
             <InputTextarea
-              className="w-12 "
-              placeholder="리뷰 내용을 입력해주세요"
+              className='w-12 '
+              placeholder='리뷰 내용을 입력해주세요'
               {...register('review_content')}
             />
           </div>
           <Button
-            label="리뷰 등록"
-            type="submit"
-            className="w-5"
+            label='리뷰 등록'
+            type='submit'
+            className='w-5'
           />
         </form>
       </Panel>
