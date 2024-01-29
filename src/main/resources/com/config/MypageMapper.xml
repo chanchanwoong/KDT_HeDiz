@@ -11,14 +11,23 @@
 
     <!--예약 정보 조회-->
     <select id="reservation" resultType="ReservationDTO">
-        select reserv_seq, reserv_request, reserv_date, reserv_time, reserv_stat, shop_seq,
-        (select style_name from t_hairstyle where style_seq = tr.style_seq) as style_name,
-        (select shop_name from t_hairshop where shop_seq = tr.shop_seq) as shop_name,
-        (select shop_image from t_hairshop where shop_seq = tr.shop_seq) as shop_image,
-        (select staff_nickname from t_staff where staff_seq = tr.staff_seq) as staff_nickname
-        from t_reservation tr
-        where cust_seq = #{cust_seq}
-        order by reserv_date desc, reserv_time desc
+        SELECT
+        tr.reserv_seq,
+        tr.reserv_request,
+        tr.reserv_date,
+        tr.reserv_time,
+        tr.reserv_stat,
+        st.style_name,
+        hs.shop_name,
+        hs.shop_image,
+        s.staff_nickname
+        FROM t_reservation tr
+        LEFT JOIN t_hairstyle st ON tr.style_seq = st.style_seq
+        LEFT JOIN t_hairshop hs ON st.shop_seq = hs.shop_seq
+        LEFT JOIN t_customer cu ON tr.cust_seq = cu.cust_seq
+        LEFT JOIN t_staff s ON tr.staff_seq = s.staff_seq
+        WHERE tr.cust_seq = #{cust_seq}
+        ORDER BY tr.reserv_date DESC, tr.reserv_time DESC;
     </select>
 
     <!--mypage 수정-->
@@ -30,14 +39,17 @@
 
     <!--cust_seq에 따른 review 조회-->
     <select id="review" resultType="ReviewDTO">
-        select review_seq, a.shop_seq, shop_name, a.reserv_seq, review_score, review_content, review_photo, review_date, review_reply, style_name, staff_nickname
-        from t_review a
-        inner join t_reservation b on a.reserv_seq = b.reserv_seq
-        inner join t_hairshop c on a.shop_seq = c.shop_seq
-        inner join t_hairstyle d on b.style_seq = d.style_seq
-        inner join t_staff e on b.staff_seq = e.staff_seq
-        where cust_seq=#{cust_seq}
-        order by review_date desc, review_score desc
+        select tr.review_seq, ha.shop_seq, ha.shop_name, re.reserv_seq, tr.review_score,
+        tr.review_content, tr.review_photo, tr.review_date, tr.review_reply, st.style_name, s.staff_nickname
+
+        from t_review tr
+        LEFT JOIN t_reservation re ON tr.reserv_seq = re.reserv_seq
+        LEFT JOIN t_hairstyle st ON re.style_seq = st.style_seq
+        LEFT JOIN t_hairshop ha ON st.shop_seq = ha.shop_seq
+        LEFT JOIN t_customer cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN t_staff s ON re.staff_seq = s.staff_seq
+        where re.cust_seq=#{cust_seq}
+        order by review_date desc, review_score desc;
     </select>
 
     <!--review 작성-->

@@ -3,16 +3,73 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.config.HairshopMapper">
-    
+
+
+    <!--모든 미용실 조회-->
+    <select id="findAllHairshop" resultType="HairshopDTO">
+        SELECT
+        a.shop_seq,
+        a.shop_name,
+        a.shop_address,
+        a.shop_intro,
+        a.shop_image,
+        a.shop_start,
+        a.shop_end,
+        a.shop_phone,
+        a.shop_regular,
+        a.shop_tag,
+        (
+        SELECT AVG(b.review_score)
+        FROM t_review AS b
+        INNER JOIN t_reservation AS c ON b.reserv_seq = c.reserv_seq
+        INNER JOIN t_hairstyle AS f ON c.style_seq = f.style_seq
+        WHERE f.shop_seq = a.shop_seq
+        GROUP BY a.shop_seq
+        ) AS avg_review_score,
+        (
+        SELECT COUNT(d.review_score)
+        FROM t_review AS d
+        INNER JOIN t_reservation AS e ON d.reserv_seq = e.reserv_seq
+        INNER JOIN t_hairstyle AS h ON e.style_seq = h.style_seq
+        INNER JOIN t_hairshop AS i ON h.shop_seq = i.shop_seq
+        WHERE i.shop_seq = a.shop_seq
+        GROUP BY a.shop_seq
+        ) AS count_review
+        FROM T_HAIRSHOP AS a;
+    </select>
+
     <!--특정 미용실 조회-->
     <select id="findHairshop" resultType="HairshopDTO">
-        select shop_seq, shop_name, shop_address, shop_intro, shop_image, shop_start, shop_end, shop_phone,
-        shop_regular, shop_tag,
-        (select avg(review_score) from t_review as b where b.shop_seq=a.shop_seq group by shop_seq ) as
-        avg_review_score,
-        (select count(review_score) from t_review as c where c.shop_seq=a.shop_seq) as count_review
-        from T_HAIRSHOP as a
-        where shop_seq=#{shop_seq}
+        SELECT
+        a.shop_seq,
+        a.shop_name,
+        a.shop_address,
+        a.shop_intro,
+        a.shop_image,
+        a.shop_start,
+        a.shop_end,
+        a.shop_phone,
+        a.shop_regular,
+        a.shop_tag,
+        (
+        SELECT AVG(b.review_score)
+        FROM t_review AS b
+        INNER JOIN t_reservation AS c ON b.reserv_seq = c.reserv_seq
+        INNER JOIN t_hairstyle AS f ON c.style_seq = f.style_seq
+        WHERE f.shop_seq = a.shop_seq
+        GROUP BY f.shop_seq
+        ) AS avg_review_score,
+        (
+        SELECT COUNT(d.review_score)
+        FROM t_review AS d
+        INNER JOIN t_reservation AS e ON d.reserv_seq = e.reserv_seq
+        INNER JOIN t_hairstyle AS h ON e.style_seq = h.style_seq
+        INNER JOIN t_hairshop AS i ON h.shop_seq = i.shop_seq
+        WHERE i.shop_seq = a.shop_seq
+        GROUP BY i.shop_seq
+        ) AS count_review
+        FROM T_HAIRSHOP AS a
+        WHERE a.shop_seq = #{shop_seq};
     </select>
 
     <!--특정 미용실의 헤어스타일 조회-->
@@ -47,7 +104,7 @@
     <select id="findReview" resultType="ReviewDTO">
         SELECT
         tr.review_seq,
-        th.shop_name,
+        hs.shop_name,
         cust_id,
         cu.cust_name,
         tr.review_score,
@@ -59,14 +116,14 @@
         st.style_name
         FROM
         t_review tr
-        LEFT JOIN t_hairshop th ON tr.shop_seq = th.shop_seq
         LEFT JOIN t_reservation re ON tr.reserv_seq = re.reserv_seq
-        LEFT JOIN t_customer cu ON tr.reserv_seq = cu.cust_seq
-        LEFT JOIN t_staff s ON re.staff_seq = s.staff_seq
         LEFT JOIN t_hairstyle st ON re.style_seq = st.style_seq
+        LEFT JOIN t_hairshop hs ON st.shop_seq = hs.shop_seq
+        LEFT JOIN t_customer cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN t_staff s ON re.staff_seq = s.staff_seq
         WHERE
-        tr.shop_seq = #{shop_seq}
-        ORDER BY review_date DESC, review_score DESC
+        hs.shop_seq = #{shop_seq}
+        ORDER BY review_date DESC, review_score DESC;
     </select>
 
     <!--예약_날짜 눌렀을 때 예약 가능 시간 확인-->
@@ -106,8 +163,8 @@
 
     <!--예약_예약 테이블에 저장-->
     <insert id="reservation" parameterType="PayinfoDTO">
-        insert into t_reservation (style_seq, cust_seq, shop_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id)
-        values (#{style_seq}, #{cust_seq}, #{shop_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id})
+        insert into t_reservation (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id)
+        values (#{style_seq}, #{cust_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id})
     </insert>
 
     <!--예약 테이블에 저장한 reserv_seq 조회-->
@@ -134,8 +191,8 @@
 
     <!--결제 내역 저장-->
     <insert id="payment" parameterType="PayinfoDTO">
-        insert into t_payment(shop_seq, cust_seq, reserv_seq, pay_price, pay_date)
-        values(#{shop_seq}, #{cust_seq}, #{reserv_seq}, #{pay_price}, now())
+        insert into t_payment(  reserv_seq, pay_price, pay_date)
+        values(  #{reserv_seq}, #{pay_price}, now())
     </insert>
 
 </mapper>
