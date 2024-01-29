@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useReservationContext } from 'context/ReservationContext';
 import { useNavigate } from 'react-router-dom';
 import { authAxios } from 'api/AxiosAPI';
-import { BootpayAPI } from 'api/BootPayAPI';
+import { BootpayAPI } from 'api/BootpayAPI';
 import { formatHourMinute, formatNumberWithCommas } from 'utils/util';
 import { Panel } from 'primereact/panel';
 import { InputTextarea } from 'primereact/inputtextarea';
