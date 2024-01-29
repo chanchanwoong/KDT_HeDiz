@@ -22,38 +22,36 @@ function Management() {
     const custLevel = rowData.cust_level;
 
     if (custLevel === 1) {
-      return <span className='vip-label'>VIP</span>;
+      return <span className="vip-label">VIP</span>;
     } else {
       return <span>일반고객</span>;
     }
   };
 
   return (
-    <div className='card h-full'>
-      <h2 className='flex align-items-center justify-content-between'>
-        고객 방문 이력
-      </h2>
+    <div className="card h-full">
+      <h2 className="flex align-items-center justify-content-between">고객 방문 이력</h2>
       <DataTable
         value={customers}
         paginator
         rows={10}
-        paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         rowsPerPageOptions={[10, 25, 50]}
       >
         <Column
-          field='cust_name'
-          header='고객 이름'
+          field="cust_name"
+          header="고객 이름"
           style={{ minWidth: '14rem' }}
         />
         <Column
-          field='cust_id'
-          header='고객 아이디'
+          field="cust_id"
+          header="고객 아이디"
           sortable
           style={{ minWidth: '14rem' }}
         />
         <Column
-          field='cust_phone'
-          header='전화번호'
+          field="cust_phone"
+          header="전화번호"
           sortable
           style={{ minWidth: '12rem' }}
         />
@@ -73,41 +71,53 @@ function Management() {
           /> */}
 
         <Column
-          field='stat_complete'
-          header='정상 방문 횟수'
+          field="stat_complete"
+          header="정상 방문 횟수"
           sortable
-          style={{ minWidth: '12rem' }}
+          style={{ minWidth: '8rem' }}
         />
         <Column
-          field='stat_cancel'
-          header='예약 취소 횟수'
+          field="stat_cancel"
+          header="예약 취소 횟수"
           sortable
-          style={{ minWidth: '12rem' }}
+          style={{ minWidth: '8rem' }}
         />
         <Column
-          field='stat_noshow'
-          header='노쇼 횟수'
+          field="stat_noshow"
+          header="노쇼 횟수"
           sortable
-          style={{ minWidth: '12rem' }}
+          style={{ minWidth: '8rem' }}
         />
         <Column
-          field='all_shop_noshow'
-          header='전체 노쇼 횟수'
+          field="all_shop_noshow"
+          header="전체 노쇼 횟수"
           sortable
-          style={{ minWidth: '12rem' }}
+          style={{ minWidth: '8rem' }}
         />
         <Column
-          field='cust_level'
-          header='고객 등급'
+          field="cust_level"
+          header="고객 등급"
           sortable
-          style={{ minWidth: '12rem' }}
+          style={{ minWidth: '8rem' }}
           body={renderCustomerLevel}
         />
         <Column
-          field='last_reserv_date'
-          header='마지막 예약 정보'
+          field="last_reserv_date"
+          header="마지막 예약 정보"
           sortable
-          style={{ minWidth: '12rem' }}
+          style={{ minWidth: '8rem' }}
+        />
+        <Column
+          field="style_name"
+          header="마지막 헤어스타일"
+          sortable
+          style={{ minWidth: '8rem' }}
+        />
+        <Column
+          field="staff_nickname"
+          header="마지막 담당 디자이너"
+          sortable
+          style={{ minWidth: '8rem' }}
         />
       </DataTable>
     </div>
