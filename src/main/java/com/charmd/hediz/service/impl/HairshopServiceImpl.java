@@ -53,48 +53,63 @@ public class HairshopServiceImpl implements HairshopService {
 
     @Override
     public Map<Integer, TreeSet<LocalTime>> reservationFilter(HashMap<String, Object> reservationFilterMap) {
-        List<ReservationDTO> list = dao.reservationFilter(reservationFilterMap);
-        System.out.println(list);
         Map<Integer, TreeSet<LocalTime>> possibleTime = new HashMap<>();
-        // 예약된 시간에서 제거
-        for (ReservationDTO reservation : list) {
-            int staff_seq = reservation.getStaff_seq();
-            if (!possibleTime.containsKey(staff_seq)) {
-                TreeSet<LocalTime> fullSet = new TreeSet<>();
-                LocalTime time = reservation.getShop_start();
-                while (time.isBefore(reservation.getShop_end())) {
-                    fullSet.add(time);
-                    time = time.plusMinutes(30);
-                }
-                possibleTime.put(staff_seq, fullSet);
-            }
-            if (reservation.getReserv_seq() != 0) {  // 예약이 있을 경우만 예약 시간을 제거합니다.
-                LocalTime shop_start = reservation.getShop_start();
-                LocalTime shop_end = reservation.getShop_end();
-                LocalTime reserv_time = reservation.getReserv_time();
-                LocalTime reserv_end_time = reservation.getReserv_end_time();
-                Duration hope_style_time = Duration.ofHours(reservation.getHope_style_time().getHour()).plusMinutes(reservation.getHope_style_time().getMinute());
-                LocalTime current_time = shop_start;
-                while (current_time.plus(hope_style_time).compareTo(shop_end) <= 0) {
-                    if (current_time.compareTo(reserv_time) >= 0 && current_time.compareTo(reserv_end_time) < 0) {
-                        possibleTime.get(staff_seq).remove(current_time);
-                    } else if (current_time.plus(hope_style_time).compareTo(reserv_time) > 0 && current_time.plus(hope_style_time).compareTo(reserv_end_time) <= 0) {
-                        possibleTime.get(staff_seq).remove(current_time);
-                    }
-                    current_time = current_time.plusMinutes(30);  // 30분 단위로 검사합니다.
-                }
-            }
-        }
-        // 마감 시간 이후의 시간을 제거
-        for (ReservationDTO reservation : list) {
-            int staff_seq = reservation.getStaff_seq();
-            LocalTime shop_end = reservation.getShop_end();
-            Duration hope_style_time = Duration.ofHours(reservation.getHope_style_time().getHour()).plusMinutes(reservation.getHope_style_time().getMinute());
+        // shop_seq, day를 가지고 T_TEMPDAY_SHOP 휴무일 필터링
+        // 0이면 미용실 휴무일이 아님
+        int isShopTempday = dao.isShopTempday(reservationFilterMap);
 
-            TreeSet<LocalTime> times = possibleTime.get(staff_seq);
-            times.removeIf(time -> time.plus(hope_style_time).compareTo(shop_end) > 0);
+        // isShopTempday = 0이면 (미용실 휴무일이 아니면) 가능한 시간들 필터링
+        if (isShopTempday == 0) {
+            List<ReservationDTO> list = dao.reservationFilter(reservationFilterMap);
+            // 예약된 시간에서 제거
+            for (ReservationDTO reservation : list) {
+                int staff_seq = reservation.getStaff_seq();
+                // staff_seq, day를 가지고 T_TEMPDAY_STAFF 휴무일 필터링
+                // 0이면 직원 휴무일이 아님
+                HashMap<String, Object> staffSeqAndDayMap = new HashMap<>();
+                staffSeqAndDayMap.put("staff_seq", staff_seq);
+                staffSeqAndDayMap.put("day", reservationFilterMap.get("day"));
+                int isStaffTempday = dao.isStaffTempday(staffSeqAndDayMap);
+
+                // isStaffTempday == 0 인 경우(휴무일이 아닌 경우) 가능한 시간 필터링
+                if (!possibleTime.containsKey(staff_seq)) {
+                    TreeSet<LocalTime> fullSet = new TreeSet<>();
+                    if(isStaffTempday == 0 ) {
+                        LocalTime time = reservation.getShop_start();
+                        while (time.isBefore(reservation.getShop_end())) {
+                            fullSet.add(time);
+                            time = time.plusMinutes(30);
+                        }
+                    }
+                    possibleTime.put(staff_seq, fullSet);
+                }
+                if (isStaffTempday == 0 && reservation.getReserv_seq() != 0) {  // 예약이 있을 경우만 예약 시간을 제거합니다.
+                    LocalTime shop_start = reservation.getShop_start();
+                    LocalTime shop_end = reservation.getShop_end();
+                    LocalTime reserv_time = reservation.getReserv_time();
+                    LocalTime reserv_end_time = reservation.getReserv_end_time();
+                    Duration hope_style_time = Duration.ofHours(reservation.getHope_style_time().getHour()).plusMinutes(reservation.getHope_style_time().getMinute());
+                    LocalTime current_time = shop_start;
+                    while (current_time.plus(hope_style_time).compareTo(shop_end) <= 0) {
+                        if (current_time.compareTo(reserv_time) >= 0 && current_time.compareTo(reserv_end_time) < 0) {
+                            possibleTime.get(staff_seq).remove(current_time);
+                        } else if (current_time.plus(hope_style_time).compareTo(reserv_time) > 0 && current_time.plus(hope_style_time).compareTo(reserv_end_time) <= 0) {
+                            possibleTime.get(staff_seq).remove(current_time);
+                        }
+                        current_time = current_time.plusMinutes(30);  // 30분 단위로 검사합니다.
+                    }
+                }
+            }
+            // 마감 시간 이후의 시간을 제거
+            for (ReservationDTO reservation : list) {
+                int staff_seq = reservation.getStaff_seq();
+                LocalTime shop_end = reservation.getShop_end();
+                Duration hope_style_time = Duration.ofHours(reservation.getHope_style_time().getHour()).plusMinutes(reservation.getHope_style_time().getMinute());
+
+                TreeSet<LocalTime> times = possibleTime.get(staff_seq);
+                times.removeIf(time -> time.plus(hope_style_time).compareTo(shop_end) > 0);
+            }
         }
-        System.out.println(possibleTime);
         return possibleTime;
     }
 

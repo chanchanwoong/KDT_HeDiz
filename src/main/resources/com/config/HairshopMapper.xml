@@ -133,6 +133,20 @@
         ORDER BY review_date DESC, review_score DESC;
     </select>
 
+    <!--shop_seq와 day를 통해 미용실 휴무일인지 조회-->
+    <select id="isShopTempday" parameterType="hashmap" resultType="int">
+        SELECT count(temp_shop_seq)
+        FROM T_TEMPDAY_SHOP
+        WHERE shop_seq = #{shop_seq} and #{day} >= temp_start
+        AND temp_end >= #{day}
+    </select>
+
+    <!--staff_seq와 day를 통해 직원 휴무일인지 조회-->
+    <select id="isStaffTempday" parameterType="hashmap" resultType="int">
+        select count(temp_staff_seq) from t_tempday_staff where staff_seq=#{staff_seq} and #{day} >= temp_start
+        AND temp_end >= #{day}
+    </select>
+
     <!--예약_날짜 눌렀을 때 예약 가능 시간 확인-->
     <select id="reservationFilter" parameterType="hashmap" resultType="ReservationDTO">
         SELECT

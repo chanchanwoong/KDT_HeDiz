@@ -31,6 +31,12 @@ public class HairshopDAO {
     public List<ReviewDTO> findReview(int shop_seq){
         return session.selectList("com.config.HairshopMapper.findReview", shop_seq);
     }
+    public int isShopTempday(HashMap<String , Object> reservationFilterMap){
+        return session.selectOne("com.config.HairshopMapper.isShopTempday", reservationFilterMap);
+    }
+    public int isStaffTempday(HashMap<String , Object> staffSeqAndDayMap){
+        return session.selectOne("com.config.HairshopMapper.isStaffTempday", staffSeqAndDayMap);
+    }
     public List<ReservationDTO> reservationFilter(HashMap<String , Object> reservationFilterMap){
         return session.selectList("com.config.HairshopMapper.reservationFilter", reservationFilterMap);
     }
