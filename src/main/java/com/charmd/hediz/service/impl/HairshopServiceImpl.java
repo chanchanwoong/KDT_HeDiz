@@ -37,8 +37,13 @@ public class HairshopServiceImpl implements HairshopService {
     }
 
     @Override
-    public List<StaffDTO> findStaff(int shop_seq) {
-        return dao.findStaff(shop_seq);
+    public List<StaffDTO> findAllStaff(int shop_seq) {
+        return dao.findAllStaff(shop_seq);
+    }
+
+    @Override
+    public StaffDTO findStaff(HashMap<String, Integer> shopSeqAndStaffSeqMap) {
+        return dao.findStaff(shopSeqAndStaffSeqMap);
     }
 
     @Override

@@ -94,10 +94,17 @@
     </select>
 
     <!--특정 미용실의 직원 조회-->
-    <select id="findStaff" resultType="StaffDTO">
+    <select id="findAllStaff" resultType="StaffDTO">
         select staff_seq, staff_role, staff_image, staff_intro, staff_nickname
         from T_STAFF
         where shop_seq=#{shop_seq}
+    </select>
+
+    <!--특정 직원 조회-->
+    <select id="findStaff" parameterType="hashmap" resultType="StaffDTO">
+        select staff_role, staff_nickname
+        from T_STAFF
+        where staff_seq=#{staff_seq}
     </select>
 
     <!--특정 미용실 리뷰 조회-->

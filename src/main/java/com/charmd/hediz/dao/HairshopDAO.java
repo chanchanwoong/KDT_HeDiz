@@ -22,10 +22,12 @@ public class HairshopDAO {
     public HairstyleDTO findHairstyleInfor(HashMap<String, Integer> shopAndStyleMap){
         return session.selectOne("com.config.HairshopMapper.findHairstyleInfor", shopAndStyleMap);
     }
-    public List<StaffDTO> findStaff(int shop_seq){
-        return session.selectList("com.config.HairshopMapper.findStaff", shop_seq);
+    public List<StaffDTO> findAllStaff(int shop_seq){
+        return session.selectList("com.config.HairshopMapper.findAllStaff", shop_seq);
     }
-
+    public StaffDTO findStaff(HashMap<String, Integer> shopSeqAndStaffSeqMap){
+        return session.selectOne("com.config.HairshopMapper.findStaff", shopSeqAndStaffSeqMap);
+    }
     public List<ReviewDTO> findReview(int shop_seq){
         return session.selectList("com.config.HairshopMapper.findReview", shop_seq);
     }

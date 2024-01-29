@@ -59,9 +59,19 @@ public class HomeController {
 
     // 특정 미용실 직원 조회
     @GetMapping("/hairshop/{shop_seq}/staff")
-    public ResponseEntity<?> findStaff(@PathVariable("shop_seq") int shop_seq) {
-        List<StaffDTO> staffList = hairshopService.findStaff(shop_seq);
+    public ResponseEntity<?> findAllStaff(@PathVariable("shop_seq") int shop_seq) {
+        List<StaffDTO> staffList = hairshopService.findAllStaff(shop_seq);
         return ResponseEntity.ok().body(staffList);
+    }
+
+    // 특정 직원 조회
+    @GetMapping("hairshop/{shop_seq}/staff/{staff_seq}")
+    public ResponseEntity<?> findStaff(@PathVariable("shop_seq") int shop_seq, @PathVariable("staff_seq") int staff_seq){
+        HashMap<String, Integer> shopSeqAndStaffSeqMap = new HashMap<>();
+        shopSeqAndStaffSeqMap.put("shop_seq", shop_seq);
+        shopSeqAndStaffSeqMap.put("staff_seq", staff_seq);
+        StaffDTO staffDto = hairshopService.findStaff(shopSeqAndStaffSeqMap);
+        return ResponseEntity.ok().body(staffDto);
     }
 
     // 특정 미용실 리뷰 조회
