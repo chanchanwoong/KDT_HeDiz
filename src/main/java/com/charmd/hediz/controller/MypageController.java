@@ -14,6 +14,7 @@ import java.util.List;
 
 @Api
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/mypage")
 public class MypageController {
     @Autowired

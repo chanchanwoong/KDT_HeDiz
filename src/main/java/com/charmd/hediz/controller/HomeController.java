@@ -17,6 +17,7 @@ import java.util.TreeSet;
 
 @Api
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/")
 public class HomeController {
 
