@@ -98,6 +98,7 @@
         select staff_seq, staff_role, staff_image, staff_intro, staff_nickname
         from T_STAFF
         where shop_seq=#{shop_seq}
+        order by FIELD(`staff_role`, '원장', '부원장', '점장', '부점장', '실장', '디자이너')
     </select>
 
     <!--특정 직원 조회-->
