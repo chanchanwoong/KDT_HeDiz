@@ -40,9 +40,9 @@ public class HomeController {
 
     // 특정 미용실 정보 조회
     @GetMapping("hairshop/{shop_seq}")
-    public String findHairshop(@PathVariable("shop_seq") int shop_seq) {
+    public ResponseEntity<?> findHairshop(@PathVariable("shop_seq") int shop_seq) {
         HairshopDTO hairshopDto = hairshopService.findHairshop(shop_seq);
-        return hairshopDto.toString();
+        return ResponseEntity.ok().body(hairshopDto);
     }
 
     // 특정 미용실 헤어스타일 조회
