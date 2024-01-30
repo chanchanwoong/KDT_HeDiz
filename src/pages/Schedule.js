@@ -3,7 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useReservationContext } from 'context/ReservationContext';
 import axios from 'axios';
 import { authAxios } from 'api/AxiosAPI';
-import { formatHourMinute, formatNumberWithCommas } from 'utils/util';
+import {
+  formatHourMinute,
+  formatNumberWithCommas,
+  formatDate,
+} from 'utils/util';
 import {
   generateDates,
   generateTimeSlots,
@@ -222,7 +226,7 @@ function Schedule() {
                 cursor: 'pointer',
               }}
             >
-              {date}
+              {formatDate(date)}
             </button>
           ))}
         </div>
@@ -237,7 +241,9 @@ function Schedule() {
         </div>
       </Panel>
       <Button
-        label={`${selectedDate} ${formatHourMinute(reservTime)} 선택완료`}
+        label={`${formatDate(selectedDate)} ${formatHourMinute(
+          reservTime
+        )} 선택완료`}
         className='btn__submit'
         disabled={!isButtonEnabled}
         onClick={handleButtonClick}

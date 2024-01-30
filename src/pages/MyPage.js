@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { authAxios } from 'api/AxiosAPI';
-import { getReservationStat } from 'utils/util';
+import { getReservationStat, getCustomerLevel } from 'utils/util';
 import { Divider } from 'primereact/divider';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { InputText } from 'primereact/inputtext';
@@ -121,10 +121,16 @@ function MyPage() {
       {!isEditing && (
         <section className='flex align-items-center justify-content-between'>
           <div className='flex flex-column'>
-            <span className='font-semibold'>
-              {info.cust_name} <Badge value={info.cust_level}></Badge>
+            <span className='text-lg font-semibold'>
+              {info.cust_name}
+              {/* <Badge
+                className='font-light px-3 surface-400'
+                value={getCustomerLevel(info.cust_level)}
+              ></Badge> */}
             </span>
-            <span className='text-sm text-color-secondary'>{info.cust_id}</span>
+            <span className='text-sm text-color-secondary'>
+              {getCustomerLevel(info.cust_level)}
+            </span>
           </div>
 
           <div>
