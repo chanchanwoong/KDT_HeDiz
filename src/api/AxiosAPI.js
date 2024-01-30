@@ -4,8 +4,7 @@ import axios from 'axios';
 const createAxiosInstance = (headers = {}, options = {}) => {
   return axios.create({
     // baseURL: process.env.REACT_APP_AXIOS_BASE_URL || 'http://localhost:8090',
-    baseURL:
-      process.env.REACT_APP_AXIOS_BASE_URL || ':8090/hediz-client-server',
+    baseURL: process.env.REACT_APP_AXIOS_BASE_URL || 'hediz-client-server',
     headers: {
       ...headers,
     },
