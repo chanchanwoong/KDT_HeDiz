@@ -127,7 +127,7 @@
         LEFT JOIN T_RESERVATION re ON tr.reserv_seq = re.reserv_seq
         LEFT JOIN T_HAIRSTYLE st ON re.style_seq = st.style_seq
         LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
-        LEFT JOIN t_customer cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN T_CUSTOMER cu ON re.cust_seq = cu.cust_seq
         LEFT JOIN T_STAFF s ON re.staff_seq = s.staff_seq
         WHERE
         hs.shop_seq = #{shop_seq}
@@ -144,7 +144,7 @@
 
     <!--staff_seq와 day를 통해 직원 휴무일인지 조회-->
     <select id="isStaffTempday" parameterType="hashmap" resultType="int">
-        select count(temp_staff_seq) from t_tempday_staff where staff_seq=#{staff_seq} and #{day} >= temp_start
+        select count(temp_staff_seq) from T_TEMPDAY_STAFF where staff_seq=#{staff_seq} and #{day} >= temp_start
         AND temp_end >= #{day}
     </select>
 
@@ -213,7 +213,7 @@
 
     <!--결제 내역 저장-->
     <insert id="payment" parameterType="PayinfoDTO">
-        insert into t_payment(  reserv_seq, pay_price, pay_date)
+        insert into T_PAYMENT(  reserv_seq, pay_price, pay_date)
         values(  #{reserv_seq}, #{pay_price}, now())
     </insert>
 

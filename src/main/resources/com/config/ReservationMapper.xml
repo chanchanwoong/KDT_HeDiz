@@ -9,7 +9,7 @@
         FROM T_RESERVATION tr
         LEFT JOIN T_HAIRSTYLE st ON tr.style_seq = st.style_seq
         LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
-        LEFT JOIN t_customer cu ON tr.cust_seq = cu.cust_seq
+        LEFT JOIN T_CUSTOMER cu ON tr.cust_seq = cu.cust_seq
         LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
         where cu.cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) > now() and reserv_stat = 0
         order by reserv_date, reserv_time;
@@ -27,6 +27,6 @@
 
     <!--pay_stat 취소로 변경-->
     <update id="changePayStat" parameterType="int">
-        update t_payment set pay_stat=1 where reserv_seq=#{reserv_seq}
+        update T_PAYMENT set pay_stat=1 where reserv_seq=#{reserv_seq}
     </update>
 </mapper>

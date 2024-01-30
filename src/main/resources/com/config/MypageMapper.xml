@@ -6,7 +6,7 @@
 
     <!--mypage 조회-->
     <select id="findMypage" resultType="CustomerDTO">
-        select cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender, cust_level from t_customer where cust_seq=#{cust_seq}
+        select cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender, cust_level from T_CUSTOMER where cust_seq=#{cust_seq}
     </select>
 
     <!--예약 정보 조회-->
@@ -24,7 +24,7 @@
         FROM T_RESERVATION tr
         LEFT JOIN T_HAIRSTYLE st ON tr.style_seq = st.style_seq
         LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
-        LEFT JOIN t_customer cu ON tr.cust_seq = cu.cust_seq
+        LEFT JOIN T_CUSTOMER cu ON tr.cust_seq = cu.cust_seq
         LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
         WHERE tr.cust_seq = #{cust_seq}
         ORDER BY tr.reserv_date DESC, tr.reserv_time DESC;
@@ -32,7 +32,7 @@
 
     <!--mypage 수정-->
     <update id="updateMypage" parameterType="CustomerDTO">
-        update t_customer set
+        update T_CUSTOMER set
         cust_phone = #{cust_phone}
         where cust_seq = #{cust_seq}
     </update>
@@ -46,7 +46,7 @@
         LEFT JOIN T_RESERVATION re ON tr.reserv_seq = re.reserv_seq
         LEFT JOIN T_HAIRSTYLE st ON re.style_seq = st.style_seq
         LEFT JOIN T_HAIRSHOP ha ON st.shop_seq = ha.shop_seq
-        LEFT JOIN t_customer cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN T_CUSTOMER cu ON re.cust_seq = cu.cust_seq
         LEFT JOIN T_STAFF s ON re.staff_seq = s.staff_seq
         where re.cust_seq=#{cust_seq}
         order by review_date desc, review_score desc;
