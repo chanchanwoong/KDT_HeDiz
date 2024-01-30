@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 //                .antMatchers( "/auth/**" , "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 // test를 위해서 모든 것을 permitAll
-                .antMatchers( "/**").permitAll()
+                .antMatchers( "/**/*").permitAll()
                 .anyRequest().authenticated();
 
         //세션을 사용하지 않도록 설정한다.
