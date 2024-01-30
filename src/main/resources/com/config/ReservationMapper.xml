@@ -11,7 +11,7 @@
         LEFT JOIN t_hairshop hs ON st.shop_seq = hs.shop_seq
         LEFT JOIN t_customer cu ON tr.cust_seq = cu.cust_seq
         LEFT JOIN t_staff s ON tr.staff_seq = s.staff_seq
-        where cu.cust_seq = 9 and concat(reserv_date, ' ', reserv_time) > now() and reserv_stat = 0
+        where cu.cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) > now() and reserv_stat = 0
         order by reserv_date, reserv_time;
     </select>
 
