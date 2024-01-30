@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { authAxios } from 'api/AxiosAPI';
 import { formatTime, formatNumberWithCommas } from 'service/Utils';
-import { getReservationValue } from 'service/CommonOptions';
+import {
+  getReservationValue,
+  getReservationValueReturn,
+} from 'service/CommonOptions';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 export default function Total() {
   const [reservation, setReservation] = useState([]);
@@ -30,16 +34,18 @@ export default function Total() {
       (reservation) => reservation.reserv_stat
     );
     const uniqueReservStats = [...new Set(allReservStats)];
-    const reservStatStrings = uniqueReservStats.map(
-      (stat) => getReservationValue(stat).value
-    );
-
+    const reservStatStrings = uniqueReservStats
+      .filter((stat) => [1, 3].includes(stat))
+      .map((stat) => getReservationValue(stat).value);
     return (
       <Dropdown
         value={getReservationValue(options.rowData.reserv_stat).value}
         options={reservStatStrings}
-        onChange={(e) => options.editorCallback(e.value)}
-        placeholder='Select a Status'
+        onChange={(e) =>
+          options.editorCallback(
+            (options.value = getReservationValueReturn(e.target.value).value)
+          )
+        }
       />
     );
   };
@@ -57,8 +63,23 @@ export default function Total() {
   }, []);
 
   const onRowEditComplete = (e) => {
-    console.log(e);
+    let _reservation = [...reservation];
+    console.log(_reservation);
+    let { newData, index } = e;
+    _reservation[index] = newData;
+
+    authAxios()
+      .put(`/reservation/${newData.reserv_seq}/${newData.reserv_stat}`, newData)
+      .then((response) => {
+        console.log('Auth Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
+    setReservation(_reservation);
   };
+
+  const [xxx, setXXX] = useState(false);
 
   return (
     <div className='card h-full'>
@@ -127,7 +148,6 @@ export default function Total() {
           field='reserv_request'
           header='요청사항'
         />
-
         <Column
           field='balance'
           header='결제금액'
@@ -140,14 +160,13 @@ export default function Total() {
           sortable
           className='text-center'
           editor={(options) => statusEditor(options)}
-          body={statusBodyTemplate}
+          // body={statusBodyTemplate}
         />
+
         <Column
           header='수정'
           rowEditor={true}
-          headerStyle={{ minWidth: '6rem' }}
-          bodyStyle={{ textAlign: 'center' }}
-        ></Column>
+        />
       </DataTable>
     </div>
   );

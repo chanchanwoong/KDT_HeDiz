@@ -91,6 +91,7 @@ export default function Hairstyle() {
       .get(`/hairshop/hairstyle/${shop_seq}`)
       .then((response) => {
         setHairstyles(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
@@ -123,8 +124,9 @@ export default function Hairstyle() {
   const onRowEditComplete = (e) => {
     let _hairstyle = [...hairstyles];
     let { newData, index } = e;
+    newData.style_image = sendImgs;
     _hairstyle[index] = newData;
-
+    console.log(newData);
     authAxios()
       .put(`/hairshop/hairstyle`, newData)
       .then((response) => {
@@ -146,6 +148,34 @@ export default function Hairstyle() {
         value={options.value}
         onChange={(e) => options.editorCallback(e.target.value)}
       />
+    );
+  };
+
+  // 수정 버튼 누를 시 나오는 이미지 수정 버튼
+  const imageEditor = (options) => {
+    return (
+      <div>
+        <label
+          className='btn btn-secondary border-0 bg_grey font-bold'
+          htmlFor='style_image'
+        >
+          스타일 사진 등록
+        </label>
+        <input
+          type='file'
+          style={{ display: 'none' }}
+          id='style_image'
+          name='style_image'
+          accept='image/*'
+          onChange={handleImageUpload}
+        />
+        {product.style_image && (
+          <img
+            src={product.style_image}
+            className='product-style block m-auto pb-3 w-4'
+          />
+        )}
+      </div>
     );
   };
 
@@ -192,9 +222,11 @@ export default function Hairstyle() {
       alert('파일을 선택해주세요.');
       return;
     }
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(extension)) {
       setSendImgs();
-      alert('JPG 사진 파일만 가능합니다.');
+      alert('JPG, JPEG, PNG, GIF 형식의 이미지 파일만 허용됩니다.');
       return;
     }
     let reader = new FileReader();
@@ -267,6 +299,14 @@ export default function Hairstyle() {
         ></Column>
 
         <Column
+          field='style_image'
+          header='스타일 사진'
+          body={imageBodyTemplate}
+          className='text-center'
+          editor={(option) => imageEditor(option)}
+        ></Column>
+
+        <Column
           field='style_name'
           header='헤어스타일 명'
           sortable
@@ -308,13 +348,6 @@ export default function Hairstyle() {
           sortable
           editor={(options) => textEditor(options)}
           className='text-center'
-        ></Column>
-
-        <Column
-          field='style_image'
-          header='이미지'
-          className='text-center'
-          body={imageBodyTemplate}
         ></Column>
 
         <Column

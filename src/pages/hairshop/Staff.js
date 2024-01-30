@@ -111,7 +111,6 @@ export default function staff() {
     newData.staff_image = sendImgs;
     _staffs[index] = newData;
 
-    console.log(newData);
     authAxios()
       .put(`/hairshop/staff`, newData)
       .then((response) => {
@@ -129,35 +128,34 @@ export default function staff() {
   const textEditor = (options) => {
     return (
       <InputText
-        type="text"
+        type='text'
         value={options.value}
         onChange={(e) => options.editorCallback(e.target.value)}
       />
     );
   };
-
+  // 수정 버튼 누를 시 나오는 이미지 수정 버튼
   const imageEditor = (options) => {
     return (
       <div>
         <label
-          className="btn btn-secondary border-0 bg_grey font-bold"
-          htmlFor="staff_image"
+          className='btn btn-secondary border-0 bg_grey font-bold'
+          htmlFor='staff_image'
         >
           프로필 사진 등록
         </label>
         <input
-          type="file"
-          multiple
+          type='file'
           style={{ display: 'none' }}
-          id="staff_image"
-          name="staff_image"
-          accept=".jpg"
+          id='staff_image'
+          name='staff_image'
+          accept='image/*'
           onChange={handleImageUpload}
         />
         {product.staff_image && (
           <img
             src={product.staff_image}
-            className="product-staff block m-auto pb-3 w-4"
+            className='product-staff block m-auto pb-3 w-4'
           />
         )}
       </div>
@@ -192,11 +190,11 @@ export default function staff() {
       <>
         <Button
           onClick={(e) => onRowDeleteComplete(e, rowData)}
-          icon="pi pi-trash"
+          icon='pi pi-trash'
           rounded
           text
-          severity="secondary"
-          className="p-button-danger"
+          severity='secondary'
+          className='p-button-danger'
         />
       </>
     );
@@ -209,15 +207,16 @@ export default function staff() {
       alert('파일을 선택해주세요.');
       return;
     }
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      alert('JPG 사진 파일만 가능합니다.');
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(extension)) {
+      setSendImgs();
+      alert('JPG, JPEG, PNG, GIF 형식의 이미지 파일만 허용됩니다.');
       return;
     }
-
     let reader = new FileReader();
     reader.onload = () => {
       setSendImgs(reader.result);
-      console.log(sendImgs);
       setProduct({ ...product, staff_image: reader.result });
     };
     reader.readAsDataURL(file);
@@ -228,7 +227,7 @@ export default function staff() {
     return (
       <img
         src={imageData}
-        className="shadow-2 border-round"
+        className='shadow-2 border-round'
         style={{ width: '128px' }}
       />
     );
@@ -243,23 +242,23 @@ export default function staff() {
   };
 
   return (
-    <div className="card h-full">
-      <h2 className="flex align-items-center justify-content-between">
+    <div className='card h-full'>
+      <h2 className='flex align-items-center justify-content-between'>
         <span>직원 관리</span>
         <div>
-          <span className="p-input-icon-left mr-4">
-            <i className="pi pi-search" />
+          <span className='p-input-icon-left mr-4'>
+            <i className='pi pi-search' />
             <InputText
-              type="search"
+              type='search'
               onInput={(e) => setGlobalFilter(e.target.value)}
-              placeholder="검색"
-              className="p-inputtext-sm"
+              placeholder='검색'
+              className='p-inputtext-sm'
             />
           </span>
           <Button
-            label="직원 등록"
-            icon="pi pi-plus"
-            size="small"
+            label='직원 등록'
+            icon='pi pi-plus'
+            size='small'
             onClick={() => setVisible(true)}
           />
         </div>
@@ -267,77 +266,77 @@ export default function staff() {
       <DataTable
         ref={dt}
         value={staffs}
-        dataKey="staff_seq"
+        dataKey='staff_seq'
         showGridlines
         paginator
         rows={10}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="총 {totalRecords}명의 직원이 검색되었습니다. "
+        paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+        currentPageReportTemplate='총 {totalRecords}명의 직원이 검색되었습니다. '
         globalFilter={globalFilter}
-        size="small"
+        size='small'
         // 수정 모드
-        editMode="row"
+        editMode='row'
         onRowEditComplete={onRowEditComplete}
       >
         <Column
-          field="staff_image"
-          header="프로필 사진"
+          field='staff_image'
+          header='프로필 사진'
           body={imageBodyTemplate}
-          className="text-center"
+          className='text-center'
           editor={(option) => imageEditor(option)}
         ></Column>
 
         <Column
-          field="staff_role"
-          header="직급"
+          field='staff_role'
+          header='직급'
           sortable
           editor={(options) => textEditor(options)}
-          className="text-center"
+          className='text-center'
         ></Column>
 
         <Column
-          field="staff_nickname"
-          header="직원 닉네임"
+          field='staff_nickname'
+          header='직원 닉네임'
           sortable
           editor={(options) => textEditor(options)}
-          className="text-center"
+          className='text-center'
         ></Column>
 
         <Column
-          field="staff_intro"
-          header="직원 소개"
+          field='staff_intro'
+          header='직원 소개'
           sortable
           editor={(options) => textEditor(options)}
-          className="pl-3"
+          className='pl-3'
         ></Column>
 
         <Column
-          field="staff_name"
-          header="직원 이름"
+          field='staff_name'
+          header='직원 이름'
           sortable
           editor={(options) => textEditor(options)}
-          className="text-center"
+          className='text-center'
         ></Column>
 
         <Column
-          field="staff_phone"
-          header="직원 전화번호"
+          field='staff_phone'
+          header='직원 전화번호'
           sortable
           editor={(options) => textEditor(options)}
-          className="text-center"
+          className='text-center'
         ></Column>
 
         <Column
-          header="수정"
+          header='수정'
           rowEditor={true}
           headerStyle={{ minWidth: '6rem' }}
           bodyStyle={{ textAlign: 'center' }}
         ></Column>
 
         <Column
-          header="삭제"
+          header='삭제'
           exportable={false}
-          className="text-center"
+          className='text-center'
           headerStyle={{ minWidth: '6rem' }}
           body={deleteTemplate}
         ></Column>
@@ -348,97 +347,97 @@ export default function staff() {
 
       <Dialog
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="직원 등록"
-        className="p-fluid w-4"
+        header='직원 등록'
+        className='p-fluid w-4'
         visible={visible}
         onHide={() => setVisible(false)}
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-column flex-wrap gap-4 mt-4"
+          className='flex flex-column flex-wrap gap-4 mt-4'
         >
-          <div className="flex-auto">
-            <label className="font-bold block mb-2">직원 이름</label>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 이름</label>
             <InputText
-              placeholder="직원 이름"
-              name="staff_name"
+              placeholder='직원 이름'
+              name='staff_name'
               {...register('staff_name', { required: true })}
             />
           </div>
-          <div className="flex-auto">
-            <label className="font-bold block mb-2">직원 이름</label>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 이름</label>
             <InputText
-              placeholder="직원 닉네임"
-              name="staff_nickname"
+              placeholder='직원 닉네임'
+              name='staff_nickname'
               {...register('staff_nickname', { required: true })}
             />
           </div>
-          <div className="flex-auto">
-            <label className="font-bold block mb-2">직원 직급</label>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 직급</label>
             <InputText
-              placeholder="직원 직급"
-              name="staff_role"
+              placeholder='직원 직급'
+              name='staff_role'
               {...register('staff_role', { required: true })}
             />
           </div>
-          <div className="flex-auto">
-            <label className="font-bold block mb-2">직원 전화번호</label>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 전화번호</label>
             <InputText
-              placeholder="직원 전화번호"
-              name="staff_phone"
+              placeholder='직원 전화번호'
+              name='staff_phone'
               {...register('staff_phone', { required: true })}
             />
           </div>
-          <div className="flex-auto">
-            <label className="font-bold block mb-2">직원 소개</label>
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>직원 소개</label>
             <InputTextarea
               autoResize
               rows={3}
-              placeholder="직원 소개"
-              name="staff_intro"
+              placeholder='직원 소개'
+              name='staff_intro'
               {...register('staff_intro', { required: true })}
             />
           </div>
 
           <div>
             <label
-              className="btn btn-secondary border-0 bg_grey font-bold"
-              htmlFor="staff_image"
+              className='btn btn-secondary border-0 bg_grey font-bold'
+              htmlFor='staff_image'
             >
               프로필 사진 등록
             </label>
             <input
-              type="file"
+              type='file'
               multiple
               style={{ display: 'none' }}
-              id="staff_image"
-              name="staff_image"
-              accept=".jpg"
+              id='staff_image'
+              name='staff_image'
+              accept='.jpg'
               onChange={handleImageUpload}
             />
             {product.staff_image && (
               <img
                 src={product.staff_image}
-                className="product-staff block m-auto pb-3 w-4"
+                className='product-staff block m-auto pb-3 w-4'
               />
             )}
           </div>
 
-          <div className="flex justify-content-end gap-2">
+          <div className='flex justify-content-end gap-2'>
             <Button
-              label="취소"
-              type="button"
+              label='취소'
+              type='button'
               onClick={onCancelClick}
-              size="small"
-              className="w-6rem"
+              size='small'
+              className='w-6rem'
               outlined
             />
             <Button
-              label="등록"
-              type="button"
+              label='등록'
+              type='button'
               onClick={handleSubmit(onSubmit)}
-              size="small"
-              className="w-6rem"
+              size='small'
+              className='w-6rem'
             />
           </div>
         </form>

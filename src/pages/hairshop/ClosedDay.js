@@ -41,7 +41,11 @@ function ClosedDay() {
   });
 
   const getFormErrorMessage = (name) => {
-    return errors[name] ? <small className="p-error">{errors[name].message}</small> : '';
+    return errors[name] ? (
+      <small className='p-error'>{errors[name].message}</small>
+    ) : (
+      ''
+    );
   };
 
   const showSuccess = () => {
@@ -63,8 +67,12 @@ function ClosedDay() {
   };
 
   const updateCalendarEvents = () => {
-    const request1 = authAxios().get(`/hairshop/closed-day/shop/${localStorage.getItem('shop_seq')}`);
-    const request2 = authAxios().get(`/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`);
+    const request1 = authAxios().get(
+      `/hairshop/closed-day/shop/${localStorage.getItem('shop_seq')}`
+    );
+    const request2 = authAxios().get(
+      `/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`
+    );
     axios;
     axios
       .all([request1, request2])
@@ -76,12 +84,16 @@ function ClosedDay() {
           const combinedData = [...res1.data, ...res2.data];
           setClosedDay(combinedData);
           const eventList = combinedData.map((item) => ({
-            title: `${item.staff_nickname ? item.staff_nickname : '전체 휴무'}: ${item.temp_memo}`,
+            title: `${
+              item.staff_nickname ? item.staff_nickname : '전체 휴무'
+            }: ${item.temp_memo}`,
             start: `${item.temp_start}`,
             end: `${item.temp_end}`,
             description: item.temp_memo,
           }));
-          const regularDays = res1.data[0]?.shop_regular.split(',').map(Number) || [];
+
+          const regularDays =
+            res1.data[0]?.shop_regular.split(',').map(Number) || [];
 
           // 요일 데이터 매핑
           const daysMapping = [
@@ -202,54 +214,54 @@ function ClosedDay() {
 
   return (
     <>
-      <div className="card h-full">
-        <h2 className="flex align-items-center justify-content-between">
+      <div className='card h-full'>
+        <h2 className='flex align-items-center justify-content-between'>
           <span>임시 휴무일</span>
         </h2>
 
-        <div className="flex">
-          <div className="col-8">
+        <div className='flex'>
+          <div className='col-8'>
             <FullCalendar
-              locale="kr"
+              locale='kr'
               ref={calendarRef}
               plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
-              initialView="dayGridMonth"
+              initialView='dayGridMonth'
               events={events}
             />
           </div>
-          <div className="col-4">
+          <div className='col-4'>
             <Panel
-              header="임시 휴무일 추가"
-              className="mb-3"
+              header='임시 휴무일 추가'
+              className='mb-3'
             >
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-wrap flex-column gap-4 p-fluid"
+                className='flex flex-wrap flex-column gap-4 p-fluid'
               >
-                <div className="flex-auto">
+                <div className='flex-auto'>
                   <label
-                    htmlFor="buttondisplay"
-                    className="font-bold block mb-2"
+                    htmlFor='buttondisplay'
+                    className='font-bold block mb-2'
                   >
                     직원
                   </label>
                   <Controller
-                    name="temp_staff"
+                    name='temp_staff'
                     control={control}
                     render={({ field, fieldState }) => (
                       <>
                         <Dropdown
-                          name="staff_seq"
+                          name='staff_seq'
                           id={field.name}
                           {...field}
                           options={staff}
-                          optionLabel="staff_nickname"
-                          optionValue="staff_seq"
-                          placeholder="직원을 선택해주세요"
+                          optionLabel='staff_nickname'
+                          optionValue='staff_seq'
+                          placeholder='직원을 선택해주세요'
                           disabled={checked} // 전체 휴무일 경우 Dropdown 비활성화
                         />
                         {getFormErrorMessage(field.name)}
-                        <div className="flex align-items-center mt-2">
+                        <div className='flex align-items-center mt-2'>
                           <Checkbox
                             onChange={(e) => {
                               setChecked(e.checked);
@@ -258,8 +270,8 @@ function ClosedDay() {
                             checked={checked}
                           />
                           <label
-                            htmlFor="ingredient1"
-                            className="ml-2"
+                            htmlFor='ingredient1'
+                            className='ml-2'
                           >
                             전체 휴무
                           </label>
@@ -268,15 +280,15 @@ function ClosedDay() {
                     )}
                   />
                 </div>
-                <div className="flex-auto">
+                <div className='flex-auto'>
                   <label
-                    htmlFor="buttondisplay"
-                    className="font-bold block mb-2"
+                    htmlFor='buttondisplay'
+                    className='font-bold block mb-2'
                   >
                     날짜 선택
                   </label>
                   <Controller
-                    name="date"
+                    name='date'
                     control={control}
                     rules={{ required: '필수 입력 항목입니다' }}
                     render={({ field, fieldState }) => (
@@ -285,10 +297,10 @@ function ClosedDay() {
                           id={field.name}
                           value={field.value}
                           onChange={field.onChange}
-                          placeholder="날짜를 선택해주세요"
-                          dateFormat="yy/mm/dd"
+                          placeholder='날짜를 선택해주세요'
+                          dateFormat='yy/mm/dd'
                           minDate={new Date()}
-                          selectionMode="range"
+                          selectionMode='range'
                           className={classNames({
                             'p-invalid': fieldState.error,
                           })}
@@ -298,22 +310,22 @@ function ClosedDay() {
                     )}
                   />
                 </div>
-                <div className="flex-auto">
+                <div className='flex-auto'>
                   <label
-                    htmlFor="buttondisplay"
-                    className="font-bold block mb-2"
+                    htmlFor='buttondisplay'
+                    className='font-bold block mb-2'
                   >
                     메모
                   </label>
                   <Controller
-                    name="temp_memo"
+                    name='temp_memo'
                     control={control}
                     render={({ field, fieldState }) => (
                       <>
                         <InputText
                           id={field.name}
                           {...field}
-                          placeholder="휴무에 대한 메모를 남겨주세요"
+                          placeholder='휴무에 대한 메모를 남겨주세요'
                         />
                         {getFormErrorMessage(field.name)}
                       </>
@@ -322,8 +334,8 @@ function ClosedDay() {
                 </div>
                 <Toast ref={toast} />
                 <Button
-                  type="submit"
-                  label="추가하기"
+                  type='submit'
+                  label='추가하기'
                 />
               </form>
             </Panel>
