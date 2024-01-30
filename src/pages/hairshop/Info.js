@@ -16,6 +16,7 @@ function Info() {
   const [info, setInfo] = useState({});
   const [selectClosedDay, setSelectClosedDay] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [sendImgs, setSendImgs] = useState([]);
 
   const closedDay = [
     { label: '휴무일 없음', value: '0' },
@@ -63,6 +64,38 @@ function Info() {
     });
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) {
+      alert('파일을 선택해주세요.');
+      return;
+    }
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(extension)) {
+      setSendImgs();
+      alert('JPG, JPEG, PNG, GIF 형식의 이미지 파일만 허용됩니다.');
+      return;
+    }
+    let reader = new FileReader();
+    reader.onload = () => {
+      setSendImgs(reader.result);
+      setInfo({ ...info, shop_image: reader.result });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const imageBodyTemplate = (rowData) => {
+    const imageData = rowData.shop_image;
+    return (
+      <img
+        src={imageData}
+        className="shadow-2 border-round"
+        style={{ width: '128px' }}
+      />
+    );
+  };
+
   useEffect(() => {
     reset({
       shop_regular: selectClosedDay,
@@ -75,11 +108,7 @@ function Info() {
       .get(`/hairshop/info/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        setSelectClosedDay(
-          response.data.shop_regular
-            ? response.data.shop_regular.split(',')
-            : []
-        );
+        setSelectClosedDay(response.data.shop_regular ? response.data.shop_regular.split(',') : []);
 
         const serverData = {
           shop_register: response.data.shop_register,
@@ -90,6 +119,7 @@ function Info() {
           shop_end: response.data.shop_end,
           shop_tag: response.data.shop_tag,
           shop_intro: response.data.shop_intro,
+          shop_image: response.data.shop_image,
         };
 
         setInfo(serverData);
@@ -102,15 +132,14 @@ function Info() {
 
   // [PUT] 미용실 정보 수정
   const onSubmit = (data) => {
-    const formatShopRegular = data.shop_regular
-      ? data.shop_regular.join(',')
-      : '';
+    const formatShopRegular = data.shop_regular ? data.shop_regular.join(',') : '';
     const requestData = {
       ...data,
       shop_name: info.shop_name,
       shop_register: info.shop_register,
       shop_regular: formatShopRegular,
       shop_seq: localStorage.getItem('shop_seq'),
+      shop_image: sendImgs,
     };
 
     console.log('Auth Request:', requestData);
@@ -128,49 +157,77 @@ function Info() {
   };
 
   return (
-    <div className='card h-full'>
-      <h2 className='flex align-items-center justify-content-between'>
-        미용실 정보
-      </h2>
+    <div className="card h-full">
+      <h2 className="flex align-items-center justify-content-between">미용실 정보</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='flex flex-column gap-4'>
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-home mr-2'></i> 상호명
+        <div className="flex flex-column gap-4">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-image mr-2"></i> 사진 업로드
+            </span>
+
+            <div>
+              <label
+                className="btn btn-secondary border-0 bg_grey font-bold flex"
+                htmlFor="shop_image"
+              >
+                프로필 사진 등록
+              </label>
+              <input
+                type="file"
+                multiple
+                style={{ display: 'none' }}
+                id="shop_image"
+                name="shop_image"
+                accept=".jpg"
+                onChange={handleImageUpload}
+              />
+              {info.shop_image && (
+                <img
+                  src={info.shop_image}
+                  className="block m-auto pb-3 w-4"
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-home mr-2"></i> 상호명
             </span>
             <InputText
-              placeholder='상호명'
-              name='shop_register'
+              placeholder="상호명"
+              name="shop_register"
               defaultValue={info.shop_name}
               {...register('shop_name')}
               disabled
             />
           </div>
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-user mr-2'></i> 사업자 등록번호
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-user mr-2"></i> 사업자 등록번호
             </span>
             <InputText
-              placeholder='사업자 등록번호'
-              name='shop_register'
+              placeholder="사업자 등록번호"
+              name="shop_register"
               defaultValue={info.shop_register}
               {...register('shop_register')}
               disabled
             />
           </div>
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-map-marker mr-2'></i> 주소
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-map-marker mr-2"></i> 주소
             </span>
             <InputText
-              name='shop_address'
-              placeholder='주소'
+              name="shop_address"
+              placeholder="주소"
               {...register('shop_address')}
             />
             <Button
-              type='button'
-              label='주소 검색'
-              className='w-2 text-sm'
+              type="button"
+              label="주소 검색"
+              className="w-2 text-sm"
               onClick={() => setAddressModalOpen(true)}
             />
           </div>
@@ -182,48 +239,48 @@ function Info() {
             />
           )}
 
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-phone mr-2'></i> 전화번호
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-phone mr-2"></i> 전화번호
             </span>
             <InputText
-              name='shop_phone'
-              placeholder='전화번호'
+              name="shop_phone"
+              placeholder="전화번호"
               {...register('shop_phone')}
             />
           </div>
 
-          <div className='flex gap-3'>
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-clock mr-2'></i> 영업 시작 시간
+          <div className="flex gap-3">
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-clock mr-2"></i> 영업 시작 시간
               </span>
               <InputText
-                name='shop_start'
-                placeholder='영업 시작 시간'
+                name="shop_start"
+                placeholder="영업 시작 시간"
                 {...register('shop_start')}
               />
             </div>
 
-            <div className='p-inputgroup flex-1'>
-              <span className='p-inputgroup-addon'>
-                <i className='pi pi-clock mr-2'></i> 영업 종료 시간
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-clock mr-2"></i> 영업 종료 시간
               </span>
               <InputText
-                name='shop_end'
-                placeholder='영업 종료 시간'
+                name="shop_end"
+                placeholder="영업 종료 시간"
                 {...register('shop_end')}
               />
             </div>
           </div>
 
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-calendar-minus mr-2'></i> 정기 휴무일
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-calendar-minus mr-2"></i> 정기 휴무일
             </span>
 
             <MultiSelect
-              name='shop_regular'
+              name="shop_regular"
               value={checked ? ['0'] : selectClosedDay}
               onChange={(e) => {
                 setSelectClosedDay(e.value);
@@ -231,14 +288,14 @@ function Info() {
                 setInfo({ ...info, shop_regular: selectedDaysString });
               }}
               options={closedDay}
-              optionLabel='label'
-              optionValue='value'
-              placeholder='정기 휴무일'
+              optionLabel="label"
+              optionValue="value"
+              placeholder="정기 휴무일"
               className={`w-full md:w-20rem ${checked ? 'p-disabled' : ''}`}
               disabled={checked}
             />
 
-            <div className='flex align-items-center mt-2 ml-4'>
+            <div className="flex align-items-center mt-2 ml-4">
               <Checkbox
                 onChange={(e) => {
                   setChecked(e.checked);
@@ -249,68 +306,54 @@ function Info() {
                 checked={checked}
               />
               <label
-                htmlFor='ingredient1'
-                className='ml-2'
+                htmlFor="ingredient1"
+                className="ml-2"
               >
                 휴무일 없음
               </label>
             </div>
           </div>
 
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-hashtag mr-2'></i> 해시태그
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-hashtag mr-2"></i> 해시태그
             </span>
             <InputText
-              name='shop_tag'
-              placeholder='태그'
+              name="shop_tag"
+              placeholder="태그"
               {...register('shop_tag')}
             />
           </div>
 
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-comment mr-2'></i> 미용실 소개글
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <i className="pi pi-comment mr-2"></i> 미용실 소개글
             </span>
             <InputTextarea
-              name='shop_intro'
-              placeholder='미용실 소개글'
+              name="shop_intro"
+              placeholder="미용실 소개글"
               rows={5}
               autoResize
               {...register('shop_intro')}
             />
           </div>
-
-          <div className='p-inputgroup flex-1'>
-            <span className='p-inputgroup-addon'>
-              <i className='pi pi-image mr-2'></i> 사진 업로드
-            </span>
-            <input
-              type='file'
-              multiple
-              // style={{ display: 'none' }}
-              name='style_image'
-              accept='.jpg'
-              // onChange={handleImageUpload}
-            />
-          </div>
         </div>
 
         <Toast ref={toast} />
-        <div className='flex justify-content-end gap-4 mt-6'>
+        <div className="flex justify-content-end gap-4 mt-6">
           <Button
-            label='초기화'
-            type='button'
+            label="초기화"
+            type="button"
             onClick={onResetClick}
-            size='small'
-            className='w-6rem'
+            size="small"
+            className="w-6rem"
             outlined
           />
           <Button
-            label='수정하기'
-            type='submit'
-            size='small'
-            className='w-6rem'
+            label="수정하기"
+            type="submit"
+            size="small"
+            className="w-6rem"
           />
         </div>
       </form>

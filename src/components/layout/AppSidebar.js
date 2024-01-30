@@ -5,16 +5,16 @@ import { Menu } from 'primereact/menu';
 import { Badge } from 'primereact/badge';
 function AppSidebar() {
   const itemRenderer = (item) => (
-    <div className='p-menuitem-content'>
+    <div className="p-menuitem-content">
       <Link
         to={item.url}
-        className='flex align-items-center p-menuitem-link ml-3 my-1'
+        className="flex align-items-center p-menuitem-link ml-3 my-1"
       >
         <span className={item.icon} />
-        <span className='mx-2'>{item.label}</span>
+        <span className="mx-2">{item.label}</span>
         {item.badge && (
           <Badge
-            className='ml-auto'
+            className="ml-auto"
             value={item.badge}
           />
         )}
@@ -26,8 +26,8 @@ function AppSidebar() {
     {
       template: () => {
         return (
-          <div className='flex align-items-center justify-content-center h-4rem px-4 py-6'>
-            <Logo size='text-2xl' />
+          <div className="flex align-items-center justify-content-center h-4rem px-4 py-6">
+            <Logo size="text-2xl" />
           </div>
         );
       },
@@ -50,7 +50,7 @@ function AppSidebar() {
           label: '금일 예약',
           icon: 'pi pi-bell',
           url: 'home/realtime-reservation',
-          badge: 16,
+          // badge: 16,
           template: itemRenderer,
         },
         {
@@ -111,10 +111,10 @@ function AppSidebar() {
   ];
 
   return (
-    <article className='flex sidebar'>
+    <article className="flex sidebar">
       <Menu
         model={menu}
-        className='w-full md:w-18rem border-noround '
+        className="w-full md:w-18rem border-noround "
       />
     </article>
   );
