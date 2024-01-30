@@ -6,23 +6,23 @@
     <!--예약 상황 조회-->
     <select id="currentReservation" resultType="ReservationDTO">
         select reserv_seq, shop_name, staff_nickname, style_name, reserv_request, reserv_date, reserv_time, receipt_id
-        FROM t_reservation tr
-        LEFT JOIN t_hairstyle st ON tr.style_seq = st.style_seq
-        LEFT JOIN t_hairshop hs ON st.shop_seq = hs.shop_seq
+        FROM T_RESERVATION tr
+        LEFT JOIN T_HAIRSTYLE st ON tr.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
         LEFT JOIN t_customer cu ON tr.cust_seq = cu.cust_seq
-        LEFT JOIN t_staff s ON tr.staff_seq = s.staff_seq
+        LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
         where cu.cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) > now() and reserv_stat = 0
         order by reserv_date, reserv_time;
     </select>
 
     <!--receipt_id 조회-->
     <select id="getReceiptId">
-        select receipt_id from t_reservation where reserv_seq=#{reserv_seq}
+        select receipt_id from T_RESERVATION where reserv_seq=#{reserv_seq}
     </select>
 
     <!--reserv_stat 취소로 변경 -->
     <update id="changeReservStat" parameterType="int">
-        update t_reservation set reserv_stat=2, receipt_id='cancel' where reserv_seq=#{reserv_seq}
+        update T_RESERVATION set reserv_stat=2, receipt_id='cancel' where reserv_seq=#{reserv_seq}
     </update>
 
     <!--pay_stat 취소로 변경-->

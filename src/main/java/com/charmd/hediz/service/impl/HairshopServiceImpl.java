@@ -126,7 +126,7 @@ public class HairshopServiceImpl implements HairshopService {
         int numberOfPay = 0;
         System.out.println("넣기 전 payinfoDto > " + payinfoDto);
 
-        // T_reservation에 넣을 데이터 : style_seq, cust_seq, shop_seq, reserv_request,
+        // T_RESERVATION에 넣을 데이터 : style_seq, cust_seq, shop_seq, reserv_request,
         // reserv_date, reserv_time, reserv_stat(0으로 가야함), receipt_id, staff_seq
         numberOfReservation = dao.reservation(payinfoDto);
 

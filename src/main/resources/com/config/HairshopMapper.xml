@@ -20,21 +20,21 @@
         a.shop_tag,
         (
         SELECT AVG(b.review_score)
-        FROM t_review AS b
-        INNER JOIN t_reservation AS c ON b.reserv_seq = c.reserv_seq
-        INNER JOIN t_hairstyle AS f ON c.style_seq = f.style_seq
+        FROM T_REVIEW AS b
+        INNER JOIN T_RESERVATION AS c ON b.reserv_seq = c.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS f ON c.style_seq = f.style_seq
         WHERE f.shop_seq = a.shop_seq
         GROUP BY a.shop_seq
         ) AS avg_review_score,
         (
         SELECT COUNT(d.review_score)
-        FROM t_review AS d
-        INNER JOIN t_reservation AS e ON d.reserv_seq = e.reserv_seq
-        INNER JOIN t_hairstyle AS h ON e.style_seq = h.style_seq
-        INNER JOIN t_hairshop AS i ON h.shop_seq = i.shop_seq
+        FROM T_REVIEW AS d
+        INNER JOIN T_RESERVATION AS e ON d.reserv_seq = e.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS h ON e.style_seq = h.style_seq
+        INNER JOIN T_HAIRSHOP AS i ON h.shop_seq = i.shop_seq
         WHERE i.shop_seq = a.shop_seq
         GROUP BY a.shop_seq
-        ) AS count_review
+        ) AS counT_REVIEW
         FROM T_HAIRSHOP AS a;
     </select>
 
@@ -53,21 +53,21 @@
         a.shop_tag,
         (
         SELECT AVG(b.review_score)
-        FROM t_review AS b
-        INNER JOIN t_reservation AS c ON b.reserv_seq = c.reserv_seq
-        INNER JOIN t_hairstyle AS f ON c.style_seq = f.style_seq
+        FROM T_REVIEW AS b
+        INNER JOIN T_RESERVATION AS c ON b.reserv_seq = c.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS f ON c.style_seq = f.style_seq
         WHERE f.shop_seq = a.shop_seq
         GROUP BY f.shop_seq
         ) AS avg_review_score,
         (
         SELECT COUNT(d.review_score)
-        FROM t_review AS d
-        INNER JOIN t_reservation AS e ON d.reserv_seq = e.reserv_seq
-        INNER JOIN t_hairstyle AS h ON e.style_seq = h.style_seq
-        INNER JOIN t_hairshop AS i ON h.shop_seq = i.shop_seq
+        FROM T_REVIEW AS d
+        INNER JOIN T_RESERVATION AS e ON d.reserv_seq = e.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS h ON e.style_seq = h.style_seq
+        INNER JOIN T_HAIRSHOP AS i ON h.shop_seq = i.shop_seq
         WHERE i.shop_seq = a.shop_seq
         GROUP BY i.shop_seq
-        ) AS count_review
+        ) AS counT_REVIEW
         FROM T_HAIRSHOP AS a
         WHERE a.shop_seq = #{shop_seq};
     </select>
@@ -123,12 +123,12 @@
         s.staff_nickname,
         st.style_name
         FROM
-        t_review tr
-        LEFT JOIN t_reservation re ON tr.reserv_seq = re.reserv_seq
-        LEFT JOIN t_hairstyle st ON re.style_seq = st.style_seq
-        LEFT JOIN t_hairshop hs ON st.shop_seq = hs.shop_seq
+        T_REVIEW tr
+        LEFT JOIN T_RESERVATION re ON tr.reserv_seq = re.reserv_seq
+        LEFT JOIN T_HAIRSTYLE st ON re.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
         LEFT JOIN t_customer cu ON re.cust_seq = cu.cust_seq
-        LEFT JOIN t_staff s ON re.staff_seq = s.staff_seq
+        LEFT JOIN T_STAFF s ON re.staff_seq = s.staff_seq
         WHERE
         hs.shop_seq = #{shop_seq}
         ORDER BY review_date DESC, review_score DESC;
@@ -166,14 +166,14 @@
         b.shop_end,
         (
         SELECT d.style_time
-        FROM t_hairstyle d
+        FROM T_HAIRSTYLE d
         WHERE d.style_seq = #{style_seq}
         ) AS hope_style_time
         FROM
-        t_staff c
-        LEFT JOIN t_reservation a ON c.staff_seq = a.staff_seq AND a.reserv_date = #{day}
-        LEFT JOIN t_hairshop b ON c.shop_seq = b.shop_seq
-        LEFT JOIN t_hairstyle d ON a.style_seq = d.style_seq
+        T_STAFF c
+        LEFT JOIN T_RESERVATION a ON c.staff_seq = a.staff_seq AND a.reserv_date = #{day}
+        LEFT JOIN T_HAIRSHOP b ON c.shop_seq = b.shop_seq
+        LEFT JOIN T_HAIRSTYLE d ON a.style_seq = d.style_seq
         WHERE
         c.shop_seq = #{shop_seq}
         AND (a.reserv_time BETWEEN b.shop_start AND b.shop_end OR a.reserv_time IS NULL)
@@ -185,7 +185,7 @@
 
     <!--예약_예약 테이블에 저장-->
     <insert id="reservation" parameterType="PayinfoDTO">
-        insert into t_reservation (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id)
+        insert into T_RESERVATION (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id)
         values (#{style_seq}, #{cust_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id})
     </insert>
 
