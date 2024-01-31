@@ -208,7 +208,7 @@ function Schedule() {
 
   return (
     <>
-      <Calendar
+      {/* <Calendar
         onChange={(e) => setSelectedDate(formatCalendarDate(e.value))}
         showIcon
         className='w-full mb-4'
@@ -216,10 +216,10 @@ function Schedule() {
         placeholder='날짜 선택'
         minDate={new Date()}
         maxDate={new Date(new Date().getTime() + 13 * 24 * 60 * 60 * 1000)}
-      />
+      /> */}
       {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
                       map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
-      {/* <Panel
+      <Panel
         header='날짜 선택'
         className='mb-4'
       >
@@ -242,7 +242,7 @@ function Schedule() {
             </button>
           ))}
         </div>
-      </Panel> */}
+      </Panel>
 
       <Panel header='시간 선택'>
         <div className='card'>
