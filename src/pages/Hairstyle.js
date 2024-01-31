@@ -62,7 +62,7 @@ function Hairstyle() {
 
   return (
     <>
-      <section className='mt-4 mb-6'>
+      <section className='mb-6'>
         {/* <img
         src={hairstyle.style_image}
         alt={hairstyle.style_name}
@@ -70,12 +70,15 @@ function Hairstyle() {
         <Image
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg'
           alt='Image'
+          height='200px'
         />
         <p className='flex align-items-center justify-content-between font-bold text-lg'>
           <span>
             [{hairstyle.cate_name}] {hairstyle.style_name}
           </span>
-          <span className='text-color-secondary'>{hairstyle.shop_name}</span>
+          <span className='text-color-secondary text-base'>
+            {hairstyle.shop_name}
+          </span>
         </p>
         <p className='font-semibold text-xl mb-1'>
           <span className='pr-2'>
@@ -157,25 +160,34 @@ function Hairstyle() {
             </>
           )}
         </TabPanel>
-        <TabPanel header='예약 취소 및 환불 규정'>
-          <p className='font-bold'>예약 취소/환불</p>
-          <p className='mb-4'>
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently.
-          </p>
-          <p className='font-bold'>예약 변경</p>
-          <p className='mb-4'>
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently.
-          </p>
-          <p className='font-bold'>취소/환불 정보</p>
-          <p className='mb-4'>
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently.
-          </p>
+        <TabPanel header='예약 취소/환불'>
+          <p className='font-semibold mb-1'>노쇼 (no-show) 위약금 정책</p>
+          <span className='mb-4 text-sm'>
+            예약 시간 30분 경과 이후 고객이 나타나지 않을 경우 고객과 확인후
+            최종 노쇼 (no-show) 처리를 진행할수 있으며, 아래와 같이 위약금
+            수수료가 발생됩니다.
+            <br /> <br />
+            1) 선결제 금액의 10%를 판매자 위약금으로 책정
+            <br />
+            2) 이 중 카카오 플랫폼 사용료 10% 제외한 금액으로 최종 정산하여 지급
+          </span>
+          <p className='font-semibold mb-1 mt-4'>취소 위약금 정책</p>
+          <span className='mb-4 text-sm mb-4'>
+            예약 시간 30분 이후부터 발생되는 예약변경, 취소건의 경우 아래와 같이
+            위약금 수수료가 발생됩니다.
+            <br /> <br />
+            1) 시술 예약시간 2시간 전까지는 변경/ 취소 100% 환불
+            <br />
+            2) 시술 예약시간 2시간 이후 부터 변경/취소시 90% 환불 (10% 취소
+            수수료 발생)
+            <br />
+            3) 취소 수수료 발생 10%를 판매자 위약금으로 책정
+            <br />
+            4) 이 중 카카오 플랫폼 사용료 10% 제외한 금액으로 최종 정산하여 지급
+            <br /> <br />
+            예시) 위약금 정산처리 : 위약금 1,000원 발생시 매장 900원 카카오
+            100원 비용 발생 (VAT별도)
+          </span>
         </TabPanel>
       </TabView>
       <Button

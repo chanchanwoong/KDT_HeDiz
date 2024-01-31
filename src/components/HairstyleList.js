@@ -38,19 +38,19 @@ function HairstyleList({ hairstyleList, shopSeq }) {
                     className='w-4 flex-none'
                   />
                   <div className='flex-grow-1'>
-                    <p className='font-bold mt-0 mb-2'>
+                    <p className='font-bold mt-0 mb-2 flex align-items-center justify-content-between'>
                       {hairstyle.style_name}
                       <span className='text-color-secondary pl-2 text-sm'>
-                        ({formatTime(hairstyle.style_time)})
+                        {formatTime(hairstyle.style_time)}
                       </span>
                     </p>
-                    <p className='mt-0 mb-2'>
+                    <p className='my-1'>
                       <span className='font-bold mr-2'>
                         {formatNumberWithCommas(hairstyle.style_price)}
                       </span>
-                      <span>{hairstyle.style_gender}</span>
+                      <span className='text-sm'>{hairstyle.style_gender}</span>
                     </p>
-                    <p className='w-10 text-color-secondary text-sm m-0 mb-2'>
+                    <p className='w-10 text-color-secondary text-xs m-0 mb-2'>
                       {hairstyle.style_intro}
                     </p>
                   </div>

@@ -121,7 +121,7 @@ function MyPage() {
       {!isEditing && (
         <section className='flex align-items-center justify-content-between'>
           <div className='flex flex-column'>
-            <span className='text-lg font-semibold'>
+            <span className='font-semibold'>
               {info.cust_name}
               {/* <Badge
                 className='font-light px-3 surface-400'

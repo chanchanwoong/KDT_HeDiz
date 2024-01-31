@@ -73,6 +73,7 @@ main {
   position: relative;
   min-height: 100%;
   box-shadow: 0px 4px 30px rgba(221, 224, 255, 0.54);
+  padding-bottom: 62px;
 }
 .list__info {
   width: 100%;
@@ -98,8 +99,9 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px 0;
+  padding: 20px 0;
   border-radius: 0;
+  z-index: 9;
 }
 .btn__time {
   padding: 4px 10px;
@@ -130,6 +132,11 @@ main {
 .p-tabmenu-nav a {
   width: 100%;
   justify-content: center;
+  padding: 12px 0;
+}
+.p-tabmenu-nav a span:last-child {
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 .p-tabview .p-tabview-panels {
   padding: 0;
@@ -163,8 +170,14 @@ main {
   border-top-left-radius: 12px;
 }
 .p-sidebar-bottom .p-sidebar.sidebar__reservation {
-  height: 60%;
+  height: 50%;
 }
+.p-sidebar-bottom .p-sidebar.sidebar__reservation .p-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .p-sidebar-bottom .p-sidebar-content {
   overflow: hidden;
 }

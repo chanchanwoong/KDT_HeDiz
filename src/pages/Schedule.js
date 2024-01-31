@@ -208,7 +208,7 @@ function Schedule() {
 
   return (
     <>
-      {/* <Calendar
+      <Calendar
         onChange={(e) => setSelectedDate(formatCalendarDate(e.value))}
         showIcon
         className='w-full mb-4'
@@ -216,10 +216,10 @@ function Schedule() {
         placeholder='날짜 선택'
         minDate={new Date()}
         maxDate={new Date(new Date().getTime() + 13 * 24 * 60 * 60 * 1000)}
-      /> */}
+      />
       {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
                       map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
-      <Panel
+      {/* <Panel
         header='날짜 선택'
         className='mb-4'
       >
@@ -242,7 +242,7 @@ function Schedule() {
             </button>
           ))}
         </div>
-      </Panel>
+      </Panel> */}
 
       <Panel header='시간 선택'>
         <div className='card'>
@@ -270,38 +270,43 @@ function Schedule() {
         className='sidebar__reservation'
       >
         <Panel header='예약 정보'>
-          <ul className='flex flex-column gap-2'>
+          <ul className='flex flex-column gap-3 text-sm'>
             <li>
-              <b>매장</b> {hairstyle.shop_name}
+              <b className='w-4 inline-block'>예약일자</b>{' '}
+              {formatDate(selectedDate)} {formatHourMinute(reservTime)}
             </li>
             <li>
-              <b>담당</b> {staffNickname}
+              <b className='w-4 inline-block'>미용실</b> {hairstyle.shop_name}
             </li>
             <li>
-              <b>메뉴</b> {hairstyle.style_name}
+              <b className='w-4 inline-block'>담당 디자이너</b> {staffNickname}
             </li>
             <li>
-              <b>가격</b> {formatNumberWithCommas(hairstyle.style_price)}
+              <b className='w-4 inline-block'>헤어스타일</b>{' '}
+              {hairstyle.style_name}
             </li>
             <li>
-              <b>예약</b> {selectedDate} {formatHourMinute(reservTime)}
+              <b className='w-4 inline-block'>가격</b>{' '}
+              {formatNumberWithCommas(hairstyle.style_price)}
             </li>
           </ul>
         </Panel>
-        <div className='flex align-items-center justify-content-between gap-4 mt-4'>
-          <Button
-            label='다시선택'
-            outlined
-            className='w-full'
-            // size='small'
-            onClick={() => setConfirmVisible(false)}
-          />
-          <Button
-            label='결제하기'
-            // size='small'
-            className='w-full'
-            onClick={() => navigate(`/payment`)}
-          />
+        <div className='btn__group gap-4 mt-4'>
+          <div className='w-full flex align-items-center justify-content-between  gap-2'>
+            <Button
+              label='다시선택'
+              outlined
+              className='w-full'
+              // size='small'
+              onClick={() => setConfirmVisible(false)}
+            />
+            <Button
+              label='결제하기'
+              // size='small'
+              className='w-full'
+              onClick={() => navigate(`/payment`)}
+            />
+          </div>
         </div>
       </Sidebar>
     </>

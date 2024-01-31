@@ -7,9 +7,9 @@ function MainLayout() {
   const navigate = useNavigate();
 
   const items = [
-    { label: '홈', icon: 'pi pi-home', to: '/' },
-    { label: '예약확인', icon: 'pi pi-calendar', to: '/reservation' },
-    { label: '마이페이지', icon: 'pi pi-user', to: '/mypage' },
+    { label: '홈', to: '/' },
+    { label: '예약확인', to: '/reservation' },
+    { label: '마이페이지', to: '/mypage' },
   ];
 
   const activeIndex = items.findIndex((item) => item.to === location.pathname);
@@ -20,13 +20,12 @@ function MainLayout() {
       <header>
         <Logo
           spacing='py-3'
-          size='text-3xl'
+          size='text-2xl'
         />
         {!isAuthPage && (
           <TabMenu
             model={items.map((item) => ({
               label: item.label,
-              icon: item.icon,
               command: () => navigate(item.to),
             }))}
             activeIndex={activeIndex}

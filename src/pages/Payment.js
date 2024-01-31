@@ -155,7 +155,7 @@ function Payment() {
             value={hairstyle.shop_name}
           />
           <PaymentInfo
-            label='디자이너'
+            label='담당 디자이너'
             value={staff.staff_nickname}
           />
           <PaymentInfo
@@ -181,20 +181,20 @@ function Payment() {
           <h4 className='m-0'>결제 정보</h4>
           <Divider className='my-1' />
           <span className='text-color-secondary font-semibold flex justify-content-between'>
-            <span className='inline-block w-3'>헤어스타일 가격</span>
+            <span>헤어스타일 가격</span>
             <span className='text-color text-large font-bold'>
               {formatNumberWithCommas(hairstyle.style_price)}
             </span>
           </span>
           <span className='text-color-secondary font-semibold flex justify-content-between'>
-            <span className='inline-block w-3'>할인 금액 (-)</span>
+            <span>할인 금액 (-)</span>
             <span className='text-color text-large font-bold'>
               {formatNumberWithCommas(discountAmount)}
             </span>
           </span>
           <Divider className='my-1' />
           <span className='text-color-secondary font-semibold flex justify-content-between'>
-            <span className='inline-block w-3'>결제 금액</span>
+            <span>결제 금액</span>
             <span className='text-color text-xl font-bold'>
               {formatNumberWithCommas(discountedPrice)}
             </span>

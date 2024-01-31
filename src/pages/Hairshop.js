@@ -74,12 +74,14 @@ function Hairshop() {
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg'
           alt='Image'
           width='100%'
-          height='200px'
+          height='180px'
         />
 
         <div className='mt-2'>
-          <p className='text-sm  text-500 m-0'>{hairshopInfo.shop_address}</p>
-          <p className='font-semibold text-lg my-1'>{hairshopInfo.shop_name}</p>
+          <p className='text-sm text-500 m-0'>{hairshopInfo.shop_address}</p>
+          <p className='font-semibold text-base my-1'>
+            {hairshopInfo.shop_name}
+          </p>
           <div className='flex align-items-center gap-2 m-0'>
             <Rating
               value={hairshopInfo.avg_review_score}
@@ -98,7 +100,7 @@ function Hairshop() {
           </p>
 
           <p className='text-sm'>
-            <i className='pi pi-user mr-2'></i>
+            <i className='pi pi-calendar-times mr-2'></i>
             <b>휴무일</b>
             {getDayName(hairshopInfo.shop_regular)}
           </p>
