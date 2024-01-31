@@ -27,7 +27,7 @@ function HairstyleList({ hairstyleList, shopSeq }) {
               <Link
                 to={`/hairshop/${shopSeq}/hairstyle/${hairstyle.style_seq}`}
               >
-                <article className='flex justify-content-between gap-4 my-4'>
+                <article className='flex justify-content-between gap-3 my-4'>
                   {/* <img
                   src={hairstyle.style_image}
                   alt={hairstyle.style_name}
@@ -38,13 +38,13 @@ function HairstyleList({ hairstyleList, shopSeq }) {
                     className='w-4 flex-none'
                   />
                   <div className='flex-grow-1'>
-                    <p className='font-bold my-2'>
+                    <p className='font-bold mt-0 mb-2'>
                       {hairstyle.style_name}
-                      <span className='text-color-secondary pl-2'>
+                      <span className='text-color-secondary pl-2 text-sm'>
                         ({formatTime(hairstyle.style_time)})
                       </span>
                     </p>
-                    <p className='mt-0 mb-1'>
+                    <p className='mt-0 mb-2'>
                       <span className='font-bold mr-2'>
                         {formatNumberWithCommas(hairstyle.style_price)}
                       </span>

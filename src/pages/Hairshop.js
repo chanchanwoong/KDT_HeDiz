@@ -3,7 +3,12 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { authAxios } from 'api/AxiosAPI';
 import KakaoMap from 'api/KakaoMapAPI';
-import { formatDecimal, formatNumberWithCommas, getDayName } from 'utils/util';
+import {
+  formatDecimal,
+  formatNumberWithCommas,
+  getDayName,
+  formatHourMinute,
+} from 'utils/util';
 import HairstyleList from 'components/HairstyleList';
 import ReviewList from 'components/ReviewList';
 import { TabView, TabPanel } from 'primereact/tabview';
@@ -47,6 +52,7 @@ function Hairshop() {
             setReviewList(reviewRequest.data);
             setHairshopLocation(hairshopRequest.data.shop_address);
 
+            console.log(hairshopRequest.data);
             console.log(hairstyleRequest.data);
           }
         )
@@ -72,10 +78,8 @@ function Hairshop() {
         />
 
         <div className='mt-2'>
-          <p className='text-sm font-semibold text-500 m-0'>
-            {hairshopInfo.shop_address}
-          </p>
-          <p className='font-semibold text-xl my-1'>{hairshopInfo.shop_name}</p>
+          <p className='text-sm  text-500 m-0'>{hairshopInfo.shop_address}</p>
+          <p className='font-semibold text-lg my-1'>{hairshopInfo.shop_name}</p>
           <div className='flex align-items-center gap-2 m-0'>
             <Rating
               value={hairshopInfo.avg_review_score}
@@ -84,30 +88,40 @@ function Hairshop() {
             />
             <span className='font-semibold'>
               {formatDecimal(hairshopInfo.avg_review_score)}
-              <span className='text-500 text-sm ml-1'>
+              <span className='text-500 text-xs ml-1'>
                 (총 {formatNumberWithCommas(hairshopInfo.count_review)}개 리뷰)
               </span>
             </span>
           </div>
-          <p className='mb-5'>{hairshopInfo.shop_intro}</p>
+          <p className='text-color-secondary my-4 text-sm'>
+            {hairshopInfo.shop_intro}
+          </p>
 
-          <div className='flex flex-column gap-2 my-4'>
-            <span>
-              <i className='pi pi-calendar-times mr-2'></i>
-              {getDayName(hairshopInfo.shop_regular)} 휴무
-            </span>
-            <span>
-              <i className='pi pi-clock mr-2'></i>
-              {hairshopInfo.shop_start} - {hairshopInfo.shop_end}
-            </span>
-            <span>
-              <i className='pi pi-hashtag mr-2'></i>
-              {hairshopInfo.shop_tag}
-            </span>
-          </div>
+          <p className='text-sm'>
+            <i className='pi pi-user mr-2'></i>
+            <b>휴무일</b>
+            {getDayName(hairshopInfo.shop_regular)}
+          </p>
+          <p className='text-sm'>
+            <i className='pi pi-clock mr-2'></i>
+            <b>영업시간</b>
+            {formatHourMinute(hairshopInfo.shop_start)}
+            <span> - </span>
+            {formatHourMinute(hairshopInfo.shop_end)}
+          </p>
+          <p className='text-sm'>
+            <i className='pi pi-hashtag mr-2'></i>
+            <b>태그</b>
+            {hairshopInfo.shop_tag}
+          </p>
           <ul className='list__info'>
-            <li>
-              <i className='pi pi-phone mr-2'></i>전화
+            <li
+              onClick={() =>
+                (document.location.href = `tel:${hairshopInfo.shop_phone}`)
+              }
+            >
+              <i className='pi pi-phone mr-2'></i>
+              전화
             </li>
             <li
               onClick={() => {
@@ -156,7 +170,7 @@ function Hairshop() {
               {staffList.map((staff) => (
                 <div
                   key={staff.staff_seq}
-                  className='flex align-items-center justify-content-between gap-4 my-4'
+                  className='flex align-items-center justify-content-between gap-2 my-2'
                 >
                   {/* <img
                 src={staff.staff_image}

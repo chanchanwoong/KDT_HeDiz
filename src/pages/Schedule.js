@@ -7,6 +7,7 @@ import {
   formatHourMinute,
   formatNumberWithCommas,
   formatDate,
+  formatCalendarDate,
 } from 'utils/util';
 import {
   generateDates,
@@ -15,6 +16,7 @@ import {
   getCurrnetTime,
 } from 'utils/GenerateTime';
 import { Panel } from 'primereact/panel';
+import { Calendar } from 'primereact/calendar';
 import { DataView } from 'primereact/dataview';
 import { Avatar } from 'primereact/avatar';
 import { Divider } from 'primereact/divider';
@@ -43,6 +45,7 @@ function Schedule() {
   const [staff, setStaff] = useState([]);
   const [staffIndex, setStaffIndex] = useState();
   const [selectedDate, setSelectedDate] = useState(getToday());
+  // const [selectedDate, setSelectedDate] = useState(getToday());
 
   // 고객이 선택한 직원, 예약날짜, 예약시간
   const [selectStaffSeq, setSelectStaffSeq] = useState('');
@@ -205,13 +208,22 @@ function Schedule() {
 
   return (
     <>
-      <Panel
+      <Calendar
+        onChange={(e) => setSelectedDate(formatCalendarDate(e.value))}
+        showIcon
+        className='w-full mb-4'
+        dateFormat='yy년 mm월 dd일'
+        placeholder='날짜 선택'
+        minDate={new Date()}
+        maxDate={new Date(new Date().getTime() + 13 * 24 * 60 * 60 * 1000)}
+      />
+      {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
+                      map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
+      {/* <Panel
         header='날짜 선택'
         className='mb-4'
       >
         <div>
-          {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
-                      map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
           {dates.map((date) => (
             <button
               key={date}
@@ -230,7 +242,7 @@ function Schedule() {
             </button>
           ))}
         </div>
-      </Panel>
+      </Panel> */}
 
       <Panel header='시간 선택'>
         <div className='card'>

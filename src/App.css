@@ -107,8 +107,8 @@ main {
   /* width: 60px; */
 }
 .img__staff img {
-  width: 80px;
-  margin: 0 1.2rem;
+  width: 60px;
+  margin: 0 10px;
 }
 
 /* primereact */
@@ -145,6 +145,10 @@ main {
 }
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
   background-color: inherit;
+  padding: 14px 0;
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link span {
+  font-size: 0.9rem;
 }
 .p-tabmenu .p-tabmenu-nav {
   border: none !important;
@@ -163,4 +167,9 @@ main {
 }
 .p-sidebar-bottom .p-sidebar-content {
   overflow: hidden;
+}
+
+.p-rating.p-readonly .p-rating-item svg {
+  width: 14px;
+  height: 14px;
 }

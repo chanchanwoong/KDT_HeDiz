@@ -1,12 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { authAxios } from 'api/AxiosAPI';
-import { DataView } from 'primereact/dataview';
-import { classNames } from 'primereact/utils';
+import { formatHourMinute, formatDate } from 'utils/util';
 import { Button } from 'primereact/button';
-import { Panel } from 'primereact/panel';
+import { Divider } from 'primereact/divider';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { DataView } from 'primereact/dataview';
 
 function Reservation() {
   const [reservations, setReservations] = useState([]);
+  const toast = useRef(null);
+
+  const accept = () => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Confirmed',
+      detail: 'You have accepted',
+      life: 3000,
+    });
+  };
+
+  const reject = () => {
+    toast.current.show({
+      severity: 'warn',
+      summary: 'Rejected',
+      detail: 'You have rejected',
+      life: 3000,
+    });
+  };
 
   useEffect(() => {
     authAxios()
@@ -35,72 +55,121 @@ function Reservation() {
       });
   };
 
-  ///// 목록 생성 템플릿
-  const itemTemplate = (reservation, index) => {
+  const confirm = () => {
+    confirmDialog({
+      message: 'Are you sure you want to proceed?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept,
+      reject,
+    });
+  };
+
+  const itemTemplate = (item, index) => {
     return (
-      <div
-        className='col-12'
-        key={reservation.style_seq}
-      >
-        <div
-          className={classNames(
-            'flex flex-column xl:flex-row xl:align-items-start p-4 gap-4',
-            {
-              'border-top-1 surface-border': index !== 0,
-            }
-          )}
-        >
-          <div className='flex flex-row align-items-center'>
-            <div className='flex flex-column ml-4'>
-              <div className='text-2xl font-bold text-900'>
-                {reservation.shop_name}
-              </div>
-              <span className='flex align-items-center gap-2'>
-                <div className='flex flex-column'>
-                  <span className='font-semibold'>
-                    예약한 스타일 : {reservation.style_name}
-                  </span>
-                  <span>담당 디자이너 : {reservation.staff_nickname}</span>
-                  <span>예약 날짜 : {reservation.reserv_date}</span>
-                  <span>예약 시간 : {reservation.reserv_time}</span>
-                </div>
-                <Button
-                  onClick={() =>
-                    handleReservCancel(
-                      reservation.reserv_seq,
-                      reservation.receipt_id
-                    )
-                  }
-                >
-                  예약 취소
-                </Button>
-              </span>
-            </div>
-          </div>
+      <article key={item.reserv_seq}>
+        <Divider />
+        <p className='font-semibold m-0 mb-4 flex justify-content-between'>
+          <span>
+            <i className='pi pi-calendar mr-2'></i>
+            {formatDate(item.reserv_date)}
+            <span> </span>
+            {formatHourMinute(item.reserv_time)}
+          </span>
+          <span className='text-500'>{item.shop_name}</span>
+        </p>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+          <span className='inline-block w-2'>디자이너</span>
+          <span className='text-color'>{item.staff_nickname}</span>
+        </p>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+          <span className='inline-block w-2'>헤어스타일</span>
+          <span className='text-color'>{item.style_name}</span>
+        </p>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-4'>
+          <span className='inline-block w-2'>요청사항</span>
+          <span className='text-color'>{item.reserv_request}</span>
+        </p>
+        <div className='flex justify-content-end gap-2'>
+          <Button
+            label='예약취소'
+            type='submit'
+            size='small'
+            className='py-2'
+            // onClick={() =>
+            //   handleReservCancel(item.reserv_seq, item.receipt_id)
+            // }
+            onClick={confirm}
+          />
+          <ConfirmDialog />
         </div>
-      </div>
+      </article>
     );
   };
 
   const listTemplate = (items) => {
-    if (!items || items.length === 0) return `현재 예약중인 가게가 없어요 :)`;
+    if (!items || items.length === 0) return null;
 
-    let list = items.map((reservation, index) => {
-      return itemTemplate(reservation, index);
+    let list = items.map((product, index) => {
+      return itemTemplate(product, index);
     });
 
-    return <div className='grid grid-nogutter'>{list}</div>;
+    return <>{list}</>;
   };
 
   return (
-    <Panel header='현재 예약 중인 가게'>
-      <div className='card'>
-        <DataView
-          value={reservations}
-          listTemplate={listTemplate}
-        />
-      </div>
-    </Panel>
+    <>
+      <h3 className='mt-0 mb-4'>
+        <span>예약확인</span>
+        <span className='text-500 text-sm ml-2'>
+          총 {reservations.length} 건
+        </span>
+      </h3>
+      <DataView
+        value={reservations}
+        listTemplate={listTemplate}
+      />
+      {/* {reservations.map((item) => (
+        <article key={item.reserv_seq}>
+          <Divider />
+          <p className='font-semibold m-0 mb-4 flex justify-content-between'>
+            <span>
+              <i className='pi pi-calendar mr-2'></i>
+              {formatDate(item.reserv_date)}
+              <span> </span>
+              {formatHourMinute(item.reserv_time)}
+            </span>
+            <span className='text-500'>{item.shop_name}</span>
+          </p>
+          <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+            <span className='inline-block w-2'>디자이너</span>
+            <span className='text-color'>{item.staff_nickname}</span>
+          </p>
+          <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+            <span className='inline-block w-2'>헤어스타일</span>
+            <span className='text-color'>{item.style_name}</span>
+          </p>
+          <p className='text-color-secondary font-semibold text-sm m-0 mb-4'>
+            <span className='inline-block w-2'>요청사항</span>
+            <span className='text-color'>{item.reserv_request}</span>
+          </p>
+          <div className='flex justify-content-end gap-2'>
+            <Button
+              label='예약취소'
+              type='submit'
+              size='small'
+              className='py-2'
+              // onClick={() =>
+              //   handleReservCancel(item.reserv_seq, item.receipt_id)
+              // }
+              onClick={confirm}
+            />
+            <ConfirmDialog />
+          </div>
+        </article>
+      ))} */}
+    </>
   );
 }
 

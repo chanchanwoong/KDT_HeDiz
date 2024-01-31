@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { authAxios } from 'api/AxiosAPI';
-import { formatNumberWithCommas } from 'utils/util';
+import { formatNumberWithCommas, formatTime } from 'utils/util';
 import { Image } from 'primereact/image';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { Button } from 'primereact/button';
@@ -71,33 +71,29 @@ function Hairstyle() {
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg'
           alt='Image'
         />
-        <p className='flex align-items-center justify-content-between font-bold text-xl'>
-          <span>{hairstyle.style_name}</span>
+        <p className='flex align-items-center justify-content-between font-bold text-lg'>
+          <span>
+            [{hairstyle.cate_name}] {hairstyle.style_name}
+          </span>
           <span className='text-color-secondary'>{hairstyle.shop_name}</span>
         </p>
-        <p className='font-semibold text-2xl mb-1'>
+        <p className='font-semibold text-xl mb-1'>
           <span className='pr-2'>
             {formatNumberWithCommas(hairstyle.style_price)}
           </span>
-          {/* <span>({formatTime(hairstyle.style_time)})</span> */}
         </p>
-        <p className='text-color-secondary mt-0 mb-4'>
+        <p className='text-color-secondary mt-0 mb-4 text-sm'>
           {hairstyle.style_intro}
         </p>
-        <p>
+        <p className='text-sm'>
           <i className='pi pi-stopwatch mr-2'></i>
           <b>소요시간</b>
-          {hairstyle.style_time}
+          {formatTime(hairstyle.style_time)}
         </p>
-        <p>
+        <p className='text-sm'>
           <i className='pi pi-user mr-2'></i>
           <b>대상고객</b>
           {hairstyle.style_gender}
-        </p>
-        <p>
-          <i className='pi pi-phone mr-2'></i>
-          <b>카테고리</b>
-          {hairstyle.cate_name}
         </p>
       </section>
       <TabView>
@@ -110,32 +106,32 @@ function Hairstyle() {
             <>
               {review.map((review) => (
                 <div key={review.review_seq}>
-                  <article className='flex align-items-start justify-content-between gap-4 my-4'>
+                  <article className='flex align-items-start justify-content-between gap-3 my-4'>
                     {/* <img
-                  src={hairstyle.style_image}
-                  alt={hairstyle.style_name}
-                /> */}
+                        src={hairstyle.style_image}
+                        alt={hairstyle.style_name}
+                      /> */}
                     <Image
                       src='https://primefaces.org/cdn/primereact/images/galleria/galleria8.jpg'
                       alt='Image'
                       className='w-4 flex-none'
                     />
                     <div className='flex-grow-1'>
-                      <div className='flex align-items-start justify-content-between my-2'>
+                      <div className='flex align-items-start justify-content-between mt-0 mb-2'>
                         <div className='flex flex-column'>
                           <p className='font-bold mt-0 mb-1'>
                             {review.style_name}
                           </p>
-                          <p className='m-0'>{review.staff_nickname}</p>
+                          <p className='m-0 text-sm'>{review.staff_nickname}</p>
                         </div>
                         <div className='flex flex-column align-items-end'>
                           <Rating
                             value={review.review_score}
                             readOnly
                             cancel={false}
-                            className='mb-2'
+                            className='mb-1'
                           />
-                          <p className='text-color-secondary text-sm m-0 mb-2'>
+                          <p className='text-color-secondary text-xs m-0 mb-2'>
                             <span>{review.review_date} . </span>
                             <span>{review.cust_id}</span>
                           </p>
@@ -144,13 +140,15 @@ function Hairstyle() {
                       <p className='mt-0 mb-2 text-sm'>
                         {review.review_content}
                       </p>
-                      <p className='mb-2 text-sm'>
-                        <i
-                          className='pi pi-heart mr-1'
-                          style={{ position: 'relative', top: '2px' }}
-                        ></i>
-                        {review.review_reply}
-                      </p>
+                      {review.review_reply && (
+                        <p className='my-0 text-xs'>
+                          <i
+                            className='pi pi-comment mr-1'
+                            style={{ position: 'relative', top: '2px' }}
+                          ></i>
+                          {review.review_reply}
+                        </p>
+                      )}
                     </div>
                   </article>
                   <Divider />

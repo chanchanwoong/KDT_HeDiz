@@ -77,6 +77,10 @@ export function formatTime(timeString) {
 
 // 시간 포맷
 export function formatHourMinute(timeString) {
+  if (!timeString) {
+    return '';
+  }
+
   const [hours, minutes, seconds] = timeString.split(':').map(Number);
   let formattedTime = '';
 
@@ -108,4 +112,12 @@ export function formatDate(dateString) {
   const day = dateParts[2];
 
   return `${year}년 ${month}월 ${day}일`;
+}
+
+export function formatCalendarDate(date) {
+  const year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString().padStart(2, '0');
+  let day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }

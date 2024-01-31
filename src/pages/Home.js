@@ -1,23 +1,17 @@
 import { useState, useEffect } from 'react';
 import { authAxios } from 'api/AxiosAPI';
 import { InputText } from 'primereact/inputtext';
-import { FilterMatchMode } from 'primereact/api';
 import List from 'components/HairshopList';
 function Home() {
   // 미용실 목록
   const [hairshopList, setHairshopList] = useState([]);
+  const [filteredHairshopList, setFilteredHairshopList] = useState([]);
 
   // 미용실 검색
   const [hairshopFilterValue, setHairshopFilterValue] = useState('');
-  const [filters, setFilters] = useState({
-    name: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  });
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
-    let _filters = { ...filters };
-    _filters['name'].value = value;
-    setFilters(_filters);
     setHairshopFilterValue(value);
   };
 
@@ -25,18 +19,30 @@ function Home() {
     authAxios()
       .get(`/`)
       .then((response) => {
-        // console.log('Auth Response:', response.data);
         setHairshopList(response.data);
+        setFilteredHairshopList(response.data);
       })
       .catch((error) => {
         console.error('Auth Error:', error);
       });
   }, []);
 
+  useEffect(() => {
+    if (hairshopFilterValue.trim() !== '') {
+      const filtered = hairshopList.filter((hairshop) =>
+        hairshop.shop_name
+          .toLowerCase()
+          .includes(hairshopFilterValue.toLowerCase())
+      );
+      setFilteredHairshopList(filtered);
+    } else {
+      setFilteredHairshopList(hairshopList);
+    }
+  }, [hairshopFilterValue, hairshopList]);
+
   return (
     <>
       <p className='text-xl m-0 mb-4'>
-        {/* <p>{localStorage.getItem('cust_name')} 고객님 안녕하세요</p> */}
         <span className='p-input-icon-left w-full'>
           <i className='pi pi-search' />
           <InputText
@@ -49,7 +55,7 @@ function Home() {
       </p>
       {/* 미용실 목록 */}
       <List
-        hairshopList={hairshopList}
+        hairshopList={filteredHairshopList}
         hairshopName={hairshopFilterValue}
       />
     </>
