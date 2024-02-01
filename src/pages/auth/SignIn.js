@@ -72,7 +72,8 @@ function SignIn() {
         } else {
           removeCookie('rememberUserId');
         }
-        navigate('/');
+        console.log('로그인 성공');
+        navigate('/home/realtime-reservation');
       })
       .catch((error) => {
         console.error('Non-Auth Error:', error);
