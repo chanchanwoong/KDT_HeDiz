@@ -3,8 +3,8 @@ import axios from 'axios';
 // Axios 인스턴스를 생성하는 함수
 const createAxiosInstance = (headers = {}, options = {}) => {
   return axios.create({
-    // baseURL: process.env.REACT_APP_AXIOS_BASE_URL || 'http://localhost:8090',
-    baseURL: process.env.REACT_APP_AXIOS_BASE_URL || '/hediz-client-server',
+    baseURL: process.env.REACT_APP_AXIOS_BASE_URL || 'http://localhost:8090',
+    // baseURL: process.env.REACT_APP_AXIOS_BASE_URL || '/hediz-client-server',
     headers: {
       ...headers,
     },

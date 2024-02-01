@@ -15,6 +15,7 @@ function WriteReview() {
   const location = useLocation();
   const navigate = useNavigate();
   const reserv_seq = location.state.reserv_seq;
+  const reserv_stat = location.state.reserv_stat;
   const shop_seq = location.state.shop_seq;
   const shop_name = location.state.shop_name;
   console.log(reserv_seq, shop_seq, shop_name);
@@ -42,6 +43,7 @@ function WriteReview() {
       cust_seq: localStorage.getItem('cust_seq'),
       shop_seq: shop_seq,
       reserv_seq: reserv_seq,
+      reserv_stat: reserv_stat,
       review_score: value,
       review_content: data.review_content,
       review_photo: sendImgs,

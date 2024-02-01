@@ -260,6 +260,7 @@ function MyPage() {
                         to='/mypage/write-review'
                         state={{
                           reserv_seq: item.reserv_seq,
+                          reserv_stat: item.reserv_stat,
                           shop_seq: item.shop_seq,
                           shop_name: item.shop_name,
                         }}
