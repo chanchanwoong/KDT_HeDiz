@@ -12,16 +12,17 @@ function HairShopList({ hairshopList }) {
           key={hairshop.shop_seq}
         >
           <div>
-            {/* <img
+            <img
               src={hairshop.shop_image}
               alt={hairshop.shop_name}
-            /> */}
-            <Image
+              style={{ width: '100%', height: '180px' }}
+            />
+            {/* <Image
               src='https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg'
               alt='Image'
               width='100%'
               height='180px'
-            />
+            /> */}
             <p className='flex align-items-end justify-content-between mt-2 mb-1'>
               <span className='font-bold text-base'>{hairshop.shop_name}</span>
               <span className='text-sm'>

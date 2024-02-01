@@ -63,15 +63,16 @@ function Hairstyle() {
   return (
     <>
       <section className='mb-6'>
-        {/* <img
-        src={hairstyle.style_image}
-        alt={hairstyle.style_name}
-      /> */}
-        <Image
+        <img
+          src={hairstyle.style_image}
+          alt={hairstyle.style_name}
+          style={{ width: '200px' }}
+        />
+        {/* <Image
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg'
           alt='Image'
           height='200px'
-        />
+        /> */}
         <p className='flex align-items-center justify-content-between font-bold text-lg'>
           <span>
             [{hairstyle.cate_name}] {hairstyle.style_name}
@@ -110,15 +111,16 @@ function Hairstyle() {
               {review.map((review) => (
                 <div key={review.review_seq}>
                   <article className='flex align-items-start justify-content-between gap-3 my-4'>
-                    {/* <img
-                        src={hairstyle.style_image}
-                        alt={hairstyle.style_name}
-                      /> */}
-                    <Image
+                    <img
+                      src={hairstyle.style_image}
+                      alt={hairstyle.style_name}
+                      className='w-4 flex-none'
+                    />
+                    {/* <Image
                       src='https://primefaces.org/cdn/primereact/images/galleria/galleria8.jpg'
                       alt='Image'
                       className='w-4 flex-none'
-                    />
+                    /> */}
                     <div className='flex-grow-1'>
                       <div className='flex align-items-start justify-content-between mt-0 mb-2'>
                         <div className='flex flex-column'>
