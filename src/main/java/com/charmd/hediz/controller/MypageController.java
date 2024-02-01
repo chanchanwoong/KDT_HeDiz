@@ -55,7 +55,8 @@ public class MypageController {
     public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDto) {
         int n = 0;
         // reserv_stat = 1 (방문완료) 경우에만 리뷰 작성 가능하다.
-        int reserv_stat = mypageService.getReservStat(reviewDto.getReserv_seq());
+        int reserv_stat = mypageService.getReservStat(reviewDto);
+
         if (reserv_stat == 1) {
             n = mypageService.reviewWrite(reviewDto);
         }

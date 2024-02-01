@@ -54,7 +54,7 @@
 
     <!--reserv_stat 조회-->
     <select id="getReservStat" parameterType="int" resultType="int">
-        select reserv_stat from T_REVIEW inner join T_RESERVATION using(reserv_seq) where reserv_seq=#{reserv_seq}
+        SELECT reserv_stat FROM T_RESERVATION where cust_seq = #{cust_seq} AND reserv_seq = #{reserv_seq}
     </select>
 
     <!--review 작성-->

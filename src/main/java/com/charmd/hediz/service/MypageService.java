@@ -11,7 +11,7 @@ public interface MypageService {
     public List<ReservationDTO> reservation(int cust_seq);
     public int updateMypage(CustomerDTO customerDto);
     public List<ReviewDTO> review(int cust_seq);
-    public int getReservStat(int reserv_seq);
+    public int getReservStat(ReviewDTO reviewDTO);
     public int reviewWrite(ReviewDTO reviewDto);
     public int reviewUpdate(ReviewDTO reviewDto);
     public int reviewDelete(int review_seq);
