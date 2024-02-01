@@ -8,7 +8,7 @@ import { Column } from 'primereact/column';
 import { authAxios } from 'api/AxiosAPI';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import DashboardChart from 'components/common/DashboardChart';
+// import DashboardChart from 'components/common/DashboardChart';
 import { getReservationValue } from 'service/CommonOptions';
 import { Tag } from 'primereact/tag';
 
@@ -23,7 +23,7 @@ function Dashboard() {
   const reservationInfoTemplate = (rowData) => {
     return (
       <>
-        <p className="font-semibold">{rowData.style_name}</p>
+        <p className='font-semibold'>{rowData.style_name}</p>
         <p>
           {formatTime(rowData.reserv_time)} - {formatTime(rowData.end_time)}
         </p>
@@ -33,7 +33,9 @@ function Dashboard() {
   };
 
   const statusBodyTemplate = (rowData) => {
-    const { value: reserveValue, color } = getReservationValue(rowData.reserv_stat);
+    const { value: reserveValue, color } = getReservationValue(
+      rowData.reserv_stat
+    );
 
     return (
       <Tag
@@ -45,9 +47,15 @@ function Dashboard() {
 
   useEffect(() => {
     //////// tempday_shop tempday_staff 둘다 받아오기
-    const request1 = authAxios().get(`/home/realtime-reservation/${localStorage.getItem('shop_seq')}`);
-    const request2 = authAxios().get(`/hairshop/closed-day/shop/${localStorage.getItem('shop_seq')}`);
-    const request3 = authAxios().get(`/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`);
+    const request1 = authAxios().get(
+      `/home/realtime-reservation/${localStorage.getItem('shop_seq')}`
+    );
+    const request2 = authAxios().get(
+      `/hairshop/closed-day/shop/${localStorage.getItem('shop_seq')}`
+    );
+    const request3 = authAxios().get(
+      `/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`
+    );
 
     const calendar = calendarRef.current.getApi();
     calendar.setOption('plugins', [dayGridPlugin]);
@@ -64,7 +72,9 @@ function Dashboard() {
           /// res2 res3 합치기
           const combinedData = [...res2.data, ...res3.data];
           const eventList = combinedData.map((item) => ({
-            title: `${item.staff_nickname ? item.staff_nickname : '전체 휴무'}: ${item.temp_memo}`,
+            title: `${
+              item.staff_nickname ? item.staff_nickname : '전체 휴무'
+            }: ${item.temp_memo}`,
             start: `${item.temp_start}`,
             end: `${item.temp_end}`,
             description: item.temp_memo,
@@ -100,82 +110,81 @@ function Dashboard() {
           {/* <h3>4</h3> */}
         </div>
         <div className={`${styles.item} card`}>
-          <h2 className="flex align-items-center justify-content-between">
+          <h2 className='flex align-items-center justify-content-between'>
             <span>
               실시간 예약
               <Clock
                 format={'YY년 MM월 DD일 HH:mm:ss'}
                 ticking={true}
-                className="ml-2"
+                className='ml-2'
               />
             </span>
-            <span className="mr-1 text-primary text-semiblod text-lg">{localStorage.getItem('shop_name')}</span>
+            <span className='mr-1 text-primary text-semiblod text-lg'>
+              {localStorage.getItem('shop_name')}
+            </span>
           </h2>
           <div>
             <DataTable
               value={reservation}
               rows={5}
-              size="small"
+              size='small'
               scrollable
-              scrollHeight="800px"
-              className="mt-2"
+              scrollHeight='800px'
+              className='mt-2'
             >
               <Column
-                field="staff_nickname"
-                header="담당 디자이너"
-                className="text-center"
+                field='staff_nickname'
+                header='담당 디자이너'
+                className='text-center'
               />
               <Column
-                field="cust_name"
-                header="고객 이름"
-                className="text-center font-semibold"
+                field='cust_name'
+                header='고객 이름'
+                className='text-center font-semibold'
               />
               <Column
-                field="reserv_request"
-                header="예약 정보"
+                field='reserv_request'
+                header='예약 정보'
                 body={reservationInfoTemplate}
               />
               <Column
-                field="reserv_stat"
-                header="예약 상태"
+                field='reserv_stat'
+                header='예약 상태'
                 body={statusBodyTemplate}
               />
             </DataTable>
           </div>
         </div>
         <div className={`${styles.item} card`}>
-          <h2 className="flex align-items-center justify-content-between">
+          <h2 className='flex align-items-center justify-content-between'>
             <span>매출 요약</span>
           </h2>
           <div></div>
         </div>
         <div className={`${styles.item} card`}>
-          <h2 className="flex align-items-center justify-content-between">
+          <h2 className='flex align-items-center justify-content-between'>
             <span>휴무일</span>
-            <span className="text-lg">
-              <span className="mr-1 text-primary text-semiblod">월요일</span>
+            <span className='text-lg'>
+              <span className='mr-1 text-primary text-semiblod'>월요일</span>
               정기 휴무
             </span>
           </h2>
           <div className={styles.custom}>
             <FullCalendar
-              locale="kr"
+              locale='kr'
               ref={calendarRef}
               plugins={[dayGridPlugin]}
-              initialView="dayGridMonth"
+              initialView='dayGridMonth'
               events={events}
               headerToolbar={false}
             />
           </div>
         </div>
         <div className={`${styles.item} card`}>
-          <h2 className="flex align-items-center justify-content-between">
+          <h2 className='flex align-items-center justify-content-between'>
             <span>고객 방문 현황</span>
-            그래프 하나 있으면 이쁠 듯
           </h2>
-          <div>
-            <DashboardChart />
-          </div>
+          <div>{/* <DashboardChart /> */}</div>
         </div>
       </div>
     </>
