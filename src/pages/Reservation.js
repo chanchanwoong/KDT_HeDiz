@@ -43,7 +43,7 @@ function Reservation() {
   ///// 예약 취소를 누를 경우 발생하는 핸들러
   ///// 예약 seq 와 영수증 id를 받아와서 예약 상태를 2로 변경하고 결제를 취소
   const handleReservCancel = (reserv_seq, receipt_id) => {
-    console.log(receipt_id);
+    console.log(reserv_seq, receipt_id);
     authAxios()
       .put(`mypage/realtime-reservation/${reserv_seq}`, { receipt_id })
       .then((response) => {
@@ -97,10 +97,7 @@ function Reservation() {
             type='submit'
             size='small'
             className='py-2'
-            // onClick={() =>
-            //   handleReservCancel(item.reserv_seq, item.receipt_id)
-            // }
-            onClick={confirm}
+            onClick={() => handleReservCancel(item.reserv_seq, item.receipt_id)}
           />
           <ConfirmDialog />
         </div>

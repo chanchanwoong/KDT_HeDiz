@@ -1,16 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { authAxios } from 'api/AxiosAPI';
 import { getReservationStat, getCustomerLevel } from 'utils/util';
+import { Rating } from 'primereact/rating';
 import { Divider } from 'primereact/divider';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { InputMask } from 'primereact/inputmask';
-import { Badge } from 'primereact/badge';
+import { formatHourMinute, formatDate } from 'utils/util';
 
 function MyPage() {
   const toast = useRef(null);
@@ -113,6 +114,21 @@ function MyPage() {
       summary: '프로필 수정 실패',
       detail: '프로필을 수정하는 동안 문제가 발생했습니다. 다시 시도해주세요.',
     });
+  };
+
+  ///// 리뷰 삭제를 위한 axios 요청 (delete)
+  const deleteReview = (product) => {
+    authAxios()
+      .delete(`mypage/review/${product.review_seq}`)
+      .then((response) => {
+        console.log('리뷰 삭제 성공');
+        setReviewList((prevProducts) =>
+          prevProducts.filter((p) => p.review_seq !== product.review_seq)
+        );
+      })
+      .catch((error) => {
+        console.error('Auth Error:', error);
+      });
   };
 
   return (
@@ -220,18 +236,37 @@ function MyPage() {
               </p>
             ) : (
               <>
+                <Divider />
                 {reservationList.map((item) => (
                   <div key={item.reserv_seq}>
-                    <p className='flex gap-2'>
-                      <span className='font-semibold'>{item.reserv_date}</span>
-                      <span>{item.reserv_time}</span>
-                      <span>{getReservationStat(item.reserv_stat)}</span>
+                    <p className='font-semibold m-0 mb-4 flex justify-content-between'>
+                      <span>
+                        <i className='pi pi-calendar mr-2'></i>
+                        {formatDate(item.reserv_date)}
+                        <span> </span>
+                        {formatHourMinute(item.reserv_time)}
+                      </span>
+                      <span className='text-500'>
+                        {getReservationStat(item.reserv_stat)}
+                      </span>
                     </p>
                     <p className='font-bold'>{item.shop_name}</p>
 
                     <p>{item.staff_nickname}</p>
                     <p>{item.style_name}</p>
                     <p>{item.reserv_request}</p>
+                    <div className='flex justify-content-end gap-2'>
+                      <Link
+                        to='/mypage/write-review'
+                        state={{
+                          reserv_seq: item.reserv_seq,
+                          shop_seq: item.shop_seq,
+                          shop_name: item.shop_name,
+                        }}
+                      >
+                        <Button>리뷰 등록</Button>
+                      </Link>
+                    </div>
                     <Divider />
                   </div>
                 ))}
@@ -245,19 +280,32 @@ function MyPage() {
               </p>
             ) : (
               <>
+                <Divider />
                 {reviewList.map((item) => (
                   <div key={item.review_seq}>
-                    <p className='flex gap-2'>
-                      <span className='font-semibold'>
-                        작성일자 {item.review_date}
+                    <p className='font-semibold m-0 mb-4 flex justify-content-between'>
+                      <span>
+                        <i className='pi pi-calendar mr-2'></i>
+                        작성일자 {formatDate(item.review_date)}
+                        <span> </span>
+                        {formatHourMinute(item.review_time)}
                       </span>
-                      <span>{item.review_time}</span>
+                      <span className='text-500'>{item.shop_name}</span>
                     </p>
                     <p className='font-bold'>{item.shop_name}</p>
                     <p>{item.staff_nickname}</p>
                     <p>{item.style_name}</p>
-                    <p>{item.review_score}</p>
+                    <Rating
+                      value={item.review_score}
+                      readOnly
+                      cancel={false}
+                    ></Rating>
                     <p>{item.review_content}</p>
+                    <div className='flex justify-content-end gap-2'>
+                      <Button onClick={() => deleteReview(item)}>
+                        리뷰 삭제
+                      </Button>
+                    </div>
                     <Divider />
                   </div>
                 ))}
