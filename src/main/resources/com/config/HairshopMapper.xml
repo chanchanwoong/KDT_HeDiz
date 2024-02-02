@@ -181,6 +181,12 @@
         a.reserv_time
     </select>
 
+    <!--중복 예약 확인-->
+    <select id="duplicateCheck" parameterType="PayinfoDTO" resultType="int">
+        SELECT count(cust_seq) FROM T_RESERVATION WHERE cust_seq=#{cust_seq} AND staff_seq=#{staff_seq}
+        AND style_seq=#{style_seq} AND reserv_date=#{reserv_date} AND reserv_time=#{reserv_time}
+    </select>
+
     <!--예약_예약 테이블에 저장-->
     <insert id="reservation" parameterType="PayinfoDTO">
         insert into T_RESERVATION (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id, reserv_stat)

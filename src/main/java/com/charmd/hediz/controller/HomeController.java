@@ -114,7 +114,7 @@ public class HomeController {
         System.out.println(payinfoDto);
         int n = 0;
         // 예약인 경우 결제와 예약 처리 진행
-        if(payinfoDto.getReserv_stat() == 1){
+        if(payinfoDto.getReserv_stat() == 0){
             n = hairshopService.reservation(payinfoDto);
             return ResponseEntity.ok().body(n == 2);
         }

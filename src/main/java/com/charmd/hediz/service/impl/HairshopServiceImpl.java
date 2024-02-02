@@ -124,18 +124,25 @@ public class HairshopServiceImpl implements HairshopService {
     public int reservation(PayinfoDTO payinfoDto) {
         int numberOfReservation = 0;
         int numberOfPay = 0;
-        System.out.println("넣기 전 payinfoDto > " + payinfoDto);
+        int numberOfDuplicateCheck = 0;
 
-        // T_RESERVATION에 넣을 데이터 : style_seq, cust_seq, shop_seq, reserv_request,
-        // reserv_date, reserv_time, reserv_stat(0으로 가야함), receipt_id, staff_seq
-        numberOfReservation = dao.reservation(payinfoDto);
+        // cust_seq, style_seq, staff_seq, reserv_date, reserv_time 데이터로 중복 예약 확인
+        numberOfDuplicateCheck = dao.duplicateCheck(payinfoDto);
 
-        // reserv_seq는 위 과정에서 나온 결과를 넣어야 함.
-        int reserv_seq = dao.findReservSeq(payinfoDto);
-        payinfoDto.setReserv_seq(reserv_seq);
+        // 중복 예약이 없는 경우에 예약이 진행
+        if(numberOfDuplicateCheck==0) {
+            // T_RESERVATION에 넣을 데이터 : style_seq, cust_seq, shop_seq, reserv_request,
+            // reserv_date, reserv_time, reserv_stat(0으로 가야함), receipt_id, staff_seq
+            numberOfReservation = dao.reservation(payinfoDto);
 
-        // T_payment에 넣은 데이터 : shop_seq, cust_seq, reserv_seq, pay_price, pay_date, pay_stat
-        numberOfPay = dao.payment(payinfoDto);
+            // reserv_seq는 위 과정에서 나온 결과를 넣어야 함.
+            // receipt_id를 통해 reserv_seq 조회
+            int reserv_seq = dao.findReservSeq(payinfoDto);
+            payinfoDto.setReserv_seq(reserv_seq);
+
+            // T_payment에 넣은 데이터 : shop_seq, cust_seq, reserv_seq, pay_price, pay_date, pay_stat
+            numberOfPay = dao.payment(payinfoDto);
+        }
         return numberOfReservation + numberOfPay;
     }
 

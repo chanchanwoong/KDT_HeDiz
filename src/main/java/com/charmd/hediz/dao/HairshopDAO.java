@@ -50,6 +50,10 @@ public class HairshopDAO {
         return session.selectList("com.config.HairshopMapper.reservationFilter", reservationFilterMap);
     }
 
+    public int duplicateCheck(PayinfoDTO payinfoDto) {
+        return session.selectOne("com.config.HairshopMapper.duplicateCheck", payinfoDto);
+    }
+
     public int reservation(PayinfoDTO payinfoDto) {
         return session.insert("com.config.HairshopMapper.reservation", payinfoDto);
     }
