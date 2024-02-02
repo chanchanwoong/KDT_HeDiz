@@ -171,13 +171,11 @@
         ) AS hope_style_time
         FROM
         T_STAFF c
-        LEFT JOIN T_RESERVATION a ON c.staff_seq = a.staff_seq AND a.reserv_date = #{day}
+        LEFT JOIN T_RESERVATION a ON c.staff_seq = a.staff_seq AND a.reserv_date = #{day} AND a.reserv_stat = 0
         LEFT JOIN T_HAIRSHOP b ON c.shop_seq = b.shop_seq
         LEFT JOIN T_HAIRSTYLE d ON a.style_seq = d.style_seq
         WHERE
         c.shop_seq = #{shop_seq}
-        AND reserv_stat = 0
-        <!--        AND (a.reserv_time BETWEEN b.shop_start AND b.shop_end OR a.reserv_time IS NULL)-->
         ORDER BY
         a.reserv_date,
         a.reserv_time
