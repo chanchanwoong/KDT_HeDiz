@@ -1,19 +1,28 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-// 서비스 페이지
-import MainLayout from 'pages/layout/MainLayout';
-import Home from 'pages/Home';
-import Hairshop from 'pages/Hairshop';
-import HairStyle from 'pages/Hairstyle';
-import Schedule from 'pages/Schedule';
-import Reservation from 'pages/Reservation';
-import Payment from 'pages/Payment';
-import MyPage from 'pages/MyPage';
-import WriteReview from 'components/WriteReview';
+// 로그인 페이지
+import AuthLayout from '../layout/AuthLayout';
+import SignIn from '../pages/auth/SignIn';
+import SignUp from '../pages/auth/SignUp';
 
-// 인증 페이지
-import SignIn from 'pages/auth/SignIn';
-import SignUp from 'pages/auth/SignUp';
+// 메인화면
+import MainLayout from '../layout/MainLayout';
+import Home from 'pages/home/home';
+import Reservation from '../pages/reservation/CheckReservation';
+
+//헤어샵 페이지
+import HairshopDetailPage from '../pages/hairshop/HairshopDetailPage';
+import HairstyleDetailPage from '../pages/hairshop/HairstyleDetailPage';
+import HairshopReservation from '../pages/hairshop/HairshopReservation';
+import HairshopPayment from '../pages/hairshop/HairshopPayment';
+
+//마이페이지
+import Mypage from '../pages/mypage/Mypage';
+import MyReservation from '../pages/mypage/MyReservation';
+import MyReview from '../pages/mypage/MyReview';
+import WriteReview from '../pages/mypage/WriteReview';
+
+//예약 페이지
 
 const router = createBrowserRouter([
   {
