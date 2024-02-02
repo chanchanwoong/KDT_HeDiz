@@ -108,9 +108,20 @@ public class HomeController {
     }
 
     // 예약_최종 결제 후 결제 테이블과 예약 테이블에 저장
+    // 예약인 경우 reserv_stat = 0, 대기인 경우 reserv_stat = 4로 입력받음
     @PostMapping("reservation")
     public ResponseEntity<?> reservation(@RequestBody PayinfoDTO payinfoDto) {
-        int n = hairshopService.reservation(payinfoDto);
-        return ResponseEntity.ok().body(n == 2);
+        System.out.println(payinfoDto);
+        int n = 0;
+        // 예약인 경우 결제와 예약 처리 진행
+        if(payinfoDto.getReserv_stat() == 1){
+            n = hairshopService.reservation(payinfoDto);
+            return ResponseEntity.ok().body(n == 2);
+        }
+        // 대기인 경우 결제는 없이, 예약만 진행
+        else{
+            n = hairshopService.standBy(payinfoDto);
+            return ResponseEntity.ok().body(n==1);
+        }
     }
 }

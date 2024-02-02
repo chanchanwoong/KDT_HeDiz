@@ -120,7 +120,7 @@ public class HairshopServiceImpl implements HairshopService {
 
     @Override
     @Transactional
-    // 결제 데이터, 예약 데이터 저장
+    // 예약인 경우는 결제 데이터, 예약 데이터 저장
     public int reservation(PayinfoDTO payinfoDto) {
         int numberOfReservation = 0;
         int numberOfPay = 0;
@@ -137,5 +137,13 @@ public class HairshopServiceImpl implements HairshopService {
         // T_payment에 넣은 데이터 : shop_seq, cust_seq, reserv_seq, pay_price, pay_date, pay_stat
         numberOfPay = dao.payment(payinfoDto);
         return numberOfReservation + numberOfPay;
+    }
+
+    // 대기인 경우는 예약 데이터만 저장
+    @Override
+    public int standBy(PayinfoDTO payinfoDto) {
+        int numberOfReservation = 0;
+        numberOfReservation = dao.reservation(payinfoDto);
+        return numberOfReservation;
     }
 }

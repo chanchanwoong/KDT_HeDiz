@@ -17,4 +17,5 @@ public interface HairshopService {
     public Map<Integer, TreeSet<LocalTime>> reservationFilter(HashMap<String, Object> reservationFilterMap);
     public PayinfoDTO getPayinfo(PayinfoDTO payinfoDto);
     public int reservation(PayinfoDTO payinfoDto);
+    public int standBy(PayinfoDTO payinfoDto);
 }

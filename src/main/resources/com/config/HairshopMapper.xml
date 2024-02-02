@@ -176,8 +176,7 @@
         LEFT JOIN T_HAIRSTYLE d ON a.style_seq = d.style_seq
         WHERE
         c.shop_seq = #{shop_seq}
-        AND (a.reserv_time BETWEEN b.shop_start AND b.shop_end OR a.reserv_time IS NULL)
-<!--        AND (CONCAT(a.reserv_date, ' ', a.reserv_time) >= NOW() OR a.reserv_date IS NULL)-->
+<!--        AND (a.reserv_time BETWEEN b.shop_start AND b.shop_end OR a.reserv_time IS NULL)-->
         ORDER BY
         a.reserv_date,
         a.reserv_time
@@ -185,8 +184,8 @@
 
     <!--예약_예약 테이블에 저장-->
     <insert id="reservation" parameterType="PayinfoDTO">
-        insert into T_RESERVATION (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id)
-        values (#{style_seq}, #{cust_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id})
+        insert into T_RESERVATION (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id, reserv_stat)
+        values (#{style_seq}, #{cust_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id}, #{reserv_stat})
     </insert>
 
     <!--예약 테이블에 저장한 reserv_seq 조회-->
