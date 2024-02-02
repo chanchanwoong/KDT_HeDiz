@@ -89,7 +89,7 @@ function Payment() {
     reserv_stat: '',
     receipt_id: '', // 결제 취소에 사용할 영수증 id (결제 완료 시 발급됨)
   };
-
+  console.log(payinfo);
   const handleBootpay = async () => {
     console.log(payinfo);
     try {
