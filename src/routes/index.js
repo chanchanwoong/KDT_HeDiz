@@ -9,6 +9,7 @@ import Schedule from 'pages/Schedule';
 import Reservation from 'pages/Reservation';
 import Payment from 'pages/Payment';
 import MyPage from 'pages/MyPage';
+import WriteReview from 'components/WriteReview';
 
 // 인증 페이지
 import SignIn from 'pages/auth/SignIn';
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       { path: 'reservation', element: <Reservation /> },
       { path: 'payment', element: <Payment /> },
       { path: 'mypage', element: <MyPage /> },
+      {
+        path: 'mypage/write-review',
+        element: <WriteReview />,
+      },
     ],
   },
   {

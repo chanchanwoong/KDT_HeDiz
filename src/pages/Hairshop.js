@@ -54,6 +54,7 @@ function Hairshop() {
 
             console.log(hairshopRequest.data);
             console.log(hairstyleRequest.data);
+            console.log(reviewRequest.data);
           }
         )
       )
@@ -66,16 +67,17 @@ function Hairshop() {
     <>
       {/* 미용실 정보 */}
       <section>
-        {/* <img
-        src={hairshopInfo.shop_image}
-        alt={hairshopInfo.shop_name}
-      /> */}
-        <Image
+        <img
+          src={hairshopInfo.shop_image}
+          alt={hairshopInfo.shop_name}
+          style={{ width: '100%', height: '180px' }}
+        />
+        {/* <Image
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg'
           alt='Image'
           width='100%'
           height='180px'
-        />
+        /> */}
 
         <div className='mt-2'>
           <p className='text-sm text-500 m-0'>{hairshopInfo.shop_address}</p>
@@ -174,15 +176,16 @@ function Hairshop() {
                   key={staff.staff_seq}
                   className='flex align-items-center justify-content-between gap-2 my-2'
                 >
-                  {/* <img
-                src={staff.staff_image}
-                alt={staff.staff_nickname}
-              /> */}
-                  <Image
+                  <img
+                    src={staff.staff_image}
+                    alt={staff.staff_nickname}
+                    className='img__staff'
+                  />
+                  {/* <Image
                     src='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
                     alt='Image'
                     className='img__staff'
-                  />
+                  /> */}
                   {/* <h3>{staff.staff_nickname}</h3> */}
                   <div className='flex-grow-1'>
                     <p className='mb-2'>
