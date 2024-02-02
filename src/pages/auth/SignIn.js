@@ -9,6 +9,7 @@ import { Password } from 'primereact/password';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
+import { getToken } from 'firebase/messaging';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -16,6 +17,23 @@ function SignIn() {
   const [cookies, setCookie, removeCookie] = useCookies(['rememberCustId']);
   const [userid, setUserid] = useState('');
   const [isRemember, setIsRemember] = useState(false);
+
+  // firebase 토큰 얻기
+  function requestPermission() {
+    console.log('권한 요청 중...');
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('알림 권한이 허용됨');
+
+        // FCM 메세지 처리
+      } else {
+        console.log('알림 권한 허용 안됨');
+      }
+    });
+  }
+  const token = getToken(messaging, {
+    vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
+  });
 
   const {
     control,
@@ -88,6 +106,7 @@ function SignIn() {
 
         const returnUrl = localStorage.getItem('returnUrl');
         if (returnUrl && returnUrl !== '' && returnUrl !== '/auth/sign-in') {
+          requestPermission();
           navigate(returnUrl);
         } else {
           navigate('/');
