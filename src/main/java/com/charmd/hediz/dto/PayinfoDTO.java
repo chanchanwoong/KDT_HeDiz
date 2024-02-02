@@ -30,4 +30,7 @@ public class PayinfoDTO {
     private int reserv_stat;
     private String receipt_id;
     private int reserv_seq;
+
+    // 대기, 푸시 알람에 사용될 ctoken_value
+    private String ctoken_value;
 }

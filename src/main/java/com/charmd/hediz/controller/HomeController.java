@@ -119,9 +119,10 @@ public class HomeController {
             return ResponseEntity.ok().body(n == 2);
         }
         // 대기인 경우 결제는 없이, 예약만 진행
+        // c_token 값 저장
         else{
             n = hairshopService.standBy(payinfoDto);
-            return ResponseEntity.ok().body(n==1);
+            return ResponseEntity.ok().body(n==2);
         }
     }
 }

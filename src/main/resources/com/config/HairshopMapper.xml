@@ -215,4 +215,8 @@
         values(  #{reserv_seq}, #{pay_price}, now())
     </insert>
 
+    <!--대기 고객 ctoken 값 저장-->
+    <insert id="insertCToken" parameterType="PayinfoDTO">
+        INSERT INTO T_CTOKEN(cust_seq, ctoken_value) VALUES(#{cust_seq}, #{ctoken_value})
+    </insert>
 </mapper>

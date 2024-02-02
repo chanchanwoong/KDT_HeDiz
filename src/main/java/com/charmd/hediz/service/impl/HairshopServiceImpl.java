@@ -139,11 +139,13 @@ public class HairshopServiceImpl implements HairshopService {
         return numberOfReservation + numberOfPay;
     }
 
-    // 대기인 경우는 예약 데이터만 저장
+    // 대기인 경우는 예약 데이터만 저장하고 ctoken_value 값 저장
     @Override
     public int standBy(PayinfoDTO payinfoDto) {
         int numberOfReservation = 0;
+        int numberOfCToken = 0;
         numberOfReservation = dao.reservation(payinfoDto);
-        return numberOfReservation;
+        numberOfCToken = dao.insertCToken(payinfoDto);
+        return numberOfReservation + numberOfCToken;
     }
 }
