@@ -70,6 +70,10 @@ public class HairshopDAO {
         return session.insert("com.config.HairshopMapper.payment", payinfoDto);
     }
 
+    public void levelUpdate(int cust_seq){
+        session.update("com.config.HairshopMapper.levelUpdate", cust_seq);
+    }
+
     public int insertCToken(PayinfoDTO payinfoDto) {
         return session.insert("com.config.HairshopMapper.insertCToken", payinfoDto);
     }

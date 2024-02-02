@@ -221,6 +221,20 @@
         values(  #{reserv_seq}, #{pay_price}, now())
     </insert>
 
+    <!--고객 등급 갱신-->
+    <update id="levelUpdate" parameterType="int">
+        UPDATE T_CUSTOMER
+        SET cust_level = 1
+        WHERE cust_seq IN (
+        SELECT T_RESERVATION.cust_seq
+        FROM T_PAYMENT
+        INNER JOIN T_RESERVATION ON T_PAYMENT.reserv_seq = T_RESERVATION.reserv_seq
+        WHERE pay_stat = 0 AND cust_seq = #{cust_seq}
+        GROUP BY T_RESERVATION.cust_seq
+        HAVING SUM(pay_price) >= 1000000
+        )
+    </update>
+
     <!--대기 고객 ctoken 값 저장-->
     <insert id="insertCToken" parameterType="PayinfoDTO">
         INSERT INTO T_CTOKEN(cust_seq, ctoken_value) VALUES(#{cust_seq}, #{ctoken_value})

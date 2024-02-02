@@ -142,6 +142,9 @@ public class HairshopServiceImpl implements HairshopService {
 
             // T_payment에 넣은 데이터 : shop_seq, cust_seq, reserv_seq, pay_price, pay_date, pay_stat
             numberOfPay = dao.payment(payinfoDto);
+
+            // 누적 결제 금액이 100만원 이상인 경우, cust_level = 1 로 갱신
+            dao.levelUpdate(payinfoDto.getCust_seq());
         }
         return numberOfReservation + numberOfPay;
     }
