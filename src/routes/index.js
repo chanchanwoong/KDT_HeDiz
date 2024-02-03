@@ -15,10 +15,14 @@ import WriteReview from 'components/WriteReview';
 import SignIn from 'pages/auth/SignIn';
 import SignUp from 'pages/auth/SignUp';
 
+//에러 페이지
+import ErrorPage404 from 'pages/error/ErrorPage404';
+
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
+    errorElement: <ErrorPage404 />,
     children: [
       { path: '/', element: <Home /> },
       { path: 'hairshop/:shop_seq', element: <Hairshop /> },

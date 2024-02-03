@@ -251,7 +251,6 @@ function MyPage() {
                       </span>
                     </p>
                     <p className='font-bold'>{item.shop_name}</p>
-
                     <p>{item.staff_nickname}</p>
                     <p>{item.style_name}</p>
                     <p>{item.reserv_request}</p>
@@ -265,7 +264,9 @@ function MyPage() {
                           shop_name: item.shop_name,
                         }}
                       >
-                        <Button>리뷰 등록</Button>
+                        {item.reserv_stat === 1 ? (
+                          <Button>리뷰 등록</Button>
+                        ) : null}
                       </Link>
                     </div>
                     <Divider />
