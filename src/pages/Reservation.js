@@ -5,9 +5,11 @@ import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { DataView } from 'primereact/dataview';
+import axios from 'axios';
 
 function Reservation() {
   const [reservations, setReservations] = useState([]);
+  const [pushCustList, setPushCustList] = useState([]);
   const toast = useRef(null);
 
   const accept = () => {
@@ -48,7 +50,36 @@ function Reservation() {
       .put(`mypage/realtime-reservation/${reserv_seq}`, { receipt_id })
       .then((response) => {
         console.log('Auth Response:', response.data);
-        // BootpayCancelAPI(reserv_receipt);
+        // FIREBASE 푸시 알림 로직 response.data에 토큰 정보가 담겨있음
+        setPushCustList(response.data);
+        response.data.map((list) => {
+          console.log(list);
+          let pushinfo = {
+            to: list,
+            notification: {
+              title: 'HeDiz',
+              body: '고객님이 설정하신 대기시간의 예약이 취소되었습니다.',
+            },
+          };
+
+          const header = {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: process.env.REACT_APP_FIREBASE_AUTH_KEY,
+            },
+          };
+          console.log(process.env.REACT_APP_FIREBASE_AUTH_KEY);
+          console.log(pushinfo);
+
+          axios
+            .post('https://fcm.googleapis.com/fcm/send', pushinfo, header)
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((error) => {
+              console.error('FCM 전송 중 오류 발생:', error);
+            });
+        });
       })
       .catch((error) => {
         console.error('Auth Error:', error);
