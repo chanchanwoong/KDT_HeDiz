@@ -89,15 +89,20 @@ public class MypageController {
     // 예약 상태 수정
     // reserv_stat = 0(예약 확정) -> reserv_stat = 2(예약 취소)
     // pay_stat = 0(결제) -> 1(취소)
+    // 대기 고객 필터링해서 대기 고객들의 cToken 값들 넘김
     @PutMapping("realtime-reservation/{reserv_seq}")
     public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq, @RequestBody String receipt_id) {
-//        int n = reservationService.cancelReservation(reserv_seq, receipt_id);
-
-        // ctoken 값들 보내기 위해 테스트
-        List<Integer> standByCustList = new ArrayList<>(Arrays.asList(8,9,10));
-        List<String> cTokenList = reservationService.sendCToken(standByCustList);
+        int n = reservationService.cancelReservation(reserv_seq, receipt_id);
+        List<Integer> standByCustList = new ArrayList<>();
+        List<String> cTokenList = new ArrayList<>();
+        // n이 3이면 대기 고객 필터링
+        if(n==3) {
+            standByCustList = reservationService.getStandByCustListUsingFilter(reserv_seq);
+        }
+        System.out.println("custList >> " + standByCustList);
+        // cTokenList 조회
+        cTokenList = reservationService.getCToken(standByCustList);
         return ResponseEntity.ok().body(cTokenList);
-//        return ResponseEntity.ok().body(n == 3);
     }
 
 }

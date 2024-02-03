@@ -30,8 +30,29 @@
         update T_PAYMENT set pay_stat=1 where reserv_seq=#{reserv_seq}
     </update>
 
+    <!--대기 고객 중 예약 가능한 cust_seq 조회-->
+    <select id="getStandByCustListUsingFilter" parameterType="int" resultType="int">
+        SELECT A.cust_seq
+        FROM T_RESERVATION AS A
+        JOIN T_HAIRSTYLE AS HA ON A.style_seq = HA.style_seq
+        WHERE A.reserv_date = (SELECT reserv_date FROM t_reservation WHERE reserv_seq = #{reserv_seq})
+        AND A.reserv_stat = 4
+        AND NOT EXISTS (
+        SELECT 1 FROM T_RESERVATION AS B
+        JOIN T_HAIRSTYLE AS HB ON B.style_seq = HB.style_seq
+        WHERE A.reserv_date = B.reserv_date
+        AND B.reserv_stat = 0
+        AND (
+        (A.reserv_time >= B.reserv_time AND A.reserv_time <![CDATA[< ADDTIME(B.reserv_time, HB.style_time))]]>
+        OR
+        (ADDTIME(A.reserv_time, HA.style_time) > B.reserv_time AND ADDTIME(A.reserv_time, HA.style_time) <![CDATA[<= ADDTIME(B.reserv_time, HB.style_time))]]>
+        )
+        )
+    </select>
+
+
     <!--CToken 값 반환-->
-    <select id="sendCToken" parameterType="list" resultType="java.lang.String">
+    <select id="getCToken" parameterType="list" resultType="java.lang.String">
         select ctoken_value from T_CTOKEN where cust_seq in
         <foreach collection="list" item="ctoken_seq" open="(" separator="," close=")">
             #{ctoken_seq}
