@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Api
@@ -89,8 +91,13 @@ public class MypageController {
     // pay_stat = 0(결제) -> 1(취소)
     @PutMapping("realtime-reservation/{reserv_seq}")
     public ResponseEntity<?> cancelReservation(@PathVariable("reserv_seq") int reserv_seq, @RequestBody String receipt_id) {
-        int n = reservationService.cancelReservation(reserv_seq, receipt_id);
-        return ResponseEntity.ok().body(n == 3);
+//        int n = reservationService.cancelReservation(reserv_seq, receipt_id);
+
+        // ctoken 값들 보내기 위해 테스트
+        List<Integer> standByCustList = new ArrayList<>(Arrays.asList(8,9,10));
+        List<String> cTokenList = reservationService.sendCToken(standByCustList);
+        return ResponseEntity.ok().body(cTokenList);
+//        return ResponseEntity.ok().body(n == 3);
     }
 
 }

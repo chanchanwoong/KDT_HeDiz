@@ -64,4 +64,9 @@ public class ReservationServiceImpl implements ReservationService {
         }
         return numberOfCancel + numberOfReservStat + numberOfPayStat;
     }
+
+    @Override
+    public List<String> sendCToken(List<Integer> standByCustList) {
+        return dao.sendCToken(standByCustList);
+    }
 }

@@ -23,4 +23,7 @@ public class ReservationDAO {
     public int changePayStat(int reserv_seq){
         return session.update("com.config.ReservationMapper.changePayStat", reserv_seq);
     }
+    public List<String> sendCToken(List<Integer> standByCustList){
+        return session.selectList("com.config.ReservationMapper.sendCToken", standByCustList);
+    }
 }

@@ -29,4 +29,12 @@
     <update id="changePayStat" parameterType="int">
         update T_PAYMENT set pay_stat=1 where reserv_seq=#{reserv_seq}
     </update>
+
+    <!--CToken 값 반환-->
+    <select id="sendCToken" parameterType="list" resultType="java.lang.String">
+        select ctoken_value from T_CTOKEN where cust_seq in
+        <foreach collection="list" item="ctoken_seq" open="(" separator="," close=")">
+            #{ctoken_seq}
+        </foreach>
+    </select>
 </mapper>
