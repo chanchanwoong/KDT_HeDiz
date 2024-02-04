@@ -196,12 +196,18 @@ function SignIn() {
               )}
             />
           </div>
-          <div>
+          <div className='flex flex-column'>
             <Link
               to='/auth/sign-up'
               className='cursor-pointer no-underline text-color-secondary font-semibold'
             >
               아직 회원이 아니신가요?
+            </Link>
+            <Link
+              to='/auth/find'
+              className='cursor-pointer no-underline text-color-secondary font-semibold'
+            >
+              아이디/비밀번호 찾기
             </Link>
           </div>
         </div>

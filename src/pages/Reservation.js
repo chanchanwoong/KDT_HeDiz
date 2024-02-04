@@ -51,7 +51,7 @@ function Reservation() {
       .then((response) => {
         console.log('Auth Response:', response.data);
         // FIREBASE 푸시 알림 로직 response.data에 토큰 정보가 담겨있음
-        setPushCustList(response.data);
+        // setPushCustList(response.data);
         response.data.map((list) => {
           console.log(list);
           let pushinfo = {
@@ -123,13 +123,17 @@ function Reservation() {
           <span className='text-color'>{item.reserv_request}</span>
         </p>
         <div className='flex justify-content-end gap-2'>
-          <Button
-            label='예약취소'
-            type='submit'
-            size='small'
-            className='py-2'
-            onClick={() => handleReservCancel(item.reserv_seq, item.receipt_id)}
-          />
+          {item.reserv_stat === 0 && (
+            <Button
+              label='예약취소'
+              type='submit'
+              size='small'
+              className='py-2'
+              onClick={() =>
+                handleReservCancel(item.reserv_seq, item.receipt_id)
+              }
+            />
+          )}
           <ConfirmDialog />
         </div>
       </article>

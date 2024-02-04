@@ -17,6 +17,7 @@ import SignUp from 'pages/auth/SignUp';
 
 //에러 페이지
 import ErrorPage404 from 'pages/error/ErrorPage404';
+import FindIDPassword from 'pages/auth/FindIDPassword';
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
     children: [
       { path: 'sign-in', element: <SignIn /> },
       { path: 'sign-up', element: <SignUp /> },
+      { path: 'find', element: <FindIDPassword /> },
     ],
   },
 ]);
