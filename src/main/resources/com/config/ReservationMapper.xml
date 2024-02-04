@@ -35,7 +35,7 @@
         SELECT A.cust_seq
         FROM T_RESERVATION AS A
         JOIN T_HAIRSTYLE AS HA ON A.style_seq = HA.style_seq
-        WHERE A.reserv_date = (SELECT reserv_date FROM t_reservation WHERE reserv_seq = #{reserv_seq})
+        WHERE A.reserv_date = (SELECT reserv_date FROM T_RESERVATION WHERE reserv_seq = #{reserv_seq})
         AND A.reserv_stat = 4
         AND NOT EXISTS (
         SELECT 1 FROM T_RESERVATION AS B
