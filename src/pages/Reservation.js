@@ -101,35 +101,39 @@ function Reservation() {
     return (
       <article key={item.reserv_seq}>
         <Divider />
-        <p className="font-semibold m-0 mb-4 flex justify-content-between">
+        <p className='font-semibold m-0 mb-4 flex justify-content-between'>
           <span>
-            <i className="pi pi-calendar mr-2"></i>
+            <i className='pi pi-calendar mr-2'></i>
             {formatDate(item.reserv_date)}
             <span> </span>
             {formatHourMinute(item.reserv_time)}
           </span>
-          <span className="text-500">{item.shop_name}</span>
+          <span className='text-500'>{item.shop_name}</span>
         </p>
-        <p className="text-color-secondary font-semibold text-sm m-0 mb-2">
-          <span className="inline-block w-2">디자이너</span>
-          <span className="text-color">{item.staff_nickname}</span>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+          <span className='inline-block w-2'>디자이너</span>
+          <span className='text-color'>{item.staff_nickname}</span>
         </p>
-        <p className="text-color-secondary font-semibold text-sm m-0 mb-2">
-          <span className="inline-block w-2">헤어스타일</span>
-          <span className="text-color">{item.style_name}</span>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+          <span className='inline-block w-2'>헤어스타일</span>
+          <span className='text-color'>{item.style_name}</span>
         </p>
-        <p className="text-color-secondary font-semibold text-sm m-0 mb-4">
-          <span className="inline-block w-2">요청사항</span>
-          <span className="text-color">{item.reserv_request}</span>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-4'>
+          <span className='inline-block w-2'>요청사항</span>
+          <span className='text-color'>{item.reserv_request}</span>
         </p>
-        <div className="flex justify-content-end gap-2">
-          <Button
-            label="예약취소"
-            type="submit"
-            size="small"
-            className="py-2"
-            onClick={() => handleReservCancel(item.reserv_seq, item.receipt_id)}
-          />
+        <div className='flex justify-content-end gap-2'>
+          {item.reserv_stat === 0 && (
+            <Button
+              label='예약취소'
+              type='submit'
+              size='small'
+              className='py-2'
+              onClick={() =>
+                handleReservCancel(item.reserv_seq, item.receipt_id)
+              }
+            />
+          )}
           <ConfirmDialog />
         </div>
       </article>
@@ -148,9 +152,11 @@ function Reservation() {
 
   return (
     <>
-      <h3 className="mt-0 mb-4">
+      <h3 className='mt-0 mb-4'>
         <span>예약확인</span>
-        <span className="text-500 text-sm ml-2">총 {reservations.length} 건</span>
+        <span className='text-500 text-sm ml-2'>
+          총 {reservations.length} 건
+        </span>
       </h3>
       <DataView
         value={reservations}
