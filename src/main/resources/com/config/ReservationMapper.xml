@@ -53,7 +53,7 @@
 
     <!--CToken 값 반환-->
     <select id="getCToken" parameterType="list" resultType="java.lang.String">
-        select ctoken_value from T_CTOKEN where cust_seq in
+        select distinct ctoken_value from T_CTOKEN where cust_seq in
         <foreach collection="list" item="ctoken_seq" open="(" separator="," close=")">
             #{ctoken_seq}
         </foreach>
