@@ -33,11 +33,6 @@ public class HomeController {
         return ResponseEntity.ok().body(hairshopList);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
     // 특정 미용실 정보 조회
     @GetMapping("hairshop/{shop_seq}")
     public ResponseEntity<?> findHairshop(@PathVariable("shop_seq") int shop_seq) {
