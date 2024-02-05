@@ -9,9 +9,11 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { Image } from 'primereact/image';
 
 export default function staff() {
   const shop_seq = localStorage.getItem('shop_seq');
+
   let defaultValues = {
     shop_seq: shop_seq,
     staff_seq: 0,
@@ -58,7 +60,7 @@ export default function staff() {
   const [staffs, setStaffs] = useState(null);
   const [product, setProduct] = useState(defaultValues);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [sendImgs, setSendImgs] = useState([]);
+  const [sendImgs, setSendImgs] = useState();
   const dt = useRef(null);
   const toast = useRef(null);
 
@@ -106,16 +108,18 @@ export default function staff() {
   // 직원 수정
   const onRowEditComplete = (e) => {
     let _staffs = [...staffs];
-    console.log(_staffs);
     let { newData, index } = e;
-    newData.staff_image = sendImgs;
+    newData.staff_image = sendImgs || _staffs.staff_image;
     _staffs[index] = newData;
+
+    console.log(_staffs);
 
     authAxios()
       .put(`/hairshop/staff`, newData)
       .then((response) => {
         console.log('Auth Response:', response.data);
         accept('직원 정보를 수정했습니다. ');
+        setProduct(defaultValues);
         reset(defaultValues);
         setVisible(false);
       })
@@ -125,6 +129,7 @@ export default function staff() {
       });
     setStaffs(_staffs);
   };
+
   const textEditor = (options) => {
     return (
       <InputText
@@ -134,29 +139,47 @@ export default function staff() {
       />
     );
   };
+
   // 수정 버튼 누를 시 나오는 이미지 수정 버튼
   const imageEditor = (options) => {
     return (
-      <div>
-        <label
-          className='btn btn-secondary border-0 bg_grey font-bold'
-          htmlFor='staff_image'
-        >
-          프로필 사진 등록
-        </label>
-        <input
-          type='file'
-          style={{ display: 'none' }}
-          id='staff_image'
-          name='staff_image'
-          accept='image/*'
-          onChange={handleImageUpload}
-        />
-        {product.staff_image && (
+      <div className='flex-auto'>
+        <div className='flex justify-content-between align-items-center gap-2'>
+          <InputText
+            placeholder='프로필 사진'
+            className='upload-name'
+            disabled
+          />
+          <input
+            type='file'
+            id='file'
+            multiple
+            name='staff_image'
+            accept='image/*'
+            onChange={handleImageUpload}
+            className='hidden'
+          ></input>
+          <label
+            htmlFor='file'
+            className='p-button p-component w-5 justify-content-center'
+          >
+            선택
+          </label>
+        </div>
+        {product.staff_image ? (
           <img
             src={product.staff_image}
-            className='product-staff block m-auto pb-3 w-4'
+            className='shadow-2 border-round mt-2'
+            style={{ width: '140px' }}
           />
+        ) : (
+          options && (
+            <img
+              src={options.value}
+              className='shadow-2 border-round  mt-2'
+              style={{ width: '140px' }}
+            />
+          )
         )}
       </div>
     );
@@ -216,10 +239,18 @@ export default function staff() {
     }
     let reader = new FileReader();
     reader.onload = () => {
+      console.log(product);
       setSendImgs(reader.result);
       setProduct({ ...product, staff_image: reader.result });
+      console.log(product);
     };
     reader.readAsDataURL(file);
+
+    const fileName = file.name;
+    const uploadNameInput = document.querySelector('.upload-name');
+    if (uploadNameInput) {
+      uploadNameInput.value = fileName;
+    }
   };
 
   const imageBodyTemplate = (rowData) => {
@@ -228,7 +259,7 @@ export default function staff() {
       <img
         src={imageData}
         className='shadow-2 border-round'
-        style={{ width: '128px' }}
+        style={{ width: '140px' }}
       />
     );
   };
@@ -269,7 +300,7 @@ export default function staff() {
         dataKey='staff_seq'
         showGridlines
         paginator
-        rows={10}
+        rows={4}
         paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
         currentPageReportTemplate='총 {totalRecords}명의 직원이 검색되었습니다. '
         globalFilter={globalFilter}
@@ -284,67 +315,68 @@ export default function staff() {
           body={imageBodyTemplate}
           className='text-center'
           editor={(option) => imageEditor(option)}
+          style={{ width: '15%' }}
         ></Column>
-
+        <Column
+          field='staff_nickname'
+          header='닉네임'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='text-center'
+          style={{ width: '10%' }}
+        ></Column>
         <Column
           field='staff_role'
           header='직급'
           sortable
           editor={(options) => textEditor(options)}
           className='text-center'
+          style={{ width: '10%' }}
         ></Column>
-
         <Column
-          field='staff_nickname'
-          header='직원 닉네임'
+          field='staff_name'
+          header='이름'
           sortable
           editor={(options) => textEditor(options)}
           className='text-center'
+          style={{ width: '10%' }}
         ></Column>
-
+        <Column
+          field='staff_phone'
+          header='전화번호'
+          sortable
+          editor={(options) => textEditor(options)}
+          className='text-center'
+          style={{ width: '10%' }}
+        ></Column>
         <Column
           field='staff_intro'
-          header='직원 소개'
+          header='소개'
           sortable
           editor={(options) => textEditor(options)}
           className='pl-3'
+          style={{ width: '30%' }}
         ></Column>
-
-        <Column
-          field='staff_name'
-          header='직원 이름'
-          sortable
-          editor={(options) => textEditor(options)}
-          className='text-center'
-        ></Column>
-
-        <Column
-          field='staff_phone'
-          header='직원 전화번호'
-          sortable
-          editor={(options) => textEditor(options)}
-          className='text-center'
-        ></Column>
-
         <Column
           header='수정'
           rowEditor={true}
-          headerStyle={{ minWidth: '6rem' }}
+          style={{ width: '10%' }}
           bodyStyle={{ textAlign: 'center' }}
         ></Column>
-
         <Column
           header='삭제'
           exportable={false}
           className='text-center'
-          headerStyle={{ minWidth: '6rem' }}
+          style={{ width: '10%' }}
           body={deleteTemplate}
         ></Column>
       </DataTable>
 
       <Toast ref={toast} />
+      {/* 직원 삭제 */}
       <ConfirmPopup />
 
+      {/* 직원 등록 */}
       <Dialog
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
         header='직원 등록'
@@ -357,7 +389,7 @@ export default function staff() {
           className='flex flex-column flex-wrap gap-4 mt-4'
         >
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>직원 이름</label>
+            <label className='font-bold block mb-2'>이름</label>
             <InputText
               placeholder='직원 이름'
               name='staff_name'
@@ -365,7 +397,7 @@ export default function staff() {
             />
           </div>
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>직원 이름</label>
+            <label className='font-bold block mb-2'>닉네임</label>
             <InputText
               placeholder='직원 닉네임'
               name='staff_nickname'
@@ -373,7 +405,7 @@ export default function staff() {
             />
           </div>
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>직원 직급</label>
+            <label className='font-bold block mb-2'>직급</label>
             <InputText
               placeholder='직원 직급'
               name='staff_role'
@@ -381,7 +413,7 @@ export default function staff() {
             />
           </div>
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>직원 전화번호</label>
+            <label className='font-bold block mb-2'>전화번호</label>
             <InputText
               placeholder='직원 전화번호'
               name='staff_phone'
@@ -389,7 +421,7 @@ export default function staff() {
             />
           </div>
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>직원 소개</label>
+            <label className='font-bold block mb-2'>소개</label>
             <InputTextarea
               autoResize
               rows={3}
@@ -399,36 +431,43 @@ export default function staff() {
             />
           </div>
 
-          <div>
-            <label
-              className='btn btn-secondary border-0 bg_grey font-bold'
-              htmlFor='staff_image'
-            >
-              프로필 사진 등록
-            </label>
-            <input
-              type='file'
-              multiple
-              style={{ display: 'none' }}
-              id='staff_image'
-              name='staff_image'
-              accept='.jpg'
-              onChange={handleImageUpload}
-            />
-            {product.staff_image && (
-              <img
-                src={product.staff_image}
-                className='product-staff block m-auto pb-3 w-4'
+          <div className='flex-auto'>
+            <label className='font-bold block mb-2'>프로필 사진</label>
+            <div className='flex justify-content-between align-items-center gap-2'>
+              <InputText
+                placeholder='첨부파일'
+                className='upload-name'
+                disabled
               />
-            )}
+              <input
+                type='file'
+                id='file'
+                multiple
+                name='staff_image'
+                accept='image/*'
+                onChange={handleImageUpload}
+                className='p-component p-inputtext hidden'
+              ></input>
+              <label
+                htmlFor='file'
+                className='p-button p-component w-2 justify-content-center'
+              >
+                선택
+              </label>
+            </div>
           </div>
+          {product.staff_image && (
+            <img
+              src={product.staff_image}
+              className='m-auto w-4'
+            />
+          )}
 
           <div className='flex justify-content-end gap-2'>
             <Button
               label='취소'
               type='button'
               onClick={onCancelClick}
-              size='small'
               className='w-6rem'
               outlined
             />
@@ -436,7 +475,6 @@ export default function staff() {
               label='등록'
               type='button'
               onClick={handleSubmit(onSubmit)}
-              size='small'
               className='w-6rem'
             />
           </div>

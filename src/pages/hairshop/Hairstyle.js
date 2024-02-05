@@ -15,6 +15,7 @@ import { InputMask } from 'primereact/inputmask';
 
 export default function Hairstyle() {
   const shop_seq = localStorage.getItem('shop_seq');
+
   const defaultValues = {
     shop_seq: shop_seq,
     style_seq: 0,
@@ -77,7 +78,7 @@ export default function Hairstyle() {
   const [hairstyles, setHairstyles] = useState(null);
   const [product, setProduct] = useState(defaultValues);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [sendImgs, setSendImgs] = useState([]);
+  const [sendImgs, setSendImgs] = useState();
   const dt = useRef(null);
   const toast = useRef(null);
 
@@ -98,18 +99,20 @@ export default function Hairstyle() {
       });
   };
 
-  // 헤어스타일 추가
+  // 헤어스타일 등록
   const onSubmit = async (data) => {
     const requestData = {
       ...data,
       shop_seq,
+      style_image: sendImgs,
     };
 
     authAxios()
       .post(`/hairshop/hairstyle`, requestData)
       .then((response) => {
+        console.log(requestData);
         console.log('Auth Response:', response.data);
-        accept('헤어스타일을 추가했습니다. ');
+        accept('헤어스타일을 등록했습니다. ');
         reset(defaultValues);
         setVisible(false);
         loadData();
@@ -241,11 +244,12 @@ export default function Hairstyle() {
   // 이미지
   const imageBodyTemplate = (rowData) => {
     const imageData = rowData.style_image;
+    console.log(rowData.style_name, imageData);
     return (
       <img
         src={imageData}
         className='shadow-2 border-round'
-        style={{ width: '100px' }}
+        style={{ width: '140px' }}
       />
     );
   };
@@ -265,7 +269,7 @@ export default function Hairstyle() {
             />
           </span>
           <Button
-            label={`헤어스타일 추가 (총 ${
+            label={`헤어스타일 등록 (총 ${
               hairstyles ? hairstyles.length : 0
             } 건)`}
             icon='pi pi-plus'
@@ -281,7 +285,7 @@ export default function Hairstyle() {
         dataKey='style_seq'
         showGridlines
         scrollable
-        scrollHeight='800px'
+        scrollHeight='70vh'
         globalFilter={globalFilter}
         size='small'
         // 카테고리 그룹화
@@ -331,7 +335,7 @@ export default function Hairstyle() {
           sortable
           editor={(options) => textEditor(options)}
           body={(rowData) => <span>{formatTimeTaken(rowData.style_time)}</span>}
-          className='pl-3'
+          className='text-center'
         ></Column>
 
         <Column
@@ -369,10 +373,10 @@ export default function Hairstyle() {
       <Toast ref={toast} />
       <ConfirmPopup />
 
-      {/* 헤어스타일 추가 */}
+      {/* 헤어스타일 등록 */}
       <Dialog
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header='헤어스타일 추가'
+        header='헤어스타일 등록'
         className='p-fluid w-4'
         visible={visible}
         onHide={() => setVisible(false)}
@@ -426,12 +430,10 @@ export default function Hairstyle() {
             />
           </div>
           <div className='flex-auto'>
-            <label className='font-bold block mb-2'>
-              소요시간 {`(2:30 = 2시간 30분)`}
-            </label>
+            <label className='font-bold block mb-2'>소요시간</label>
             <InputMask
               mask='9:99'
-              placeholder='예: 1시간 30분'
+              placeholder='예) 2:30 → 2시간 30분'
               name='style_time'
               {...register('style_time', { required: true })}
             />
@@ -457,22 +459,34 @@ export default function Hairstyle() {
           </div>
 
           <div>
-            <label className='font-bold block mb-2'>
-              이미지 업로드
+            <label className='font-bold block mb-2'>스타일 사진</label>
+            <div className='flex justify-content-between align-items-center gap-2'>
+              <InputText
+                placeholder='첨부파일'
+                className='upload-name'
+                disabled
+              />
               <input
                 type='file'
+                id='file'
                 multiple
-                style={{ display: 'none' }}
                 name='style_image'
-                accept='.jpg'
+                accept='image/*'
                 onChange={handleImageUpload}
-              />
-            </label>
+                className='p-component p-inputtext hidden'
+              ></input>
+              <label
+                htmlFor='file'
+                className='p-button p-component w-2 justify-content-center'
+              >
+                선택
+              </label>
+            </div>
           </div>
           {product.style_image && (
             <img
               src={product.style_image}
-              className='product-staff block m-auto pb-3 w-4'
+              className='m-auto w-4'
             />
           )}
 
