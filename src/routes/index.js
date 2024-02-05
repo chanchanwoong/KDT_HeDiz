@@ -27,6 +27,9 @@ import Review from 'pages/reservation/Review';
 // customer__고객 관리
 import Management from 'pages/customer/Management';
 
+// 에러페이지
+import ErrorPage404 from 'pages/error/ErrorPage404';
+
 const router = createBrowserRouter([
   {
     path: '/auth',
@@ -39,6 +42,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
+    errorElement: <ErrorPage404 />,
     element: <MainLayout />,
     children: [
       {
