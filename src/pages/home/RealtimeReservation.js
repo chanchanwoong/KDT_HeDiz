@@ -16,7 +16,7 @@ const RealtimeReservation = () => {
   const [reservation, setReservation] = useState([]);
   const [events, setEvents] = useState([]);
 
-  useEffect(() => {
+  const handleRefresh = () => {
     authAxios()
       .get(`/home/realtime-reservation/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
@@ -33,6 +33,7 @@ const RealtimeReservation = () => {
             staff: event.staff_nickname,
             cust: event.cust_name,
             reserv_stat: event.reserv_stat,
+            style: event.style_name,
           },
         }));
         setEvents(formattedEvents);
@@ -40,19 +41,31 @@ const RealtimeReservation = () => {
       .catch((error) => {
         console.error('Auth Error:', error);
       });
+  };
+
+  useEffect(() => {
+    handleRefresh();
   }, []);
 
   const eventContent = (eventInfo) => {
     const { color } = getReservationValue(
       eventInfo.event.extendedProps.reserv_stat
     );
-    console.log(color);
     return (
-      <div style={{ backgroundColor: color }}>
+      <div
+        // style={{ backgroundColor: color }}
+        className='text-sm pl-2 mt-2'
+        style={{ color: 'black', borderLeft: `5px solid ${color}` }}
+      >
         <p>{eventInfo.timeText}</p>
         <p>
-          {eventInfo.event.extendedProps.staff} /{' '}
-          {eventInfo.event.extendedProps.cust}
+          <span className='mr-1'>고객 성함</span>
+          <b>{eventInfo.event.extendedProps.cust}</b>
+        </p>
+        <p>
+          <span className='mr-1'>예약 정보</span>
+          <b className='mr-2'>{eventInfo.event.extendedProps.staff}</b>
+          <b>{eventInfo.event.extendedProps.style}</b>
         </p>
       </div>
     );
@@ -66,7 +79,7 @@ const RealtimeReservation = () => {
     return (
       <Tag
         value={reserveValue}
-        style={{ backgroundColor: color, width: '80px' }}
+        style={{ backgroundColor: color, width: '80px', borderRadius: '40px' }}
       />
     );
   };
@@ -106,8 +119,9 @@ const RealtimeReservation = () => {
       />
       <Button
         icon='pi pi-refresh'
-        rounded
-        raised
+        outlined
+        onClick={handleRefresh}
+        className='py-2'
       />
     </div>
   );
@@ -125,7 +139,7 @@ const RealtimeReservation = () => {
               value={reservation}
               header={header}
               scrollable
-              scrollHeight='800px'
+              scrollHeight='70vh'
               showGridlines
               size='small'
             >
@@ -135,9 +149,17 @@ const RealtimeReservation = () => {
                 className='text-center'
                 sortable
               />
+
+              <Column
+                field='reserv_stat'
+                header='예약상태'
+                sortable
+                body={statusBodyTemplate}
+                className='text-center'
+              />
               <Column
                 field='staff_nickname'
-                header='담당 디자이너'
+                header='담당'
                 className='text-center'
                 sortable
               />
@@ -146,6 +168,8 @@ const RealtimeReservation = () => {
                 header='예약시간'
                 sortable
                 body={reservationTimeTemplate}
+                className='text-center'
+                style={{ minWidth: '8rem' }}
               />
               <Column
                 field='style_name'
@@ -153,24 +177,18 @@ const RealtimeReservation = () => {
                 sortable
                 body={hairstyleTemplate}
                 className='text-center'
+                style={{ minWidth: '8rem' }}
               />
               <Column
                 field='cust_name'
                 header='고객 정보'
                 body={customerTemplate}
                 className='text-center'
+                style={{ minWidth: '8rem' }}
               />
               <Column
                 field='reserv_request'
                 header='요청사항'
-                className='pl-4'
-              />
-              <Column
-                field='reserv_stat'
-                header='예약상태'
-                sortable
-                body={statusBodyTemplate}
-                className='text-center'
               />
             </DataTable>
           </div>
@@ -191,12 +209,10 @@ const RealtimeReservation = () => {
               events={events}
               eventContent={eventContent}
               expandRows={true}
-              // slotLabelInterval={'00:10:00'}
-              slotDuration={'00:10:00'}
-              // 영업 시작 일자
+              slotDuration={'00:30:00'}
+              // 영업 시작, 종료 일자
               slotMinTime={'09:00:00'}
-              // 영업 종료 일자
-              slotMaxTime={'23:00:00'}
+              slotMaxTime={'24:00:00'}
               slotEventOverlap={false}
             />
           </div>
