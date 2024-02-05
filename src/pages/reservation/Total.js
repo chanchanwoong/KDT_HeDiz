@@ -1,56 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { authAxios } from 'api/AxiosAPI';
 import { formatTime, formatNumberWithCommas } from 'service/Utils';
-import {
-  getReservationValue,
-  getReservationValueReturn,
-} from 'service/CommonOptions';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 
 export default function Total() {
+  const toast = useRef(null);
   const [reservation, setReservation] = useState([]);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [selectRowData, setSelectRowData] = useState([]);
 
-  const statusBodyTemplate = (rowData) => {
-    const { value: reserveValue, color } = getReservationValue(
-      rowData.reserv_stat
-    );
-
-    return (
-      <Tag
-        value={reserveValue}
-        style={{ backgroundColor: color, width: '100px' }}
-      />
-    );
+  const showSuccess = () => {
+    toast.current.show({
+      severity: 'success',
+      summary: 'Success',
+      detail: '예약상태 변경을 완료했습니다.',
+      life: 3000,
+    });
   };
 
-  const statusEditor = (options) => {
-    const allReservStats = reservation.map(
-      (reservation) => reservation.reserv_stat
-    );
-    const uniqueReservStats = [...new Set(allReservStats)];
-    const reservStatStrings = uniqueReservStats
-      .filter((stat) => [1, 3].includes(stat))
-      .map((stat) => getReservationValue(stat).value);
-    return (
-      <Dropdown
-        value={getReservationValue(options.rowData.reserv_stat).value}
-        options={reservStatStrings}
-        onChange={(e) =>
-          options.editorCallback(
-            (options.value = getReservationValueReturn(e.target.value).value)
-          )
-        }
-      />
-    );
+  const showReject = () => {
+    toast.current.show({
+      severity: 'error',
+      summary: 'error',
+      detail: '예약상태 변경을 실패했습니다.',
+      life: 3000,
+    });
   };
+
+  const getStatus = (value) => {
+    switch (value) {
+      case 0:
+        return { value: '예약 완료', color: '#049bff' };
+      case 1:
+        return { value: '방문 완료', color: '#8b5cf6' };
+      case 2:
+        return { value: '예약 취소', color: '#ffaa00' };
+      case 3:
+        return { value: '노쇼', color: '#ff416a' };
+      case 4:
+        return { value: '대기', color: '#76818d' };
+
+      default:
+        return null;
+    }
+  };
+
+  const reservStat = [
+    { name: '방문 완료', value: 1 },
+    { name: '노쇼', value: 3 },
+  ];
 
   useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = () => {
     authAxios()
       .get(`/reservation/total/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
@@ -60,36 +69,74 @@ export default function Total() {
       .catch((error) => {
         console.error('Auth Error:', error);
       });
-  }, []);
-
-  const onRowEditComplete = (e) => {
-    let _reservation = [...reservation];
-    console.log(_reservation);
-    let { newData, index } = e;
-    _reservation[index] = newData;
-
-    authAxios()
-      .put(`/reservation/${newData.reserv_seq}/${newData.reserv_stat}`, newData)
-      .then((response) => {
-        console.log('Auth Response:', response.data);
-      })
-      .catch((error) => {
-        console.error('Auth Error:', error);
-      });
-    setReservation(_reservation);
   };
 
-  const [xxx, setXXX] = useState(false);
+  const statusBodyTemplate = (rowData) => {
+    return (
+      <Tag
+        value={getStatus(rowData.reserv_stat).value}
+        style={{
+          backgroundColor: getStatus(rowData.reserv_stat).color,
+          width: '80px',
+          borderRadius: '40px',
+          padding: '6px',
+        }}
+      />
+    );
+  };
+
+  const statusEditor = (options) => {
+    if (options.rowData) {
+      setSelectRowData(options.rowData);
+    }
+    if (selectRowData && selectRowData.reserv_stat === 0) {
+      return (
+        <Dropdown
+          value={options.value}
+          options={reservStat}
+          optionLabel='name'
+          optionValue='value'
+          placeholder='예약상태를 확정해주세요'
+          onChange={(e) => {
+            if (selectRowData) {
+              selectRowData.reserv_stat = e.value;
+              console.log('final selectRowData : ', selectRowData);
+              authAxios()
+                .put(`/reservation/${selectRowData.reserv_seq}/${e.value}`)
+                .then((response) => {
+                  console.log('Auth Response:', response.data);
+                  loadData();
+                  setSelectRowData([]);
+                  showSuccess();
+                })
+                .catch((error) => {
+                  console.error('Auth Error:', error);
+                  showReject();
+                });
+            }
+          }}
+        />
+      );
+    } else {
+      console.log(options.rowData);
+      return (
+        <Tag
+          value={getStatus(options.rowData.reserv_stat).value}
+          style={{
+            backgroundColor: getStatus(options.rowData.reserv_stat).color,
+            width: '80px',
+            borderRadius: '40px',
+            padding: '6px',
+          }}
+        />
+      );
+    }
+  };
 
   return (
     <div className='card h-full'>
       <h2 className='flex align-items-center justify-content-between'>
-        <span>
-          전체 예약 내역{' '}
-          {` (총 ${
-            reservation ? formatNumberWithCommas(reservation.length) : 0
-          } 건)`}
-        </span>
+        <span>전체 예약 내역</span>
         <div>
           <span className='p-input-icon-left'>
             <i className='pi pi-search' />
@@ -110,24 +157,18 @@ export default function Total() {
         globalFilter={globalFilter}
         paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
         rowsPerPageOptions={[10, 25, 50]}
-        // 수정 모드
-        editMode='row'
-        onRowEditComplete={onRowEditComplete}
+        editMode='cell'
+        currentPageReportTemplate='총 {totalRecords}건의 예약 내역이 검색되었습니다. '
       >
         <Column
-          field='staff_nickname'
-          header='담당 디자이너'
+          field='reserv_seq'
+          header='예약 번호'
           className='text-center'
           sortable
         />
         <Column
-          field='cust_name'
-          header='고객 이름'
-          className='text-center'
-        />
-        <Column
-          field='style_name'
-          header='헤어스타일'
+          field='staff_nickname'
+          header='담당'
           className='text-center'
           sortable
         />
@@ -145,14 +186,29 @@ export default function Total() {
           sortable
         />
         <Column
+          field='style_name'
+          header='헤어스타일'
+          className='text-center'
+          sortable
+        />
+        <Column
+          field='cust_name'
+          header='고객 이름'
+          className='text-center'
+        />
+        <Column
           field='reserv_request'
           header='요청사항'
         />
         <Column
-          field='balance'
+          field='pay_price'
           header='결제금액'
           sortable
           dataType='numeric'
+          body={(rowData) => (
+            <span>{formatNumberWithCommas(rowData.pay_price)}</span>
+          )}
+          className='text-right'
         />
         <Column
           field='reserv_stat'
@@ -160,14 +216,10 @@ export default function Total() {
           sortable
           className='text-center'
           editor={(options) => statusEditor(options)}
-          // body={statusBodyTemplate}
-        />
-
-        <Column
-          header='수정'
-          rowEditor={true}
+          body={statusBodyTemplate}
         />
       </DataTable>
+      <Toast ref={toast} />
     </div>
   );
 }
