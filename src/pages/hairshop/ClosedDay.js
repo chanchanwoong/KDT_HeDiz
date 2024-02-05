@@ -73,23 +73,22 @@ function ClosedDay() {
     const request2 = authAxios().get(
       `/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`
     );
-    axios;
+    // axios;
     axios
       .all([request1, request2])
       .then(
         axios.spread((res1, res2) => {
-          console.log('Response from request1:', res1.data);
-          console.log('Response from request2:', res2.data);
-          /// res2 res3 합치기
+          /// 직원, 미용실 휴무일 합치기
           const combinedData = [...res1.data, ...res2.data];
           setClosedDay(combinedData);
           const eventList = combinedData.map((item) => ({
             title: `${
-              item.staff_nickname ? item.staff_nickname : '전체 휴무'
-            }: ${item.temp_memo}`,
+              item.staff_nickname ? `[${item.staff_nickname}]` : '[전체 휴무]'
+            } ${item.temp_memo}`,
             start: `${item.temp_start}`,
             end: `${item.temp_end}`,
             description: item.temp_memo,
+            backgroundColor: item.staff_nickname ? '#8b5cf6' : '#ffaa00',
           }));
 
           const regularDays =
@@ -112,7 +111,7 @@ function ClosedDay() {
             title: '정기 휴무일',
             daysOfWeek: [day - 1],
             editable: false,
-            backgroundColor: 'rgb(100 117 139)',
+            backgroundColor: '#76818d',
           }));
 
           // 기존 이벤트와 매주 정기 휴무일을 합침
@@ -138,7 +137,6 @@ function ClosedDay() {
     authAxios()
       .get(`/hairshop/staff/${localStorage.getItem('shop_seq')}`)
       .then((response) => {
-        console.log('Auth Response:', response.data);
         setStaff(response.data);
       })
       .catch((error) => {
@@ -159,13 +157,11 @@ function ClosedDay() {
 
     if (checked) {
       // 전체 휴무(미용실 휴무)
-      console.log('전체 휴무');
       reqeustData.shop_seq = localStorage.getItem('shop_seq');
       console.log(reqeustData);
       authAxios()
         .post('/hairshop/closed-day/all', reqeustData)
         .then((response) => {
-          console.log('Auth Response (전체 휴무):', response.data);
           setEvents((prevEvents) => [
             ...prevEvents,
             {
@@ -195,7 +191,7 @@ function ClosedDay() {
           setEvents((prevEvents) => [
             ...prevEvents,
             {
-              title: `${response.data.staff_nickname}: ${response.data.temp_memo}`,
+              title: `[${response.data.staff_nickname}] ${response.data.temp_memo}`,
               start: `${response.data.temp_start}`,
               end: `${response.data.temp_end}`,
               description: response.data.temp_memo,
