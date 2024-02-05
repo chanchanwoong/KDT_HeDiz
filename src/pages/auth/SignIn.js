@@ -73,7 +73,7 @@ function SignIn() {
           removeCookie('rememberUserId');
         }
         console.log('로그인 성공');
-        navigate('/home/realtime-reservation');
+        navigate('/');
       })
       .catch((error) => {
         console.error('Non-Auth Error:', error);
@@ -191,7 +191,7 @@ function SignIn() {
           <div>
             <Link
               to='/auth/find'
-              className='text-purple-500 cursor-pointer no-underline'
+              className='cursor-pointer no-underline'
             >
               아이디/비밀번호 찾기
             </Link>
@@ -219,7 +219,7 @@ function SignIn() {
       <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 1600 800'
-        class='fixed left-0 top-0 min-h-screen min-w-screen'
+        className='fixed left-0 top-0 min-h-screen min-w-screen'
         preserveAspectRatio='none'
         style={{ zIndex: '-1' }}
       >
