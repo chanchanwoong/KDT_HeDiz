@@ -199,7 +199,7 @@ function Review() {
             />
 
             <Button
-              label='수정하기'
+              label={product.review_reply ? '수정하기' : '등록하기'}
               onClick={hideDialog}
             />
           </div>
