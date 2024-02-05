@@ -94,11 +94,12 @@ function Review() {
           <div className='flex flex-column sm:flex-row justify-content-between align-items-center flex-1 gap-4'>
             <div className='flex flex-column align-items-center sm:align-items-start gap-3 w-2'>
               <div>
-                <div className='text-lg font-bold text-800 mb-1'>
-                  {product.style_name}
+                <div>
+                  <span className='text-lg font-bold text-800 mr-2'>
+                    {product.style_name}
+                  </span>
+                  <span>{product.reserv_date}</span>
                 </div>
-                <i className='pi pi-calendar mr-2'></i>
-                <span>{product.reserv_date}</span>
               </div>
               <div>
                 <Rating
@@ -166,8 +167,10 @@ function Review() {
             value={products}
             itemTemplate={itemTemplate}
             paginator
-            rows={4}
+            rows={5}
             header={headerDataTemplate()}
+            paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+            rowsPerPageOptions={[5, 10, 25]}
           />
         )}
       </div>
