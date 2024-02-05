@@ -64,7 +64,7 @@ const RealtimeReservation = () => {
         </p>
         <p>
           <span className='mr-1'>예약 정보</span>
-          <b className='mr-2'>{eventInfo.event.extendedProps.staff}</b>
+          <b>{eventInfo.event.extendedProps.staff} - </b>
           <b>{eventInfo.event.extendedProps.style}</b>
         </p>
       </div>
