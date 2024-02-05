@@ -11,7 +11,7 @@ import { todayTime } from 'utils/GenerateTime';
 function WriteReview() {
   const [value, setValue] = useState(null);
   const { register, handleSubmit } = useForm();
-  const [sendImgs, setSendImgs] = useState([]);
+  const [sendImgs, setSendImgs] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const reserv_seq = location.state.reserv_seq;

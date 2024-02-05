@@ -9,26 +9,6 @@ import axios from 'axios';
 
 function Reservation() {
   const [reservations, setReservations] = useState([]);
-  const [pushCustList, setPushCustList] = useState([]);
-  const toast = useRef(null);
-
-  const accept = () => {
-    toast.current.show({
-      severity: 'info',
-      summary: 'Confirmed',
-      detail: 'You have accepted',
-      life: 3000,
-    });
-  };
-
-  const reject = () => {
-    toast.current.show({
-      severity: 'warn',
-      summary: 'Rejected',
-      detail: 'You have rejected',
-      life: 3000,
-    });
-  };
 
   useEffect(() => {
     authAxios()
@@ -86,17 +66,6 @@ function Reservation() {
       });
   };
 
-  const confirm = () => {
-    confirmDialog({
-      message: 'Are you sure you want to proceed?',
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      defaultFocus: 'accept',
-      accept,
-      reject,
-    });
-  };
-
   const itemTemplate = (item, index) => {
     return (
       <article key={item.reserv_seq}>
@@ -118,9 +87,24 @@ function Reservation() {
           <span className='inline-block w-2'>헤어스타일</span>
           <span className='text-color'>{item.style_name}</span>
         </p>
-        <p className='text-color-secondary font-semibold text-sm m-0 mb-4'>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
           <span className='inline-block w-2'>요청사항</span>
           <span className='text-color'>{item.reserv_request}</span>
+        </p>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
+          <span className='inline-block w-2'>예약 상태</span>
+          <span className='text-color'>
+            {(() => {
+              switch (item.reserv_stat) {
+                case 0:
+                  return '예약 완료';
+                case 4:
+                  return '대기';
+                default:
+                  return item.reserv_stat;
+              }
+            })()}
+          </span>
         </p>
         <div className='flex justify-content-end gap-2'>
           {item.reserv_stat === 0 && (

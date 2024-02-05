@@ -196,9 +196,7 @@ function FindIDPassword() {
                       className={classNames({
                         'p-invalid': fieldState.error,
                       })}
-                      feedback={false}
                       onChange={field.onChange}
-                      toggleMask
                     />
                     {getFormErrorMessage(field.name)}
                   </>
@@ -269,9 +267,7 @@ function FindIDPassword() {
                       className={classNames({
                         'p-invalid': fieldState.error,
                       })}
-                      feedback={false}
                       onChange={field.onChange}
-                      toggleMask
                     />
                     {getFormErrorMessage(field.name)}
                   </>
@@ -305,9 +301,7 @@ function FindIDPassword() {
                         className={classNames({
                           'p-invalid': fieldState.error,
                         })}
-                        feedback={false}
                         onChange={field.onChange}
-                        toggleMask
                       />
                       {getFormErrorMessage(field.name)}
                     </>

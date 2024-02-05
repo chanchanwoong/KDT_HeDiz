@@ -28,11 +28,14 @@ function HairstyleList({ hairstyleList, shopSeq }) {
                 to={`/hairshop/${shopSeq}/hairstyle/${hairstyle.style_seq}`}
               >
                 <article className='flex justify-content-between gap-3 my-4'>
-                  <img
-                    src={hairstyle.style_image}
-                    alt={hairstyle.style_name}
-                    className='w-4 flex-none'
-                  />
+                  {hairstyle.style_image !== null ? (
+                    <img
+                      src={hairstyle.style_image}
+                      alt={hairstyle.style_name}
+                      className='w-4 flex-none'
+                    />
+                  ) : null}
+
                   {/* <Image
                     src='https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg'
                     alt='Image'

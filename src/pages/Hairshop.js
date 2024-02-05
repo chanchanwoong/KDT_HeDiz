@@ -174,13 +174,15 @@ function Hairshop() {
               {staffList.map((staff) => (
                 <div
                   key={staff.staff_seq}
-                  className='flex align-items-center justify-content-between gap-2 my-2'
+                  className='flex justify-content-between gap-2 my-2'
                 >
-                  <img
-                    src={staff.staff_image}
-                    alt={staff.staff_nickname}
-                    className='img__staff'
-                  />
+                  {staff.staff_image !== null ? (
+                    <img
+                      src={staff.staff_image}
+                      alt={staff.staff_nickname}
+                      className='w-4 flex-none'
+                    />
+                  ) : null}
                   {/* <Image
                     src='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
                     alt='Image'
@@ -188,11 +190,11 @@ function Hairshop() {
                   /> */}
                   {/* <h3>{staff.staff_nickname}</h3> */}
                   <div className='flex-grow-1'>
-                    <p className='mb-2'>
+                    <p className='mb-2 ml-2'>
                       <b className='font-base'>{staff.staff_nickname}</b>
                       {staff.staff_role}
                     </p>
-                    <p className='text-color-secondary text-sm mt-0'>
+                    <p className='text-color-secondary text-sm mt-0 ml-2'>
                       {staff.staff_intro}
                     </p>
                   </div>

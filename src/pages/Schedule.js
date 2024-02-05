@@ -1,25 +1,37 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useReservationContext } from 'context/ReservationContext';
 import axios from 'axios';
 import { authAxios } from 'api/AxiosAPI';
-import { formatHourMinute, formatNumberWithCommas, formatDate, formatCalendarDate } from 'utils/util';
-import { generateDates, generateTimeSlots, getToday, getCurrnetTime } from 'utils/GenerateTime';
+import {
+  formatHourMinute,
+  formatNumberWithCommas,
+  formatDate,
+  formatCalendarDate,
+} from 'utils/util';
+import {
+  generateDates,
+  generateTimeSlots,
+  getToday,
+  getCurrnetTime,
+} from 'utils/GenerateTime';
 import { Panel } from 'primereact/panel';
 import { Calendar } from 'primereact/calendar';
 import { DataView } from 'primereact/dataview';
-import { Avatar } from 'primereact/avatar';
 import { Divider } from 'primereact/divider';
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
 import { requestPermission } from 'api/firebase-messaging-sw';
+import { Toast } from 'primereact/toast';
 
 function Schedule() {
   // 결제 페이지로 이동할 때 필요한 데이터
-  const { setCustSeq, setStyleSeq, setStaffSeq, setShopSeq, setDate, setTime } = useReservationContext();
+  const { setCustSeq, setStyleSeq, setStaffSeq, setShopSeq, setDate, setTime } =
+    useReservationContext();
 
   const location = useLocation();
   const navigate = useNavigate();
+  const toast = useRef(null);
 
   // 예약 진행 중인 cust_seq, shop_seq, style_seq
   const searchParams = new URLSearchParams(location.search);
@@ -53,8 +65,6 @@ function Schedule() {
   // 대기인지 예약인지 체크
   const [isWait, setIsWait] = useState(false);
   // 폐점시간부터 스타일 소요시간 구하기
-  const [closeTime, setCloseTime] = useState(0);
-
   const countCloseTime = (time) => {
     const styleTime = time; // hairstyle.style_time 값으로 대체해야 합니다.
     const [hours, minutes, seconds] = styleTime.split(':');
@@ -62,30 +72,53 @@ function Schedule() {
     const dividedMinutes = totalMinutes / 30 - 1;
     return dividedMinutes;
   };
+  // 대기버튼 눌렀을 때 나오는 창
+  const showAccept = () => {
+    toast.current.show({
+      severity: 'success',
+      summary: '대기 신청 성공',
+      detail: '대기 신청이 완료되었습니다. 홈 화면으로 돌아갑니다.',
+      life: 3000,
+    });
 
+    setTimeout(() => {
+      navigate('/');
+    }, 3000);
+  };
   useEffect(() => {
     const hairshopRequest = authAxios().get(`hairshop/${shopSeq}`);
-    const hairstyleReqeust = authAxios().get(`/hairshop/${shopSeq}/hairstyle/${styleSeq}`);
+    const hairstyleReqeust = authAxios().get(
+      `/hairshop/${shopSeq}/hairstyle/${styleSeq}`
+    );
     const staffRequest = authAxios().get(`hairshop/${shopSeq}/staff`);
-    const reservDateRequest = authAxios().get(`hairshop/reservation/${shopSeq}/${styleSeq}/${selectedDate}`);
+    const reservDateRequest = authAxios().get(
+      `hairshop/reservation/${shopSeq}/${styleSeq}/${selectedDate}`
+    );
     console.log(reservDateRequest);
 
     axios
       .all([hairshopRequest, hairstyleReqeust, staffRequest, reservDateRequest])
       .then(
-        axios.spread((hairshopRequest, hairstyleReqeust, staffRequest, reservDateRequest) => {
-          console.log('hairshopRequest:', hairshopRequest.data);
-          console.log('hairstyleReqeust:', hairstyleReqeust.data);
-          console.log('staffRequest:', staffRequest.data);
-          console.log('reservDateRequest:', reservDateRequest.data);
-          //// res2.data는 다른 response와 다르게 JSON 형태로 값을 받아옴
-          //// staff_seq : [가능한 시간]
-          setHairshop(hairshopRequest.data);
-          setHairstyle(hairstyleReqeust.data);
-          setStaff(staffRequest.data);
-          setStaffIndex(staffRequest.data[0].staff_seq);
-          setReservDate(reservDateRequest.data);
-        })
+        axios.spread(
+          (
+            hairshopRequest,
+            hairstyleReqeust,
+            staffRequest,
+            reservDateRequest
+          ) => {
+            console.log('hairshopRequest:', hairshopRequest.data);
+            console.log('hairstyleReqeust:', hairstyleReqeust.data);
+            console.log('staffRequest:', staffRequest.data);
+            console.log('reservDateRequest:', reservDateRequest.data);
+            //// res2.data는 다른 response와 다르게 JSON 형태로 값을 받아옴
+            //// staff_seq : [가능한 시간]
+            setHairshop(hairshopRequest.data);
+            setHairstyle(hairstyleReqeust.data);
+            setStaff(staffRequest.data);
+            setStaffIndex(staffRequest.data[0].staff_seq);
+            setReservDate(reservDateRequest.data);
+          }
+        )
       )
       .catch((error) => {
         console.error('Error in Axios.all:', error);
@@ -99,22 +132,24 @@ function Schedule() {
 
     return (
       <article key={staff.staff_seq}>
-        <div className="flex align-items-center gap-2 mb-4">
+        <div className='flex align-items-center gap-2 mb-4'>
           <img
-            className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+            className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block border-round'
             src={staff.staff_image}
             alt={staff.staff_nickname}
           />
 
           <div>
-            <p className="m-0">
-              <span className="font-bold mr-2">{staff.staff_nickname}</span>
+            <p className='m-0'>
+              <span className='font-bold mr-2'>{staff.staff_nickname}</span>
               <span>{staff.staff_role}</span>
             </p>
-            <p className="m-0 text-color-secondary text-sm">{staff.staff_intro}</p>
+            <p className='m-0 text-color-secondary text-sm'>
+              {staff.staff_intro}
+            </p>
           </div>
         </div>
-        <div className="flex flex-wrap justify-content-start gap-1">
+        <div className='flex flex-wrap justify-content-start gap-1'>
           {/* generateTimeSlots 함수를 이용하여 시간 버튼 생성
                     disable 조건 : reserv 안에 없는 시간이 버튼 에 포함 되는 경우,
                                   오늘 날짜의 현재 시간이 지나면 예약 불가능,
@@ -122,40 +157,62 @@ function Schedule() {
                                   디자이너는 all disable
                     generateTimeSlots : 가게 오픈시간과 마감시간을 전달받아서 timeSlot이라는 배열에 넣음
                     그 후 map함수로 timeSlot을 돌면서 버튼을 생성 */}
-          {generateTimeSlots(hairshop.shop_start, hairshop.shop_end).map((timeSlot, index) => (
-            <div
-              key={timeSlot.key}
-              className="time-slot-wrapper"
-            >
-              {reserv?.includes(timeSlot.key) && !(timeSlot.key < curTime && selectedDate.includes(today)) ? (
-                <Button
-                  size="small"
-                  severity="secondary"
-                  className="btn__time"
-                  onClick={() => handleTimeButtonClick(timeSlot.key, reserv, staff.staff_seq, staff.staff_nickname)}
-                >
-                  {formatHourMinute(timeSlot.props.children)}
-                </Button>
-              ) : (
-                <Button
-                  size="small"
-                  severity="secondary"
-                  className="btn__time"
-                  style={{ backgroundColor: '#ff7a7a' }}
-                  disabled={
-                    reserv?.length !== 0
-                      ? index >=
-                        generateTimeSlots(hairshop.shop_start, hairshop.shop_end).length -
-                          countCloseTime(hairstyle.style_time)
-                      : true
-                  }
-                  onClick={() => handleWaitButtonClick(timeSlot.key, reserv, staff.staff_seq, staff.staff_nickname)}
-                >
-                  {formatHourMinute(timeSlot.props.children)}
-                </Button>
-              )}
-            </div>
-          ))}
+          {generateTimeSlots(hairshop.shop_start, hairshop.shop_end).map(
+            (timeSlot, index) => (
+              <div
+                key={timeSlot.key}
+                className='time-slot-wrapper'
+              >
+                {reserv?.includes(timeSlot.key) &&
+                !(timeSlot.key < curTime && selectedDate.includes(today)) ? (
+                  <Button
+                    size='small'
+                    severity='secondary'
+                    className='btn__time'
+                    onClick={() =>
+                      handleTimeButtonClick(
+                        timeSlot.key,
+                        reserv,
+                        staff.staff_seq,
+                        staff.staff_nickname
+                      )
+                    }
+                  >
+                    {formatHourMinute(timeSlot.props.children)}
+                  </Button>
+                ) : (
+                  <Button
+                    size='small'
+                    severity='secondary'
+                    className='btn__time'
+                    style={{ backgroundColor: '#ff7a7a' }}
+                    disabled={
+                      reserv?.length !== 0
+                        ? index >=
+                            generateTimeSlots(
+                              hairshop.shop_start,
+                              hairshop.shop_end
+                            ).length -
+                              countCloseTime(hairstyle.style_time) ||
+                          (timeSlot.key < curTime &&
+                            selectedDate.includes(today))
+                        : true
+                    }
+                    onClick={() =>
+                      handleWaitButtonClick(
+                        timeSlot.key,
+                        reserv,
+                        staff.staff_seq,
+                        staff.staff_nickname
+                      )
+                    }
+                  >
+                    {formatHourMinute(timeSlot.props.children)}
+                  </Button>
+                )}
+              </div>
+            )
+          )}
         </div>
         <Divider />
       </article>
@@ -170,11 +227,16 @@ function Schedule() {
       const reservDateForStaff = reservDate[staffSeq];
       return itemTemplate(product, index, reservDateForStaff);
     });
-    return <div className="grid grid-nogutter">{list}</div>;
+    return <div className='grid grid-nogutter'>{list}</div>;
   };
 
   // 클릭한 시간 값을 받아오는 함수
-  const handleTimeButtonClick = (selectedTime, reservTime, staff_seq, staff_nickname) => {
+  const handleTimeButtonClick = (
+    selectedTime,
+    reservTime,
+    staff_seq,
+    staff_nickname
+  ) => {
     // 선택한 시간에 대한 처리를 수행, time에 현재시간, staff_nickname staff_seq 를 저장
     console.log('Selected time:', selectedTime);
     console.log(staff_seq);
@@ -185,7 +247,12 @@ function Schedule() {
     setIsWait(false);
   };
   /// 대기 시간을 클릭했을 때 isWait를 true로 설정하여 대기를 판별
-  const handleWaitButtonClick = (selectedTime, reservTime, staff_seq, staff_nickname) => {
+  const handleWaitButtonClick = (
+    selectedTime,
+    reservTime,
+    staff_seq,
+    staff_nickname
+  ) => {
     // 선택한 시간에 대한 처리를 수행, time에 현재시간, staff_nickname staff_seq 를 저장
     console.log('Selected time:', selectedTime);
     console.log(staff_seq);
@@ -223,18 +290,19 @@ function Schedule() {
       .then(() => {
         requestPermission();
         setConfirmVisible(false);
+        showAccept();
       })
       .catch((error) => {
         console.error('axios 요청 중 오류:', error);
       });
   };
   const confirmHeader = !isWait ? (
-    <div className="flex align-items-center gap-2">
-      <span className="font-bold">예약 정보를 확인해주세요</span>
+    <div className='flex align-items-center gap-2'>
+      <span className='font-bold'>예약 정보를 확인해주세요</span>
     </div>
   ) : (
-    <div className="flex align-items-center gap-2">
-      <span className="font-bold">대기 정보를 확인해주세요</span>
+    <div className='flex align-items-center gap-2'>
+      <span className='font-bold'>대기 정보를 확인해주세요</span>
     </div>
   );
 
@@ -243,17 +311,41 @@ function Schedule() {
       <Calendar
         onChange={(e) => setSelectedDate(formatCalendarDate(e.value))}
         showIcon
-        className="w-full mb-4"
-        dateFormat="yy년 mm월 dd일"
-        placeholder="날짜 선택"
+        className='w-full mb-4'
+        dateFormat='yy년 mm월 dd일'
+        placeholder='날짜 선택'
         minDate={new Date()}
         maxDate={new Date(new Date().getTime() + 13 * 24 * 60 * 60 * 1000)}
       />
       {/* dates : generateDates() 함수 호출. 오늘 날짜를 기준으로 2주간의 년-월-일 리턴
                       map 함수로 반복문을 돌면서 2주간의 날짜 버튼 생성*/}
 
-      <Panel header="시간 선택">
-        <div className="card">
+      <Panel header='시간 선택'>
+        <div className='flex justify-content-end'>
+          <div
+            style={{
+              backgroundColor: '#ff7a7a',
+              padding: '5px',
+              borderRadius: '5px',
+              color: '#ffffff',
+            }}
+          >
+            대기 가능
+          </div>
+          <div
+            style={{
+              backgroundColor: '#64748B',
+              color: '#ffffff',
+              marginLeft: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
+          >
+            예약 가능
+          </div>
+        </div>
+
+        <div className='card'>
           <DataView
             value={staff}
             listTemplate={listTemplate}
@@ -264,9 +356,11 @@ function Schedule() {
         label={
           isWait
             ? `${formatDate(selectedDate)} ${formatHourMinute(reservTime)} 대기`
-            : `${formatDate(selectedDate)} ${formatHourMinute(reservTime)} 선택완료`
+            : `${formatDate(selectedDate)} ${formatHourMinute(
+                reservTime
+              )} 선택완료`
         }
-        className="btn__submit"
+        className='btn__submit'
         disabled={!isButtonEnabled}
         onClick={handleButtonClick}
       />
@@ -274,78 +368,89 @@ function Schedule() {
       {/* 예약 정보 확인 창 */}
       <Sidebar
         visible={confirmVisible}
-        position="bottom"
+        position='bottom'
         header={confirmHeader}
         onHide={() => setConfirmVisible(false)}
-        className="sidebar__reservation"
+        className='sidebar__reservation'
       >
         {!isWait ? (
-          <Panel header="예약 정보">
-            <ul className="flex flex-column gap-3 text-sm">
+          <Panel header='예약 정보'>
+            <ul className='flex flex-column gap-3 text-sm'>
               <li>
-                <b className="w-4 inline-block">예약일자</b> {formatDate(selectedDate)} {formatHourMinute(reservTime)}
+                <b className='w-4 inline-block'>예약일자</b>{' '}
+                {formatDate(selectedDate)} {formatHourMinute(reservTime)}
               </li>
               <li>
-                <b className="w-4 inline-block">미용실</b> {hairstyle.shop_name}
+                <b className='w-4 inline-block'>미용실</b> {hairstyle.shop_name}
               </li>
               <li>
-                <b className="w-4 inline-block">담당 디자이너</b> {staffNickname}
+                <b className='w-4 inline-block'>담당 디자이너</b>{' '}
+                {staffNickname}
               </li>
               <li>
-                <b className="w-4 inline-block">헤어스타일</b> {hairstyle.style_name}
+                <b className='w-4 inline-block'>헤어스타일</b>{' '}
+                {hairstyle.style_name}
               </li>
               <li>
-                <b className="w-4 inline-block">가격</b> {formatNumberWithCommas(hairstyle.style_price)}
+                <b className='w-4 inline-block'>가격</b>{' '}
+                {formatNumberWithCommas(hairstyle.style_price)}
               </li>
             </ul>
           </Panel>
         ) : (
-          <Panel header="대기 정보">
-            <ul className="flex flex-column gap-3 text-sm">
+          <Panel header='대기 정보'>
+            <ul className='flex flex-column gap-3 text-sm'>
               <li>
-                <b className="w-4 inline-block">대기 일자</b> {formatDate(selectedDate)} {formatHourMinute(reservTime)}
+                <b className='w-4 inline-block'>대기 일자</b>{' '}
+                {formatDate(selectedDate)} {formatHourMinute(reservTime)}
               </li>
               <li>
-                <b className="w-4 inline-block">미용실</b> {hairstyle.shop_name}
+                <b className='w-4 inline-block'>미용실</b> {hairstyle.shop_name}
               </li>
               <li>
-                <b className="w-4 inline-block">담당 디자이너</b> {staffNickname}
+                <b className='w-4 inline-block'>담당 디자이너</b>{' '}
+                {staffNickname}
               </li>
               <li>
-                <b className="w-4 inline-block">헤어스타일</b> {hairstyle.style_name}
+                <b className='w-4 inline-block'>헤어스타일</b>{' '}
+                {hairstyle.style_name}
               </li>
             </ul>
           </Panel>
         )}
 
-        <div className="btn__group gap-4 mt-4">
-          <div className="w-full flex align-items-center justify-content-between  gap-2">
+        <div className='btn__group gap-4 mt-4'>
+          <div className='w-full flex align-items-center justify-content-between  gap-2'>
             <Button
-              label="다시선택"
+              label='다시선택'
               outlined
-              className="w-full"
+              className='w-full'
               // size='small'
               onClick={() => setConfirmVisible(false)}
             />
 
             {!isWait ? (
               <Button
-                label="결제하기"
+                label='결제하기'
                 // size='small'
-                className="w-full"
+                className='w-full'
                 onClick={() => navigate(`/payment`)}
               />
             ) : (
               <Button
-                label="대기"
+                label='대기'
                 // size='small'
-                className="w-full"
+                className='w-full'
                 onClick={handlerWait}
               />
             )}
           </div>
         </div>
       </Sidebar>
+      <Toast
+        ref={toast}
+        position='bottom-center'
+      />
     </>
   );
 }
