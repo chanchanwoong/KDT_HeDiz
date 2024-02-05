@@ -303,6 +303,10 @@ function MyPage() {
                       cancel={false}
                     ></Rating>
                     <p>{item.review_content}</p>
+                    <i className='pi pi-comment'>
+                      <span> {item.review_reply}</span>
+                    </i>
+
                     <div className='flex justify-content-end gap-2'>
                       <Button onClick={() => deleteReview(item)}>
                         리뷰 삭제
