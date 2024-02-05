@@ -32,23 +32,23 @@ function AppSidebar() {
         );
       },
     },
-    // {
-    //   label: '바로가기',
-    //   items: [
-    //     {
-    //       label: '대시보드',
-    //       icon: 'pi pi-th-large',
-    //       url: '/',
-    //       template: itemRenderer,
-    //     },
-    //   ],
-    // },
+    {
+      label: '바로가기',
+      items: [
+        {
+          label: '대시보드',
+          icon: 'pi pi-th-large',
+          url: '/',
+          template: itemRenderer,
+        },
+      ],
+    },
     {
       label: '예약 관리',
       items: [
         {
           label: '금일 예약',
-          icon: 'pi pi-bell',
+          icon: 'pi pi-list',
           url: 'home/realtime-reservation',
           // badge: 16,
           template: itemRenderer,
