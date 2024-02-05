@@ -25,10 +25,6 @@ h6 {
   margin: 0;
 }
 
-img {
-  border-radius: 70%;
-}
-
 a {
   text-decoration-line: none;
   color: inherit;
@@ -48,6 +44,22 @@ h2 {
   font-family: 'Lobster', sans-serif;
 }
 
+.label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f3f3f3;
+  padding: 6px 16px;
+  border-radius: 20px;
+  width: 80px;
+  display: inline-block;
+}
+
+.label__vip {
+  background-color: #ffaa00;
+}
+.label__default {
+  background-color: #8b5cf6;
+}
 .p-inputtext.p-component.p-password-input.p-password-input {
   width: 100%;
 }
@@ -60,6 +72,9 @@ h2 {
   min-width: 180px;
   justify-content: start;
 }
+.p-tag {
+  padding: 6px 0;
+}
 
 .p-panel-header {
   display: block;
@@ -70,11 +85,31 @@ h2 {
 .p-menu {
   padding: 0;
 }
-
+.p-tabview-panels {
+  padding: 0;
+  padding-top: 2rem;
+}
+.p-tabview .p-tabview-nav li {
+  width: 50%;
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  justify-content: center;
+}
 .p-datatable .p-column-header-content {
   justify-content: center;
 }
-
+.fc-v-event {
+  border: none;
+  background-color: #eff3f7;
+  color: #282c34;
+}
+.fc-timegrid-event-harness {
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+.fc .fc-toolbar-title {
+  font-size: 1.4rem;
+}
 .fc .fc-daygrid-day.fc-day-today {
   background-color: #fff;
   color: #356eff;
@@ -88,7 +123,11 @@ h2 {
   width: 100%;
   height: 100%;
 }
-
+.fc-h-event {
+  border: none !important;
+  padding: 4px 6px;
+  font-weight: 600;
+}
 .card {
   background-color: #fff;
   box-shadow: 0px 4px 30px rgba(221, 224, 255, 0.54);
