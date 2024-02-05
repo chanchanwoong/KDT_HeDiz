@@ -91,10 +91,6 @@ function Review() {
     return (
       <div className='col-12'>
         <div className='flex flex-column xl:flex-row p-4 gap-4'>
-          <img
-            className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round'
-            alt={product.review_photo}
-          />
           <div className='flex flex-column sm:flex-row justify-content-between align-items-center flex-1 gap-4'>
             <div className='flex flex-column align-items-center sm:align-items-start gap-3 w-2'>
               <div>
@@ -102,7 +98,7 @@ function Review() {
                   {product.style_name}
                 </div>
                 <i className='pi pi-calendar mr-2'></i>
-                <span>{product.review_date}</span>
+                <span>{product.reserv_date}</span>
               </div>
               <div>
                 <Rating
@@ -119,6 +115,13 @@ function Review() {
               </div>
             </div>
 
+            {product.review_photo && (
+              <img
+                className='w-2 shadow-2 block xl:block mx-auto border-round'
+                src={product.review_photo}
+                alt={product.cust_name}
+              />
+            )}
             <div className='flex flex-column gap-2 w-4'>
               <span className='font-bold'>{product.cust_name}</span>
               <span>{product.review_content}</span>
@@ -172,9 +175,10 @@ function Review() {
         header='답글 달기'
         visible={replyModal}
         onHide={hideDialog}
+        className='w-4'
       >
         <form onSubmit={handleFormSubmit}>
-          <div className='flex flex-column gap-4 ml-5'>
+          <div className='flex flex-column gap-4'>
             <div className='p-inputgroup'>
               <span className='p-float-label'>
                 <InputText
@@ -191,6 +195,7 @@ function Review() {
               rows={5}
               cols={30}
               placeholder='답글을 입력하세요'
+              autoResize
             />
 
             <Button
