@@ -5,7 +5,7 @@
 <mapper namespace="com.config.ReservationMapper">
     <!--예약 상황 조회-->
     <select id="currentReservation" resultType="ReservationDTO">
-        select reserv_seq, shop_name, shop_address, staff_nickname, style_name, style_price, reserv_request, reserv_date, reserv_time, receipt_id
+        select reserv_seq, shop_name, shop_address, staff_nickname, style_name, style_price, reserv_request, reserv_date, reserv_time, receipt_id, reserv_stat
         FROM T_RESERVATION tr
         LEFT JOIN T_HAIRSTYLE st ON tr.style_seq = st.style_seq
         LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
