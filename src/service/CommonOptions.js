@@ -3,13 +3,13 @@ export function getReservationValue(status) {
     case 0:
       return { value: '예약 완료', severity: 'success', color: '#049bff' };
     case 1:
-      return { value: '방문 완료', severity: 'danger', color: '#4cc0c0' };
+      return { value: '방문 완료', severity: 'danger', color: '#8b5cf6' };
     case 2:
-      return { value: '예약 취소', severity: 'info', color: '#ff9e40' };
+      return { value: '예약 취소', severity: 'info', color: '#ffaa00' };
     case 3:
       return { value: '노쇼', severity: 'danger', color: '#ff416a' };
     case 4:
-      return { value: '대기', severity: 'danger', color: '#ffcd56' };
+      return { value: '대기', severity: 'danger', color: '#76818d' };
     default:
       return { value: '', severity: null };
   }
