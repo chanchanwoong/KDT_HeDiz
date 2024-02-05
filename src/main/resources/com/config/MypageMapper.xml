@@ -26,7 +26,7 @@
         LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
         LEFT JOIN T_CUSTOMER cu ON tr.cust_seq = cu.cust_seq
         LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
-        WHERE tr.cust_seq = #{cust_seq}
+        WHERE tr.cust_seq = 1 and tr.reserv_stat not in (4)
         ORDER BY tr.reserv_date DESC, tr.reserv_time DESC;
     </select>
 

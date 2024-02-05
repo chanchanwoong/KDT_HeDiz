@@ -13,7 +13,7 @@
         LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
         where cu.cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) > now() and (reserv_stat = 0 or reserv_stat = 4)
         and STR_TO_DATE(CONCAT(reserv_date, ' ', reserv_time), '%Y-%m-%d %H:%i:%s') > NOW()
-        order by reserv_date, reserv_time;
+        order by reserv_date, reserv_time, reserv_stat;
     </select>
 
     <!--receipt_id 조회-->
