@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 @Alias("HairshopDTO")
 public class HairshopDTO {
     private int shop_seq;
