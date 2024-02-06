@@ -101,11 +101,10 @@ public class MypageController {
         }
         System.out.println("custList >> " + standByCustList);
         // cTokenList 조회
-        cTokenList = reservationService.getCToken(standByCustList);
-
-        // 빈 문자열을 null로 처리
-        cTokenList.replaceAll(ctoken -> ctoken.isEmpty() ? null : ctoken);
-
+        // standByCustList 리스트에 값이 있는 경우에만 getCToken 호출
+        if(!standByCustList.isEmpty()) {
+            cTokenList = reservationService.getCToken(standByCustList);
+        }
         return ResponseEntity.ok().body(cTokenList);
     }
 
