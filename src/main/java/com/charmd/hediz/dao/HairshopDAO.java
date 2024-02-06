@@ -74,6 +74,10 @@ public class HairshopDAO {
         session.update("com.config.HairshopMapper.levelUpdate", cust_seq);
     }
 
+    public int isDuplicated(PayinfoDTO payinfoDto){
+        return session.selectOne("com.config.HairshopMapper.isDuplicated", payinfoDto);
+    }
+
     public int insertCToken(PayinfoDTO payinfoDto) {
         return session.insert("com.config.HairshopMapper.insertCToken", payinfoDto);
     }

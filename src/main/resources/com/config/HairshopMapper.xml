@@ -235,6 +235,14 @@
         )
     </update>
 
+    <!--중복 대기 방지-->
+    <select id="isDuplicated" parameterType="PayinfoDTO" resultType="int">
+        SELECT count(reserv_seq)
+        FROM T_RESERVATION
+        WHERE cust_seq = #{cust_seq} and staff_seq = #{staff_seq} and style_seq = #{style_seq}
+        and reserv_date = #{reserv_date} and reserv_time = #{reserv_time} and reserv_stat = 4
+    </select>
+
     <!--대기 고객 ctoken 값 저장-->
     <insert id="insertCToken" parameterType="PayinfoDTO">
         INSERT INTO T_CTOKEN(cust_seq, ctoken_value) VALUES(#{cust_seq}, #{ctoken_value})
