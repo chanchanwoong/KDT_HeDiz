@@ -71,4 +71,9 @@ public class ReservationServiceImpl implements ReservationService {
     public List<String> getCToken(List<Integer> standByCustList) {
         return dao.getCToken(standByCustList);
     }
+
+    @Override
+    public int deleteStandBy(int reserv_seq) {
+        return dao.deleteStandBy(reserv_seq);
+    }
 }

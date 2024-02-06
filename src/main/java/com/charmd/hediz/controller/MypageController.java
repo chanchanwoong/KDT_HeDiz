@@ -96,16 +96,23 @@ public class MypageController {
         List<Integer> standByCustList = new ArrayList<>();
         List<String> cTokenList = new ArrayList<>();
         // n이 3이면 대기 고객 필터링
-        if(n==3) {
+        if (n == 3) {
             standByCustList = reservationService.getStandByCustListUsingFilter(reserv_seq);
         }
         System.out.println("custList >> " + standByCustList);
         // cTokenList 조회
         // standByCustList 리스트에 값이 있는 경우에만 getCToken 호출
-        if(!standByCustList.isEmpty()) {
+        if (!standByCustList.isEmpty()) {
             cTokenList = reservationService.getCToken(standByCustList);
         }
         return ResponseEntity.ok().body(cTokenList);
+    }
+
+    // 대기 예약 삭제
+    @DeleteMapping("realtime-reservation/{reserv_seq}")
+    public ResponseEntity<?> deleteStandBy(@PathVariable("reserv_seq") int reserv_seq) {
+        int n = reservationService.deleteStandBy(reserv_seq);
+        return ResponseEntity.ok().body(n == 1);
     }
 
 }

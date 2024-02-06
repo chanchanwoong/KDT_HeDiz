@@ -29,4 +29,7 @@ public class ReservationDAO {
     public List<String> getCToken(List<Integer> standByCustList){
         return session.selectList("com.config.ReservationMapper.getCToken", standByCustList);
     }
+    public int deleteStandBy(int reserv_seq){
+        return session.delete("com.config.ReservationMapper.deleteStandBy", reserv_seq);
+    }
 }

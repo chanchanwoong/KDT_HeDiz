@@ -51,7 +51,6 @@
         )
     </select>
 
-
     <!--CToken 값 반환-->
     <select id="getCToken" parameterType="list" resultType="java.lang.String">
         select distinct ctoken_value from T_CTOKEN where cust_seq in
@@ -59,4 +58,9 @@
             #{ctoken_seq}
         </foreach>
     </select>
+
+    <!--대기 예약 삭제-->
+    <delete id="deleteStandBy" parameterType="int">
+        DELETE FROM T_RESERVATION WHERE reserv_seq = #{reserv_seq} AND reserv_stat = 4
+    </delete>
 </mapper>
