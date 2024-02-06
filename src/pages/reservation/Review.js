@@ -118,7 +118,7 @@ function Review() {
 
             {product.review_photo && (
               <img
-                className='w-2 shadow-2 block xl:block mx-auto border-round'
+                className='w-1 shadow-2 block xl:block mx-auto border-round'
                 src={product.review_photo}
                 alt={product.cust_name}
               />
