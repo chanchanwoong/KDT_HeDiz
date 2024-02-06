@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authAxios } from 'api/AxiosAPI';
 import { formatHourMinute, formatDate } from 'utils/util';
 import { Button } from 'primereact/button';
@@ -8,18 +9,25 @@ import { DataView } from 'primereact/dataview';
 import axios from 'axios';
 
 function Reservation() {
+  const navigate = useNavigate();
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    authAxios()
-      .get(`mypage/realtime-reservation/${localStorage.getItem('cust_seq')}`)
-      .then((response) => {
-        console.log('Auth Response:', response.data);
-        setReservations(response.data);
-      })
-      .catch((error) => {
-        console.error('Auth Error:', error);
-      });
+    const custSeq = localStorage.getItem('cust_seq');
+    if (!custSeq) {
+      console.log('로그인 정보 없음');
+      navigate('/auth/sign-in');
+    } else {
+      authAxios()
+        .get(`mypage/realtime-reservation/${localStorage.getItem('cust_seq')}`)
+        .then((response) => {
+          console.log('Auth Response:', response.data);
+          setReservations(response.data);
+        })
+        .catch((error) => {
+          console.error('Auth Error:', error);
+        });
+    }
   }, []);
 
   ///// 예약 취소를 누를 경우 발생하는 핸들러
@@ -77,7 +85,25 @@ function Reservation() {
             <span> </span>
             {formatHourMinute(item.reserv_time)}
           </span>
-          <span className='text-500'>{item.shop_name}</span>
+
+          <div className='flex flex-column flex-row-reverse'>
+            <span className='text-500 flex '>{item.shop_name}</span>
+
+            <div className='flex flex-row-reverse'>
+              <span>
+                {(() => {
+                  switch (item.reserv_stat) {
+                    case 0:
+                      return '예약 완료';
+                    case 4:
+                      return '대기';
+                    default:
+                      return item.reserv_stat;
+                  }
+                })()}
+              </span>
+            </div>
+          </div>
         </p>
         <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
           <span className='inline-block w-2'>디자이너</span>
@@ -91,21 +117,7 @@ function Reservation() {
           <span className='inline-block w-2'>요청사항</span>
           <span className='text-color'>{item.reserv_request}</span>
         </p>
-        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'>
-          <span className='inline-block w-2'>예약 상태</span>
-          <span className='text-color'>
-            {(() => {
-              switch (item.reserv_stat) {
-                case 0:
-                  return '예약 완료';
-                case 4:
-                  return '대기';
-                default:
-                  return item.reserv_stat;
-              }
-            })()}
-          </span>
-        </p>
+        <p className='text-color-secondary font-semibold text-sm m-0 mb-2'></p>
         <div className='flex justify-content-end gap-2'>
           {item.reserv_stat === 0 && (
             <Button

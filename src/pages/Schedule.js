@@ -23,6 +23,7 @@ import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
 import { requestPermission } from 'api/firebase-messaging-sw';
 import { Toast } from 'primereact/toast';
+import { Avatar } from 'primereact/avatar';
 
 function Schedule() {
   // 결제 페이지로 이동할 때 필요한 데이터
@@ -133,12 +134,17 @@ function Schedule() {
     return (
       <article key={staff.staff_seq}>
         <div className='flex align-items-center gap-2 mb-4'>
-          <img
+          {/* <img
             className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block border-round'
             src={staff.staff_image}
             alt={staff.staff_nickname}
+          /> */}
+          <Avatar
+            icon='pi pi-user'
+            className='mr-2 '
+            size='large'
+            shape='circle'
           />
-
           <div>
             <p className='m-0'>
               <span className='font-bold mr-2'>{staff.staff_nickname}</span>

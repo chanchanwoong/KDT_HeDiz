@@ -1,5 +1,3 @@
-import { formatNumberWithCommas, formatTime } from 'utils/util';
-import { Image } from 'primereact/image';
 import { Divider } from 'primereact/divider';
 import { Rating } from 'primereact/rating';
 
@@ -9,11 +7,13 @@ function ReviewList({ reviewList }) {
       {reviewList.map((review) => (
         <div key={review.review_seq}>
           <article className='flex align-items-start justify-content-between gap-3 my-4'>
-            <img
-              src={review.review_photo}
-              alt={review.review_photo}
-              className='w-4 flex-none'
-            />
+            {review.review_photo !== null ? (
+              <img
+                src={review.review_photo}
+                alt={review.review_photo}
+                className='w-4 flex-none'
+              />
+            ) : null}
             {/* <Image
               src='https://primefaces.org/cdn/primereact/images/galleria/galleria8.jpg'
               alt='Image'

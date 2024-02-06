@@ -12,7 +12,7 @@ import {
 import HairstyleList from 'components/HairstyleList';
 import ReviewList from 'components/ReviewList';
 import { TabView, TabPanel } from 'primereact/tabview';
-import { Image } from 'primereact/image';
+import { Avatar } from 'primereact/avatar';
 import { Rating } from 'primereact/rating';
 import { Sidebar } from 'primereact/sidebar';
 
@@ -67,11 +67,14 @@ function Hairshop() {
     <>
       {/* 미용실 정보 */}
       <section>
-        <img
-          src={hairshopInfo.shop_image}
-          alt={hairshopInfo.shop_name}
-          style={{ width: '100%', height: '180px' }}
-        />
+        {hairshopInfo.shop_image &&
+        !hairshopInfo.shop_image.startsWith('data/image') ? (
+          <img
+            src={hairshopInfo.shop_image}
+            alt={hairshopInfo.shop_image}
+            className='w-6 flex-none mr-3'
+          />
+        ) : null}
         {/* <Image
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg'
           alt='Image'
@@ -174,20 +177,22 @@ function Hairshop() {
               {staffList.map((staff) => (
                 <div
                   key={staff.staff_seq}
-                  className='flex justify-content-between gap-2 my-2'
+                  className='flex align-items-center justify-content-between gap-2 my-2'
                 >
-                  {staff.staff_image !== null ? (
+                  {/* {staff.staff_image !== null ? (
                     <img
                       src={staff.staff_image}
                       alt={staff.staff_nickname}
                       className='w-4 flex-none'
                     />
-                  ) : null}
-                  {/* <Image
-                    src='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
-                    alt='Image'
-                    className='img__staff'
-                  /> */}
+                  ) : null} */}
+
+                  <Avatar
+                    icon='pi pi-user'
+                    className='mr-2 '
+                    size='large'
+                    shape='circle'
+                  />
                   {/* <h3>{staff.staff_nickname}</h3> */}
                   <div className='flex-grow-1'>
                     <p className='mb-2 ml-2'>

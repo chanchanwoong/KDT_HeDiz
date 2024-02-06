@@ -66,7 +66,8 @@ function Hairstyle() {
         <img
           src={hairstyle.style_image}
           alt={hairstyle.style_name}
-          style={{ width: '200px' }}
+          // style={{ width: '200px' }}
+          className='w-full'
         />
         {/* <Image
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg'
@@ -111,11 +112,13 @@ function Hairstyle() {
               {review.map((review) => (
                 <div key={review.review_seq}>
                   <article className='flex align-items-start justify-content-between gap-3 my-4'>
-                    <img
-                      src={hairstyle.style_image}
-                      alt={hairstyle.style_name}
-                      className='w-4 flex-none'
-                    />
+                    {review.review_photo !== null ? (
+                      <img
+                        src={review.review_photo}
+                        alt={hairstyle.style_name}
+                        className='w-4 flex-none'
+                      />
+                    ) : null}
                     {/* <Image
                       src='https://primefaces.org/cdn/primereact/images/galleria/galleria8.jpg'
                       alt='Image'

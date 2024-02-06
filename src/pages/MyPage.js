@@ -294,19 +294,30 @@ function MyPage() {
                       </span>
                       <span className='text-500'>{item.shop_name}</span>
                     </p>
-                    <p className='font-bold'>{item.shop_name}</p>
-                    <p>{item.staff_nickname}</p>
-                    <p>{item.style_name}</p>
-                    <Rating
-                      value={item.review_score}
-                      readOnly
-                      cancel={false}
-                    ></Rating>
-                    <p>{item.review_content}</p>
-                    <i className='pi pi-comment'>
-                      <span> {item.review_reply}</span>
-                    </i>
+                    <div className='flex'>
+                      {item.review_photo &&
+                      !item.review_photo.startsWith('data/image') ? (
+                        <img
+                          src={item.review_photo}
+                          alt={item.review_photo}
+                          className='w-6 flex-none mr-3'
+                        />
+                      ) : null}
 
+                      <div>
+                        <p>{item.staff_nickname}</p>
+                        <p>{item.style_name}</p>
+                        <Rating
+                          value={item.review_score}
+                          readOnly
+                          cancel={false}
+                        ></Rating>
+                        <p>{item.review_content}</p>
+                        <i className='pi pi-comment'>
+                          <span> {item.review_reply}</span>
+                        </i>
+                      </div>
+                    </div>
                     <div className='flex justify-content-end gap-2'>
                       <Button onClick={() => deleteReview(item)}>
                         리뷰 삭제

@@ -12,11 +12,13 @@ function HairShopList({ hairshopList }) {
           key={hairshop.shop_seq}
         >
           <div>
-            <img
-              src={hairshop.shop_image}
-              alt={hairshop.shop_name}
-              style={{ width: '100%', height: '180px' }}
-            />
+            {hairshop.shop_image !== null ? (
+              <img
+                src={hairshop.shop_image}
+                alt={hairshop.shop_image}
+                className='w-4 flex-none'
+              />
+            ) : null}
             {/* <Image
               src='https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg'
               alt='Image'
