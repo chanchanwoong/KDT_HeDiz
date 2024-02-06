@@ -72,7 +72,7 @@ function Hairshop() {
           <img
             src={hairshopInfo.shop_image}
             alt={hairshopInfo.shop_image}
-            className='w-6 flex-none mr-3'
+            className='w-full h-26rem flex-none mr-3'
           />
         ) : null}
         {/* <Image

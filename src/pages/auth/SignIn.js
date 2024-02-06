@@ -100,7 +100,6 @@ function SignIn() {
         console.error('Non-Auth Error:', error);
         showError();
         reset({
-          cust_id: '',
           cust_pw: '',
         });
       });

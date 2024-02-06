@@ -46,6 +46,7 @@ function Reservation() {
             to: list,
             notification: {
               title: 'HeDiz',
+              icon: process.env.PUBLIC_URL + '/logo512.png',
               body: '고객님이 설정하신 대기시간의 예약이 취소되었습니다.',
             },
           };

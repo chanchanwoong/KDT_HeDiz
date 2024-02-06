@@ -16,7 +16,7 @@ function HairShopList({ hairshopList }) {
               <img
                 src={hairshop.shop_image}
                 alt={hairshop.shop_image}
-                className='w-4 flex-none'
+                className='w-full h-18rem flex-none'
               />
             ) : null}
             {/* <Image
