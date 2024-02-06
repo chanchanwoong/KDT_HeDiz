@@ -154,8 +154,13 @@ public class HairshopServiceImpl implements HairshopService {
     public int standBy(PayinfoDTO payinfoDto) {
         int numberOfReservation = 0;
         int numberOfCToken = 0;
-        numberOfReservation = dao.reservation(payinfoDto);
-        numberOfCToken = dao.insertCToken(payinfoDto);
+        // 같은 시간, 같은 스타일의 중복 대기 처리
+        boolean isDuplicated = true;
+        isDuplicated = dao.isDuplicated(payinfoDto) != 0;
+        if(!isDuplicated) {
+            numberOfReservation = dao.reservation(payinfoDto);
+            numberOfCToken = dao.insertCToken(payinfoDto);
+        }
         return numberOfReservation + numberOfCToken;
     }
 }
