@@ -27,7 +27,7 @@ function Find() {
     reset,
   } = useForm({
     defaultValues: {
-      cust_name: '',
+      shop_register: '',
       cust_phone: '',
     },
   });
@@ -43,8 +43,8 @@ function Find() {
   // 로그인
   const onIDSubmit = async (data) => {
     const authData = {
-      cust_name: data.cust_name,
-      cust_phone: data.cust_phone,
+      shop_register: data.shop_register,
+      // cust_phone: data.cust_phone,
     };
 
     console.log('Non-Auth Request: ', authData);
@@ -59,7 +59,7 @@ function Find() {
         } else {
           showError();
           reset({
-            cust_name: '',
+            shop_register: '',
             cust_phone: '',
           });
         }
@@ -71,8 +71,8 @@ function Find() {
 
   const onPasswordSubmit = async (data) => {
     const authData = {
-      cust_name: data.cust_name,
-      cust_id: data.cust_id,
+      shop_id: data.shop_id,
+      shop_name: data.shop_name,
     };
     setFindResultPW(authData);
     console.log('Non-Auth Request: ', authData);
@@ -87,8 +87,8 @@ function Find() {
         } else {
           showError();
           reset({
-            cust_id: '',
-            cust_name: '',
+            shop_id: '',
+            shop_name: '',
           });
         }
       })
@@ -100,7 +100,7 @@ function Find() {
   const onPasswordChangeSubmit = async (data) => {
     const authData = {
       ...findResultPW,
-      cust_pw: data.cust_pw,
+      shop_pw: data.shop_pw,
     };
 
     console.log('Non-Auth Request: ', authData);
@@ -159,18 +159,18 @@ function Find() {
           >
             <div className='flex flex-column gap-2'>
               <span className='text-color-secondary pl-1 font-semibold'>
-                이름
+                사업자등록번호
               </span>
               <Controller
-                name='cust_name'
+                name='shop_register'
                 control={control}
-                rules={{ required: '이름을 입력해주세요' }}
+                rules={{ required: '사업자등록번호를 입력해주세요' }}
                 render={({ field, fieldState }) => (
                   <>
                     <InputText
                       id={field.name}
                       value={field.value}
-                      placeholder='이름을 입력해주세요'
+                      placeholder='사업자등록번호를 입력해주세요'
                       className={classNames({
                         'p-invalid': fieldState.error,
                       })}
@@ -178,31 +178,6 @@ function Find() {
                         field.onChange(e);
                         setUserid(e.target.value);
                       }}
-                    />
-                    {getFormErrorMessage(field.name)}
-                  </>
-                )}
-              />
-            </div>
-            <div className='flex flex-column gap-2'>
-              <span className='text-color-secondary pl-1 font-semibold'>
-                전화번호
-              </span>
-              <Controller
-                name='cust_phone'
-                control={control}
-                rules={{ required: '전화번호를 입력해주세요' }}
-                render={({ field, fieldState }) => (
-                  <>
-                    <InputMask
-                      id={field.name}
-                      value={field.value || ''}
-                      mask='999-9999-9999'
-                      placeholder='전화번호를 입력해주세요'
-                      className={classNames({
-                        'p-invalid': fieldState.error,
-                      })}
-                      onChange={field.onChange}
                     />
                     {getFormErrorMessage(field.name)}
                   </>
@@ -230,7 +205,7 @@ function Find() {
                 아이디
               </span>
               <Controller
-                name='cust_id'
+                name='shop_id'
                 control={control}
                 rules={{ required: '아이디를 입력해주세요' }}
                 render={({ field, fieldState }) => (
@@ -257,7 +232,7 @@ function Find() {
                 이름
               </span>
               <Controller
-                name='cust_name'
+                name='shop_name'
                 control={control}
                 rules={{ required: '이름을 입력해주세요' }}
                 render={({ field, fieldState }) => (
@@ -292,7 +267,7 @@ function Find() {
             >
               <>
                 <Controller
-                  name='cust_pw'
+                  name='shop_pw'
                   control={control}
                   rules={{ required: '변경할 비밀번호를 입력해주세요' }}
                   render={({ field, fieldState }) => (
