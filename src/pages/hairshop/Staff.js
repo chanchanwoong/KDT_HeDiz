@@ -300,7 +300,7 @@ export default function staff() {
         dataKey='staff_seq'
         showGridlines
         paginator
-        rows={4}
+        rows={5}
         paginatorTemplate='FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
         currentPageReportTemplate='총 {totalRecords}명의 직원이 검색되었습니다. '
         globalFilter={globalFilter}
