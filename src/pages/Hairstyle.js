@@ -67,7 +67,7 @@ function Hairstyle() {
           src={hairstyle.style_image}
           alt={hairstyle.style_name}
           // style={{ width: '200px' }}
-          className='w-full'
+          className='w-full h-26rem flex-none mr-3'
         />
         {/* <Image
           src='https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg'

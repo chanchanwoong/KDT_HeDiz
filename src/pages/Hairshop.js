@@ -179,20 +179,26 @@ function Hairshop() {
                   key={staff.staff_seq}
                   className='flex align-items-center justify-content-between gap-2 my-2'
                 >
-                  {/* {staff.staff_image !== null ? (
+                  {staff.staff_image !== null ? (
                     <img
                       src={staff.staff_image}
                       alt={staff.staff_nickname}
-                      className='w-4 flex-none'
+                      className='flex-none'
+                      style={{
+                        borderRadius: '50%',
+                        width: '42px',
+                        height: '42px',
+                      }}
                     />
-                  ) : null} */}
+                  ) : (
+                    <Avatar
+                      icon='pi pi-user'
+                      className='mr-2 '
+                      size='large'
+                      shape='circle'
+                    />
+                  )}
 
-                  <Avatar
-                    icon='pi pi-user'
-                    className='mr-2 '
-                    size='large'
-                    shape='circle'
-                  />
                   {/* <h3>{staff.staff_nickname}</h3> */}
                   <div className='flex-grow-1'>
                     <p className='mb-2 ml-2'>

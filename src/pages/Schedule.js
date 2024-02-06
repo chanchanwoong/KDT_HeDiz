@@ -142,17 +142,25 @@ function Schedule() {
     return (
       <article key={staff.staff_seq}>
         <div className='flex align-items-center gap-2 mb-4'>
-          {/* <img
-            className='w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block border-round'
-            src={staff.staff_image}
-            alt={staff.staff_nickname}
-          /> */}
-          <Avatar
-            icon='pi pi-user'
-            className='mr-2 '
-            size='large'
-            shape='circle'
-          />
+          {staff.staff_image !== null ? (
+            <img
+              src={staff.staff_image}
+              alt={staff.staff_nickname}
+              className='flex-none'
+              style={{
+                borderRadius: '50%',
+                width: '42px',
+                height: '42px',
+              }}
+            />
+          ) : (
+            <Avatar
+              icon='pi pi-user'
+              className='mr-2 '
+              size='large'
+              shape='circle'
+            />
+          )}
           <div>
             <p className='m-0'>
               <span className='font-bold mr-2'>{staff.staff_nickname}</span>

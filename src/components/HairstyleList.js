@@ -32,7 +32,7 @@ function HairstyleList({ hairstyleList, shopSeq }) {
                     <img
                       src={hairstyle.style_image}
                       alt={hairstyle.style_name}
-                      className='w-4 flex-none'
+                      className='w-4 flex-none h-11rem'
                     />
                   ) : null}
 
