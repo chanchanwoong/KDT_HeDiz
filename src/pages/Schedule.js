@@ -86,6 +86,14 @@ function Schedule() {
       navigate('/');
     }, 3000);
   };
+  const showError = () => {
+    toast.current.show({
+      severity: 'error',
+      summary: '대기 신청 실패',
+      detail: '대기 신청이 중복입니다.',
+      life: 3000,
+    });
+  };
   useEffect(() => {
     const hairshopRequest = authAxios().get(`hairshop/${shopSeq}`);
     const hairstyleReqeust = authAxios().get(
@@ -156,70 +164,68 @@ function Schedule() {
           </div>
         </div>
         <div className='flex flex-wrap justify-content-start gap-1'>
-          {/* generateTimeSlots 함수를 이용하여 시간 버튼 생성
-                    disable 조건 : reserv 안에 없는 시간이 버튼 에 포함 되는 경우,
-                                  오늘 날짜의 현재 시간이 지나면 예약 불가능,
-                                  폐점 시간에 걸리는 스타일 소요시간은 예약 불가능
-                                  디자이너는 all disable
-                    generateTimeSlots : 가게 오픈시간과 마감시간을 전달받아서 timeSlot이라는 배열에 넣음
-                    그 후 map함수로 timeSlot을 돌면서 버튼을 생성 */}
-          {generateTimeSlots(hairshop.shop_start, hairshop.shop_end).map(
-            (timeSlot, index) => (
-              <div
-                key={timeSlot.key}
-                className='time-slot-wrapper'
-              >
-                {reserv?.includes(timeSlot.key) &&
-                !(timeSlot.key < curTime && selectedDate.includes(today)) ? (
-                  <Button
-                    size='small'
-                    severity='secondary'
-                    className='btn__time'
-                    onClick={() =>
-                      handleTimeButtonClick(
-                        timeSlot.key,
-                        reserv,
-                        staff.staff_seq,
-                        staff.staff_nickname
-                      )
-                    }
-                  >
-                    {formatHourMinute(timeSlot.props.children)}
-                  </Button>
-                ) : (
-                  <Button
-                    size='small'
-                    severity='secondary'
-                    className='btn__time'
-                    style={{ backgroundColor: '#ff7a7a' }}
-                    disabled={
-                      reserv?.length !== 0
-                        ? index >=
-                            generateTimeSlots(
-                              hairshop.shop_start,
-                              hairshop.shop_end
-                            ).length -
-                              countCloseTime(hairstyle.style_time) ||
-                          (timeSlot.key < curTime &&
-                            selectedDate.includes(today))
-                        : true
-                    }
-                    onClick={() =>
-                      handleWaitButtonClick(
-                        timeSlot.key,
-                        reserv,
-                        staff.staff_seq,
-                        staff.staff_nickname
-                      )
-                    }
-                  >
-                    {formatHourMinute(timeSlot.props.children)}
-                  </Button>
-                )}
-              </div>
+          {!reserv ? (
+            <p className='font-semibold'>미용실 임시 휴일</p>
+          ) : (
+            generateTimeSlots(hairshop.shop_start, hairshop.shop_end).map(
+              (timeSlot, index) => (
+                <div
+                  key={timeSlot.key}
+                  className='time-slot-wrapper'
+                >
+                  {reserv?.includes(timeSlot.key) &&
+                  !(timeSlot.key < curTime && selectedDate.includes(today)) ? (
+                    <Button
+                      size='small'
+                      severity='secondary'
+                      className='btn__time'
+                      onClick={() =>
+                        handleTimeButtonClick(
+                          timeSlot.key,
+                          reserv,
+                          staff.staff_seq,
+                          staff.staff_nickname
+                        )
+                      }
+                    >
+                      {formatHourMinute(timeSlot.props.children)}
+                    </Button>
+                  ) : (
+                    <Button
+                      size='small'
+                      severity='secondary'
+                      className='btn__time'
+                      style={{ backgroundColor: '#ff7a7a' }}
+                      disabled={
+                        reserv?.length !== 0
+                          ? index >=
+                              generateTimeSlots(
+                                hairshop.shop_start,
+                                hairshop.shop_end
+                              ).length -
+                                countCloseTime(hairstyle.style_time) ||
+                            (timeSlot.key < curTime &&
+                              selectedDate.includes(today))
+                          : true
+                      }
+                      onClick={() =>
+                        handleWaitButtonClick(
+                          timeSlot.key,
+                          reserv,
+                          staff.staff_seq,
+                          staff.staff_nickname
+                        )
+                      }
+                    >
+                      {formatHourMinute(timeSlot.props.children)}
+                    </Button>
+                  )}
+                </div>
+              )
             )
           )}
         </div>
+
         <Divider />
       </article>
     );
@@ -291,15 +297,22 @@ function Schedule() {
       ctoken_value: localStorage.getItem('firebasetoken'),
     };
     console.log(waitInfo);
-    authAxios()
+    const response = authAxios()
       .post('/reservation', waitInfo)
-      .then(() => {
-        requestPermission();
-        setConfirmVisible(false);
-        showAccept();
+      .then((response) => {
+        console.log(response.data);
+        console.log(response);
+        if (response.data) {
+          requestPermission();
+          setConfirmVisible(false);
+          showAccept();
+        } else {
+          showError();
+        }
       })
       .catch((error) => {
         console.error('axios 요청 중 오류:', error);
+        showError();
       });
   };
   const confirmHeader = !isWait ? (
@@ -334,6 +347,9 @@ function Schedule() {
               padding: '5px',
               borderRadius: '5px',
               color: '#ffffff',
+              fontSize: '10px',
+              width: '50px',
+              height: '25px',
             }}
           >
             대기 가능
@@ -341,7 +357,12 @@ function Schedule() {
           <div
             style={{
               backgroundColor: '#64748B',
+              padding: '5px',
+              borderRadius: '5px',
               color: '#ffffff',
+              fontSize: '10px',
+              width: '50px',
+              height: '25px',
               marginLeft: '10px',
               padding: '5px',
               borderRadius: '5px',

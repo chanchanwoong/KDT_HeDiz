@@ -7,6 +7,7 @@ import { Divider } from 'primereact/divider';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { DataView } from 'primereact/dataview';
 import axios from 'axios';
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 
 function Reservation() {
   const navigate = useNavigate();
@@ -32,43 +33,87 @@ function Reservation() {
 
   ///// 예약 취소를 누를 경우 발생하는 핸들러
   ///// 예약 seq 와 영수증 id를 받아와서 예약 상태를 2로 변경하고 결제를 취소
-  const handleReservCancel = (reserv_seq, receipt_id) => {
+  const handleReservCancel = (e, reserv_seq, receipt_id) => {
     console.log(reserv_seq, receipt_id);
+    confirmPopup({
+      target: e.currentTarget,
+      message: '정말 삭제하시겠습니까?',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'reject',
+      acceptClassName: 'p-button-danger',
+      accept: () => {
+        authAxios()
+          .put(`mypage/realtime-reservation/${reserv_seq}`, { receipt_id })
+          .then((response) => {
+            console.log('Auth Response:', response.data);
+            authAxios()
+              .get(
+                `mypage/realtime-reservation/${localStorage.getItem(
+                  'cust_seq'
+                )}`
+              )
+              .then((response) => {
+                console.log('Auth Response:', response.data);
+                setReservations(response.data);
+              })
+              .catch((error) => {
+                console.error('Auth Error:', error);
+              });
+            // FIREBASE 푸시 알림 로직 response.data에 토큰 정보가 담겨있음
+            // setPushCustList(response.data);
+            response.data.map((list) => {
+              console.log(list);
+              let pushinfo = {
+                to: list,
+                notification: {
+                  title: 'HeDiz',
+                  icon: process.env.PUBLIC_URL + '/logo512.png',
+                  body: '고객님이 설정하신 대기시간의 예약이 취소되었습니다.',
+                },
+              };
+
+              const header = {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: process.env.REACT_APP_FIREBASE_AUTH_KEY,
+                },
+              };
+              console.log(process.env.REACT_APP_FIREBASE_AUTH_KEY);
+              console.log(pushinfo);
+
+              axios
+                .post('https://fcm.googleapis.com/fcm/send', pushinfo, header)
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.error('FCM 전송 중 오류 발생:', error);
+                });
+            });
+          })
+          .catch((error) => {
+            console.error('Auth Error:', error);
+          });
+      },
+    });
+  };
+
+  const handleReservCancelWait = (reserv_seq) => {
     authAxios()
-      .put(`mypage/realtime-reservation/${reserv_seq}`, { receipt_id })
+      .delete(`mypage/realtime-reservation/${reserv_seq}`)
       .then((response) => {
         console.log('Auth Response:', response.data);
-        // FIREBASE 푸시 알림 로직 response.data에 토큰 정보가 담겨있음
-        // setPushCustList(response.data);
-        response.data.map((list) => {
-          console.log(list);
-          let pushinfo = {
-            to: list,
-            notification: {
-              title: 'HeDiz',
-              icon: process.env.PUBLIC_URL + '/logo512.png',
-              body: '고객님이 설정하신 대기시간의 예약이 취소되었습니다.',
-            },
-          };
-
-          const header = {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: process.env.REACT_APP_FIREBASE_AUTH_KEY,
-            },
-          };
-          console.log(process.env.REACT_APP_FIREBASE_AUTH_KEY);
-          console.log(pushinfo);
-
-          axios
-            .post('https://fcm.googleapis.com/fcm/send', pushinfo, header)
-            .then((response) => {
-              console.log(response);
-            })
-            .catch((error) => {
-              console.error('FCM 전송 중 오류 발생:', error);
-            });
-        });
+        authAxios()
+          .get(
+            `mypage/realtime-reservation/${localStorage.getItem('cust_seq')}`
+          )
+          .then((response) => {
+            console.log('Auth Response:', response.data);
+            setReservations(response.data);
+          })
+          .catch((error) => {
+            console.error('Auth Error:', error);
+          });
       })
       .catch((error) => {
         console.error('Auth Error:', error);
@@ -120,15 +165,26 @@ function Reservation() {
         </p>
         <p className='text-color-secondary font-semibold text-sm m-0 mb-2'></p>
         <div className='flex justify-content-end gap-2'>
-          {item.reserv_stat === 0 && (
+          {item.reserv_stat === 0 ? (
+            <>
+              <Button
+                label='예약취소'
+                type='submit'
+                size='small'
+                className='py-2'
+                onClick={(e) =>
+                  handleReservCancel(e, item.reserv_seq, item.receipt_id)
+                }
+              />
+              <ConfirmPopup />
+            </>
+          ) : (
             <Button
-              label='예약취소'
+              label='대기 취소'
               type='submit'
               size='small'
               className='py-2'
-              onClick={() =>
-                handleReservCancel(item.reserv_seq, item.receipt_id)
-              }
+              onClick={() => handleReservCancelWait(item.reserv_seq)}
             />
           )}
           <ConfirmDialog />

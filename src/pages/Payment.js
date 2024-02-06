@@ -98,14 +98,13 @@ function Payment() {
       const receipt_id = response.data.receipt_id;
       console.log(response.data.receipt_id);
       console.log(receipt_id);
+      console.log(payinfo);
+      const request = { ...payinfo, reserv_stat: 0, receipt_id: receipt_id };
       authAxios()
-        .post('/reservation', {
-          ...payinfo,
-          reserv_stat: 0, // reserv_stat : 0 예약 완료로 인설트
-          receipt_id: receipt_id,
-        })
+        .post('/reservation', request)
         .then(() => {
-          clearReservationFromLocalStorage();
+          console.log(request);
+          // clearReservationFromLocalStorage();
           navigate('/reservation');
         })
         .catch((error) => {
