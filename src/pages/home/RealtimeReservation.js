@@ -59,12 +59,15 @@ const RealtimeReservation = () => {
       >
         <p>{eventInfo.timeText}</p>
         <p>
-          <span className='mr-1'>고객 성함</span>
+          <span className='mr-1'>이름</span>
           <b>{eventInfo.event.extendedProps.cust}</b>
         </p>
         <p>
-          <span className='mr-1'>예약 정보</span>
-          <b>{eventInfo.event.extendedProps.staff} - </b>
+          <span className='mr-1'>담당</span>
+          <b>{eventInfo.event.extendedProps.staff}</b>
+        </p>
+        <p>
+          <span className='mr-1'>예약</span>
           <b>{eventInfo.event.extendedProps.style}</b>
         </p>
       </div>
@@ -209,7 +212,7 @@ const RealtimeReservation = () => {
               events={events}
               eventContent={eventContent}
               expandRows={true}
-              slotDuration={'00:30:00'}
+              slotDuration={'00:10:00'}
               // 영업 시작, 종료 일자
               slotMinTime={'09:00:00'}
               slotMaxTime={'24:00:00'}

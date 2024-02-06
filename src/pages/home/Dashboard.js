@@ -40,7 +40,7 @@ function Dashboard() {
     return (
       <Tag
         value={reserveValue}
-        style={{ backgroundColor: color, width: '80px' }}
+        style={{ backgroundColor: color, width: '80px', borderRadius: '40px' }}
       />
     );
   };
@@ -69,7 +69,6 @@ function Dashboard() {
           console.log('Response from request1:', res1.data);
           console.log('Response from request2:', res2.data);
           console.log('Response from request3:', res3.data);
-          /// res2 res3 합치기
           const combinedData = [...res2.data, ...res3.data];
           const eventList = combinedData.map((item) => ({
             title: `${
@@ -112,16 +111,15 @@ function Dashboard() {
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
             <span>
+              <span className='mr-1 text-primary text-semiblod'>
+                {localStorage.getItem('shop_name')}
+              </span>
               실시간 예약
-              <Clock
-                format={'YY년 MM월 DD일 HH:mm:ss'}
-                ticking={true}
-                className='ml-2'
-              />
             </span>
-            <span className='mr-1 text-primary text-semiblod text-lg'>
-              {localStorage.getItem('shop_name')}
-            </span>
+            <Clock
+              format={'YY년 MM월 DD일 HH:mm:ss'}
+              ticking={true}
+            />
           </h2>
           <div>
             <DataTable
@@ -134,7 +132,7 @@ function Dashboard() {
             >
               <Column
                 field='staff_nickname'
-                header='담당 디자이너'
+                header='담당'
                 className='text-center'
               />
               <Column
@@ -151,6 +149,7 @@ function Dashboard() {
                 field='reserv_stat'
                 header='예약 상태'
                 body={statusBodyTemplate}
+                className='text-center'
               />
             </DataTable>
           </div>

@@ -6,7 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import { Dialog } from 'primereact/dialog';
 
-export default function RealtimeReservationDialog({ isOpen, onClose, onReceiveData, title }) {
+export default function RealtimeReservationDialog({ isOpen, onClose, title }) {
   const [reservation, setReservation] = useState([]);
   const [events, setEvents] = useState([]);
 
@@ -16,11 +16,8 @@ export default function RealtimeReservationDialog({ isOpen, onClose, onReceiveDa
         .get(`/home/realtime-reservation/${localStorage.getItem('shop_seq')}`)
         .then((response) => {
           console.log('Auth Response:', response.data);
-          console.log(response.data.length);
           setReservation(response.data);
-          if (onReceiveData) {
-            onReceiveData(response.data.length);
-          }
+
           // fullCalendar
           const formattedEvents = response.data.map((event) => ({
             id: event.reserv_seq,
@@ -31,6 +28,7 @@ export default function RealtimeReservationDialog({ isOpen, onClose, onReceiveDa
               staff: event.staff_nickname,
               cust: event.cust_name,
               reserv_stat: event.reserv_stat,
+              style: event.style_name,
             },
           }));
           setEvents(formattedEvents);
@@ -42,12 +40,25 @@ export default function RealtimeReservationDialog({ isOpen, onClose, onReceiveDa
   }, [isOpen]);
 
   const eventContent = (eventInfo) => {
-    const { color } = getReservationValue(eventInfo.event.extendedProps.reserv_stat);
+    const { color } = getReservationValue(
+      eventInfo.event.extendedProps.reserv_stat
+    );
     return (
-      <div style={{ backgroundColor: color }}>
+      <div
+        className='text-sm pl-2 mt-2'
+        style={{ color: 'black', borderLeft: `5px solid ${color}` }}
+      >
         <p>{eventInfo.timeText}</p>
         <p>
-          {eventInfo.event.extendedProps.staff} / {eventInfo.event.extendedProps.cust}
+          <span className='mr-1'>고객 이름</span>
+          <b>{eventInfo.event.extendedProps.cust}</b>
+        </p>
+        <p>
+          <span className='mr-1'>예약 정보</span>
+          <b>
+            {eventInfo.event.extendedProps.staff} -{' '}
+            {eventInfo.event.extendedProps.style}
+          </b>
         </p>
       </div>
     );
@@ -57,21 +68,21 @@ export default function RealtimeReservationDialog({ isOpen, onClose, onReceiveDa
     <Dialog
       visible={isOpen}
       onHide={onClose}
-      className="w-5 h-30rem"
+      className='w-5 h-30rem'
       header={title}
       modal
-      style={{ width: '800px' }}
+      style={{ width: '800px', minHeight: '70vh' }}
     >
       <FullCalendar
-        locale="kr"
+        locale='kr'
         plugins={[dayGridPlugin, listPlugin]}
-        initialView="listDay"
+        initialView='listDay'
         headerToolbar={false}
         footerToolbar={{
           right: 'listDay',
         }}
-        height="100%"
-        themeSystem="standard"
+        height='100%'
+        themeSystem='standard'
         events={events}
         eventContent={eventContent}
         expandRows={true}

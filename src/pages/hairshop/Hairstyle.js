@@ -244,7 +244,7 @@ export default function Hairstyle() {
   // 이미지
   const imageBodyTemplate = (rowData) => {
     const imageData = rowData.style_image;
-    console.log(rowData.style_name, imageData);
+    // console.log(rowData.style_name, imageData);
     return (
       <img
         src={imageData}

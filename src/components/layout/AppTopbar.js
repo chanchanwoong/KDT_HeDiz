@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { authAxios } from 'api/AxiosAPI';
-
+import { useDataLength } from 'context/Context';
 import { Tooltip } from 'primereact/tooltip';
 import { Dialog } from 'primereact/dialog';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -19,7 +19,8 @@ export default function AppTopbar({ onToggleSidebar }) {
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [dataLength, setDataLength] = useState(0);
+  // const [dataLength, setDataLength] = useState(0);
+  const { dataLength, setDataLength } = useDataLength();
 
   const defaultValues = {
     before_password: '',
@@ -129,10 +130,6 @@ export default function AppTopbar({ onToggleSidebar }) {
   const handleCloseModal = () => {
     setIsDialogVisible(false);
   };
-  // 데이터 몇개 가지고 있는지 받아오기 위한 함수
-  const handleReceiveData = (length) => {
-    setDataLength(length);
-  };
 
   const start = (
     <Button
@@ -171,7 +168,6 @@ export default function AppTopbar({ onToggleSidebar }) {
         <RealtimeReservationDialog
           isOpen={isDialogVisible}
           onClose={handleCloseModal}
-          onReceiveData={handleReceiveData}
           title='실시간 예약'
         />
       </div>
