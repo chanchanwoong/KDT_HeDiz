@@ -99,11 +99,12 @@ public class MypageController {
         if (n == 3) {
             standByCustList = reservationService.getStandByCustListUsingFilter(reserv_seq);
         }
-        System.out.println("custList >> " + standByCustList);
         // cTokenList 조회
         // standByCustList 리스트에 값이 있는 경우에만 getCToken 호출
         if (!standByCustList.isEmpty()) {
             cTokenList = reservationService.getCToken(standByCustList);
+            // Token 값 추출하고 해당 대기 고객 데이터는 삭제
+            reservationService.deleteStandByCustList(standByCustList);
         }
         return ResponseEntity.ok().body(cTokenList);
     }
@@ -114,5 +115,4 @@ public class MypageController {
         int n = reservationService.deleteStandBy(reserv_seq);
         return ResponseEntity.ok().body(n == 1);
     }
-
 }

@@ -73,7 +73,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public void deleteStandByCustList(List<Integer> standByCustList) {
+        dao.deleteStandByCustList(standByCustList);
+    }
+
+    @Override
     public int deleteStandBy(int reserv_seq) {
         return dao.deleteStandBy(reserv_seq);
     }
+
 }

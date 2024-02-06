@@ -59,6 +59,14 @@
         </foreach>
     </select>
 
+    <!--푸시 알림 후 대기 예약 삭제-->
+    <delete id="deleteStandByCustList" parameterType="list">
+        DELETE FROM T_RESERVATION WHERE cust_seq in
+        <foreach collection="list" item="cust_seq" open="(" separator="," close=")">
+            #{cust_seq}
+        </foreach>
+    </delete>
+
     <!--대기 예약 삭제-->
     <delete id="deleteStandBy" parameterType="int">
         DELETE FROM T_RESERVATION WHERE reserv_seq = #{reserv_seq} AND reserv_stat = 4
