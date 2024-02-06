@@ -61,7 +61,7 @@
 
     <!--푸시 알림 후 대기 예약 삭제-->
     <delete id="deleteStandByCustList" parameterType="list">
-        DELETE FROM T_RESERVATION WHERE cust_seq in
+        DELETE FROM T_RESERVATION WHERE reserv_stat = 4 AND cust_seq in
         <foreach collection="list" item="cust_seq" open="(" separator="," close=")">
             #{cust_seq}
         </foreach>
