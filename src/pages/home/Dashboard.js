@@ -8,15 +8,21 @@ import { Column } from 'primereact/column';
 import { authAxios } from 'api/AxiosAPI';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-// import DashboardChart from 'components/common/DashboardChart';
+import DashboardBarChart from 'components/common/DashboardBarChart';
+import DashboardLineChart from 'components/common/DashboardLineChart';
 import { getReservationValue } from 'service/CommonOptions';
 import { Tag } from 'primereact/tag';
 
 function Dashboard() {
+  const shopSeq = localStorage.getItem('shop_seq');
   const [reservation, setReservation] = useState([]);
   const [closedDay, setClosedDay] = useState([]);
   const [events, setEvents] = useState([]);
   const calendarRef = useRef(null);
+
+  const [reservCount, setReservCount] = useState({});
+  const [weekCount, setWeekCount] = useState([]);
+
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
 
@@ -46,42 +52,64 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    //////// tempday_shop tempday_staff 둘다 받아오기
-    const request1 = authAxios().get(
-      `/home/realtime-reservation/${localStorage.getItem('shop_seq')}`
+    // tempday_shop tempday_staff 둘다 받아오기
+    // 실시간 예약
+    const realtimeRequest = authAxios().get(
+      `/home/realtime-reservation/${shopSeq}`
     );
-    const request2 = authAxios().get(
-      `/hairshop/closed-day/shop/${localStorage.getItem('shop_seq')}`
+    // 휴무일
+    const shopTempRequest = authAxios().get(
+      `/hairshop/closed-day/shop/${shopSeq}`
     );
-    const request3 = authAxios().get(
-      `/hairshop/closed-day/staff/${localStorage.getItem('shop_seq')}`
+    const staffTempRequest = authAxios().get(
+      `/hairshop/closed-day/staff/${shopSeq}`
     );
+
+    // 금일 예약상태별 카운트 갯수
+    const reservRequest = authAxios().get(`/home/dashboard/today/${shopSeq}`);
+    // 최근 6개월 매출
+    const summaryRequest = authAxios().get(
+      `/home/dashboard/summary/${shopSeq}`
+    );
+    // 고객 방문현황
+    // const weekRequest = authAxios().get(`/home/dashboard/week/${shopSeq}`);
 
     const calendar = calendarRef.current.getApi();
     calendar.setOption('plugins', [dayGridPlugin]);
     calendar.setOption('initialView', 'dayGridMonth');
 
-    axios;
     axios
-      .all([request1, request2, request3])
+      .all([
+        realtimeRequest,
+        shopTempRequest,
+        staffTempRequest,
+        reservRequest,
+        summaryRequest,
+        // weekRequest,
+      ])
       .then(
-        axios.spread((res1, res2, res3) => {
-          console.log('Response from request1:', res1.data);
-          console.log('Response from request2:', res2.data);
-          console.log('Response from request3:', res3.data);
+        axios.spread((res1, res2, res3, res4, res5, res6) => {
+          console.log('실시간 예약:', res1.data);
+          console.log('미용실 휴무일:', res2.data);
+          console.log('직원 휴무일:', res3.data);
+          console.log('금일 예약 상태별 카운트:', res4.data);
+          console.log('최근 6개월 매출:', res5.data);
+          // console.log('고객 방문 현황:', res6.data);
+
           const combinedData = [...res2.data, ...res3.data];
           const eventList = combinedData.map((item) => ({
-            title: `${
-              item.staff_nickname ? item.staff_nickname : '전체 휴무'
-            }: ${item.temp_memo}`,
+            title: `${item.staff_nickname ? item.staff_nickname : '전체 휴무'}`,
             start: `${item.temp_start}`,
             end: `${item.temp_end}`,
-            description: item.temp_memo,
+            backgroundColor: item.staff_nickname ? '#8b5cf6' : '#ffaa00',
           }));
 
           setReservation(res1.data);
           setClosedDay(combinedData);
           setEvents(eventList);
+
+          setReservCount(res4.data);
+          // setWeekCount(res6.data);
         })
       )
       .catch((error) => {
@@ -91,23 +119,29 @@ function Dashboard() {
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={`${styles.container} dashboard`}>
         <div className={`${styles.item} card`}>
-          <h4>예약완료</h4>
-          {/* <h3>24</h3> */}
+          <h4>금일 방문완료</h4>
+          <p className={styles.title__value}>
+            {reservCount?.[1]?.count}
+            <span className='text-400 text-xl'>
+              {' '}
+              / {reservCount?.[0]?.count}
+            </span>
+          </p>
         </div>
         <div className={`${styles.item} card`}>
-          <h4>예약취소</h4>
-          {/* <h3>2</h3> */}
+          <h4>금일 예약취소</h4>
+          <p className={styles.title__value}>{reservCount?.[2]?.count}</p>
         </div>
         <div className={`${styles.item} card`}>
-          <h4>노쇼</h4>
-          {/* <h3>2</h3> */}
+          <h4>금일 노쇼</h4>
+          <p className={styles.title__value}>{reservCount?.[3]?.count}</p>
         </div>
-        <div className={`${styles.item} card`}>
+        {/* <div className={`${styles.item} card`}>
           <h4>금월 매출</h4>
-          {/* <h3>4</h3> */}
-        </div>
+          <p className={styles.title__value}></p>
+        </div> */}
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
             <span>
@@ -127,7 +161,7 @@ function Dashboard() {
               rows={5}
               size='small'
               scrollable
-              scrollHeight='800px'
+              scrollHeight='860px'
               className='mt-2'
             >
               <Column
@@ -156,11 +190,15 @@ function Dashboard() {
         </div>
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
-            <span>매출 요약</span>
+            <span>월별 매출 요약</span>
           </h2>
-          <div></div>
+          <div>
+            <DashboardLineChart />
+          </div>
         </div>
-        <div className={`${styles.item} card`}>
+        <div
+          className={`${styles.item} card flex flex-direction justify-content-between`}
+        >
           <h2 className='flex align-items-center justify-content-between'>
             <span>휴무일</span>
             <span className='text-lg'>
@@ -168,22 +206,24 @@ function Dashboard() {
               정기 휴무
             </span>
           </h2>
-          <div className={styles.custom}>
-            <FullCalendar
-              locale='kr'
-              ref={calendarRef}
-              plugins={[dayGridPlugin]}
-              initialView='dayGridMonth'
-              events={events}
-              headerToolbar={false}
-            />
-          </div>
+          <FullCalendar
+            locale='kr'
+            ref={calendarRef}
+            plugins={[dayGridPlugin]}
+            initialView='dayGridMonth'
+            events={events}
+            headerToolbar={false}
+            // height={520}
+            height='100%'
+          />
         </div>
         <div className={`${styles.item} card`}>
           <h2 className='flex align-items-center justify-content-between'>
-            <span>고객 방문 현황</span>
+            <span>일주일 고객 방문 현황</span>
           </h2>
-          <div>{/* <DashboardChart /> */}</div>
+          <div>
+            <DashboardBarChart />
+          </div>
         </div>
       </div>
     </>

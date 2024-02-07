@@ -136,6 +136,12 @@ h2 {
   width: 100%;
 }
 
+.dashboard .fc-h-event {
+  padding: 0;
+  padding-left: 4px;
+  font-size: 0.75rem;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

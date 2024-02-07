@@ -57,7 +57,7 @@ const RealtimeReservation = () => {
         className='text-sm pl-2 mt-2'
         style={{ color: 'black', borderLeft: `5px solid ${color}` }}
       >
-        <p>{eventInfo.timeText}</p>
+        {/* <p>{eventInfo.timeText}</p>
         <p>
           <span className='mr-1'>이름</span>
           <b>{eventInfo.event.extendedProps.cust}</b>
@@ -68,6 +68,15 @@ const RealtimeReservation = () => {
         </p>
         <p>
           <span className='mr-1'>예약</span>
+          <b>{eventInfo.event.extendedProps.style}</b>
+        </p> */}
+        <p>{eventInfo.timeText}</p>
+        <p>
+          <span className='mr-1'>이름</span>
+          <b>{eventInfo.event.extendedProps.cust}</b>
+          <span className='mr-1 ml-2'>담당</span>
+          <b>{eventInfo.event.extendedProps.staff}</b>
+          <span className='mr-1 ml-2'>예약</span>
           <b>{eventInfo.event.extendedProps.style}</b>
         </p>
       </div>
