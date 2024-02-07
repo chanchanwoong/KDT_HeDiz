@@ -80,6 +80,7 @@ function DashboardBarChart() {
         },
         y: {
           beginAtZero: true,
+          suggestedMax: 14,
           ticks: {
             stepSize: 1,
           },
