@@ -54,10 +54,10 @@ https://github.com/gahui-dev/hediz/assets/139962408/c47585a7-307f-4419-aa1a-095c
 | 설명 | 설명 | 설명 | 설명 | 
 
 ### 3. 인증 및 마이페이지
-| 로그인 | 회원가입 | 지난 예약 | 리뷰 관리 | 
-|---|---|---|---|
-| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ad9a43ae-3f8c-46b1-b15a-33c6a2d76e86" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ad9a43ae-3f8c-46b1-b15a-33c6a2d76e86" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ad9a43ae-3f8c-46b1-b15a-33c6a2d76e86" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ad9a43ae-3f8c-46b1-b15a-33c6a2d76e86" > |
-| 설명 | 설명 | 설명 | 설명 | 
+| 로그인 | 회원가입 | 마이페이지 |  
+|---|---|---|
+| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/f0ab20e2-eafd-47d7-9401-1d7a3e3ce985" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/bc07d130-92e2-4213-99bb-b239b27161dc" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ad9a43ae-3f8c-46b1-b15a-33c6a2d76e86" > | 
+| 설명 | 설명 | 설명 | 
 
 
 
