@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.HairstyleMapper">
+
+    <!--모든 헤어스타일 조회-->
+    <select id="hairstyleFindAll" resultType="HairstyleDTO" parameterType="int">
+        SELECT style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, a.cate_seq,cate_name
+        FROM T_HAIRSTYLE a
+        INNER JOIN T_CATEGORY b ON a.cate_seq = b.cate_seq
+        WHERE a.shop_seq=#{shop_seq}
+        ORDER BY a.cate_seq, style_price DESC, style_name, style_time DESC, style_gender
+    </select>
+
+    <!--헤어스타일 데이터 추가-->
+    <insert id="hairstyleAdd" parameterType="HairstyleDTO">
+        INSERT INTO T_HAIRSTYLE (style_name, style_gender, style_time, style_price, style_intro, shop_seq, cate_seq, style_image)
+            VALUES (#{style_name},#{style_gender},#{style_time},#{style_price},#{style_intro},#{shop_seq}, #{cate_seq}, #{style_image})
+    </insert>
+
+    <!--헤어스타일 데이터 수정-->
+    <update id="hairstyleUpdate" parameterType="HairstyleDTO">
+        UPDATE T_HAIRSTYLE a INNER JOIN T_CATEGORY b ON a.cate_seq = b.cate_seq
+        SET style_name=#{style_name}, style_gender=#{style_gender}, style_time=#{style_time}, style_price=#{style_price},
+            style_intro=#{style_intro}, style_image=#{style_image}, cate_name = #{cate_name}
+        WHERE style_seq = #{style_seq}
+    </update>
+
+    <!--헤어스타일 데이터 삭제-->
+    <delete id="hairstyleDelete" parameterType="int">
+        DELETE FROM T_HAIRSTYLE WHERE style_seq = #{style_seq}
+    </delete>
+</mapper>

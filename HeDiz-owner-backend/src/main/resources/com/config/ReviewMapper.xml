@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.ReservationMapper">
+    <!--전체 리뷰 조회-->
+    <select id="reviewFindAll" resultType="ReviewDTO">
+        select
+        tr.review_seq,
+        cu.cust_name,
+        tr.review_score,
+        tr.review_content,
+        tr.review_photo,
+        tr.review_date,
+        tr.review_reply,
+        s.staff_nickname,
+        st.style_name,
+        re.reserv_seq,
+        re.reserv_date
+        from T_REVIEW tr
+
+        LEFT JOIN T_RESERVATION re ON tr.reserv_seq = re.reserv_seq
+        LEFT JOIN T_HAIRSTYLE st ON re.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP ha ON st.shop_seq = ha.shop_seq
+        LEFT JOIN T_CUSTOMER cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN T_STAFF s ON re.staff_seq = s.staff_seq
+        WHERE ha.shop_seq = #{shop_seq}
+        ORDER BY tr.review_date ASC;
+    </select>
+
+    <!--특정 리뷰 조회-->
+    <select id="reviewFind" resultType="ReviewDTO" parameterType="int">
+        select review_seq, shop_seq, reserv_seq, review_score, review_content, review_photo, review_date, review_reply
+        from T_REVIEW
+        where review_seq=#{review_seq}
+    </select>
+
+    <!--특정 리뷰 답글달기-->
+    <update id="reviewUpdate" parameterType="ReviewDTO">
+        update T_REVIEW set review_reply=#{review_reply} where review_seq=#{review_seq}
+    </update>
+
+    <!--// 특정 리뷰 삭제-->
+    <delete id="reviewDelete" parameterType="int">
+        delete from T_REVIEW where review_seq=#{review_seq}
+    </delete>
+</mapper>

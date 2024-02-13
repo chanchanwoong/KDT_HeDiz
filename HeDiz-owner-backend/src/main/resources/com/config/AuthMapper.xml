@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.AuthMapper">
+    <!--회원가입-->
+    <insert id="signUp" parameterType="HairshopDTO">
+        INSERT INTO T_HAIRSHOP (shop_register, shop_id, shop_pw, shop_name, shop_address, shop_phone, shop_start,
+        shop_end, shop_regular, shop_tag, shop_intro, shop_image)
+        VALUES (#{shop_register}, #{shop_id}, #{shop_pw}, #{shop_name}, #{shop_address}, #{shop_phone}, #{shop_start},
+        #{shop_end}, #{shop_regular}, #{shop_tag}, #{shop_intro}, #{shop_image})
+    </insert>
+
+    <select id="duplicateCheck" parameterType="string" resultType="int">
+        SELECT COUNT(shop_id) FROM T_HAIRSHOP WHERE shop_id=#{shopId}
+    </select>
+
+    <!--id를 이용해 user 찾기-->
+    <select id="getUserById" parameterType="string" resultType="HairshopDTO">
+        SELECT shop_seq, shop_name, shop_register, shop_id, shop_pw, shop_address, shop_intro,
+        shop_image, shop_start, shop_end, shop_phone, shop_regular, shop_tag
+        FROM T_HAIRSHOP WHERE shop_id=#{shop_id}
+    </select>
+
+    <!--shopRegister을 이용해 등록된 shop_id 찾기-->
+    <select id="findId" parameterType="string" resultType="string">
+        SELECT shop_id FROM T_HAIRSHOP WHERE shop_register=#{shopRegister}
+    </select>
+
+    <!--id와 shop_name을 이용해서 DB에 있는지 확인-->
+    <select id="checkPassword" parameterType="hashmap" resultType="int">
+        SELECT count('shop_id') FROM T_HAIRSHOP WHERE shop_id=#{shop_id} and shop_name=#{shop_name}
+    </select>
+
+    <!--비밀번호 변경-->
+    <update id="changePassword" parameterType="hashmap">
+        UPDATE T_HAIRSHOP SET shop_pw=#{shop_pw}
+        WHERE shop_id=#{shop_id}
+    </update>
+</mapper>

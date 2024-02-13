@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.CustomerMapper">
+
+    <!--고객 데이터 조회-->
+    <select id="allCustomerSelect" parameterType="string" resultType="CustomerDTO">
+        WITH CTE AS (
+        SELECT
+        T_HAIRSHOP.shop_seq,
+        cust_seq,
+        reserv_date,
+        style_name,
+        staff_nickname,
+        CASE WHEN RESERV_STAT = 1 THEN '방문완료' ELSE NULL END AS 'STAT_COMPLETE',
+        CASE WHEN RESERV_STAT = 2 THEN '취소' ELSE NULL END AS 'STAT_CANCEL',
+        CASE WHEN RESERV_STAT = 3 THEN '노쇼' ELSE NULL END AS 'STAT_NOSHOW',
+        ROW_NUMBER() OVER (PARTITION BY cust_seq ORDER BY reserv_date DESC) AS RowNum
+        FROM
+        T_RESERVATION
+        JOIN T_HAIRSTYLE ON T_RESERVATION.style_seq = T_HAIRSTYLE.style_seq
+        JOIN T_HAIRSHOP ON T_HAIRSTYLE.shop_seq = T_HAIRSHOP.shop_seq
+        JOIN T_STAFF ON T_RESERVATION.staff_seq = T_STAFF.staff_seq
+        WHERE
+        T_HAIRSHOP.shop_seq = #{shop_seq}
+        ),
+        PVT AS (
+        SELECT
+        CUST_SEQ,
+        MAX(STAT_CANCEL) AS STAT_CANCEL,
+        MAX(STAT_COMPLETE) AS STAT_COMPLETE,
+        MAX(STAT_NOSHOW) AS STAT_NOSHOW
+        FROM
+        CTE
+        GROUP BY
+        CUST_SEQ,
+        RowNum
+        ),
+        ALL_SHOP_NOSHOW AS (
+        SELECT
+        cust_seq,
+        COUNT(*) AS 'ALL_SHOP_NOSHOW'
+        FROM
+        T_RESERVATION
+        WHERE
+        RESERV_STAT = 3
+        GROUP BY
+        cust_seq
+        )
+        SELECT
+        A.cust_seq,
+        A.cust_name,
+        A.cust_phone,
+        A.cust_id,
+        B.STAT_CANCEL AS 'stat_cancel',
+        B.STAT_COMPLETE AS 'stat_complete',
+        B.STAT_NOSHOW AS 'stat_noshow',
+        IFNULL(C.ALL_SHOP_NOSHOW, 0) AS 'all_shop_noshow',
+        (SELECT cust_level FROM T_CUSTOMER WHERE cust_seq = A.cust_seq) AS cust_level,
+        (SELECT reserv_date FROM CTE WHERE cust_seq = A.cust_seq AND STAT_COMPLETE = '방문완료' ORDER BY reserv_date DESC LIMIT 1) AS last_reserv_date,
+        (SELECT style_name FROM CTE WHERE cust_seq = A.cust_seq AND STAT_COMPLETE = '방문완료' ORDER BY reserv_date DESC LIMIT 1) AS style_name,
+        (SELECT staff_nickname FROM CTE WHERE cust_seq = A.cust_seq AND STAT_COMPLETE = '방문완료' ORDER BY reserv_date DESC LIMIT 1) AS staff_nickname
+        FROM
+        T_CUSTOMER AS A
+        INNER JOIN (
+        SELECT
+        CUST_SEQ,
+        COUNT(STAT_CANCEL) AS 'STAT_CANCEL',
+        COUNT(STAT_COMPLETE) AS 'STAT_COMPLETE',
+        COUNT(STAT_NOSHOW) AS 'STAT_NOSHOW'
+        FROM
+        PVT
+        GROUP BY
+        CUST_SEQ
+        ) AS B ON A.CUST_SEQ = B.CUST_SEQ
+        LEFT JOIN ALL_SHOP_NOSHOW AS C ON A.CUST_SEQ = C.cust_seq
+        ORDER BY
+        STAT_COMPLETE DESC;
+    </select>
+
+</mapper>

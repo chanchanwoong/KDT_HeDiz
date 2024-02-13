@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.ReservationMapper">
+    <!-- 전체 예약 조회-->
+    <select id="reservationFindAll" resultType="ReservationDTO">
+        SELECT b.cust_seq, b.cust_name, d.staff_nickname, c.style_name, a.reserv_seq, a.reserv_request, b.cust_phone,
+        a.reserv_date, a.reserv_time, a.reserv_stat, g.pay_price
+        FROM T_RESERVATION AS a
+        INNER JOIN T_CUSTOMER AS b
+        ON a.cust_seq = b.cust_seq
+        INNER JOIN T_HAIRSTYLE AS c
+        ON a.style_seq = c.style_seq
+        INNER JOIN T_STAFF AS d
+        ON a.staff_seq = d.staff_seq
+        INNER JOIN T_HAIRSHOP AS f
+        ON c.shop_seq = f.shop_seq
+        LEFT JOIN T_PAYMENT AS g
+        ON g.reserv_seq = a.reserv_seq
+        where f.shop_seq = #{shop_seq}
+        ORDER BY a.reserv_date DESC, a.reserv_time ASC;
+    </select>
+
+    <!--reserv_stat 조회-->
+    <select id="getReservStat" resultType="int" parameterType="int">
+        select reserv_stat from T_RESERVATION where reserv_seq = #{reserv_seq}
+    </select>
+
+    <!--예약 상태 변경-->
+    <update id="reservStatChange" parameterType="hashmap">
+        update T_RESERVATION set reserv_stat = #{reserv_stat} where reserv_seq=#{reserv_seq}
+    </update>
+
+    <!--pay_price 조회-->
+    <select id="getPayPrice" parameterType="int" resultType="int">
+        select pay_price from T_RESERVATION inner join T_PAYMENT using (reserv_seq) where reserv_seq=#{reserv_seq}
+    </select>
+
+    <!--receipt_id 조회-->
+    <select id="getReciptId" parameterType="int" resultType="string">
+        select receipt_id from T_RESERVATION where reserv_seq=#{reserv_seq}
+    </select>
+
+    <!--pay_stat 취소로 변경-->
+    <update id="changePayStat" parameterType="int">
+        update T_PAYMENT set pay_stat=1, pay_price = pay_price * 0.1  where reserv_seq=#{reserv_seq}
+    </update>
+
+    <!--특정 예약 데이터 조회-->
+    <select id="reservationFind" parameterType="int" resultType="ReservationDTO">
+        select reserv_seq, style_seq, cust_seq, staff_seq, shop_seq, reserv_name, reserv_phone, reserv_request,
+        reserv_date, reserv_time, reserv_stat
+        from T_RESERVATION
+        where reserv_seq=#{reservSeq}
+    </select>
+
+    <!--예약 상태 수정-->
+    <update id="reservationUpdate" parameterType="hashmap">
+        update T_RESERVATION set reserv_stat=#{reserv_stat} where reserv_seq=#{reserv_seq}
+    </update>
+
+    <!--실시간(금일) 예약 -->
+    <select id="realtimeFindAll" resultType="ReservationDTO">
+        SELECT a.reserv_seq
+        , d.staff_seq
+        , d.staff_nickname
+        , a.reserv_date
+        , a.reserv_time
+        , c.style_time
+        , TIME_FORMAT(SEC_TO_TIME( (TIME_TO_SEC(a.reserv_time) + TIME_TO_SEC(c.style_time)) MOD (24 * 60 *
+        60)),'%H:%i:%s' ) AS end_time
+        , b.cust_name
+        , c.style_name
+        , b.cust_phone
+        , a.reserv_request
+        , a.reserv_stat
+        FROM T_RESERVATION AS a
+        INNER JOIN T_CUSTOMER AS b ON a.cust_seq = b.cust_seq
+        INNER JOIN T_HAIRSTYLE AS c ON a.style_seq = c.style_seq
+        INNER JOIN T_STAFF AS d ON a.staff_seq = d.staff_seq
+        INNER JOIN T_HAIRSHOP AS f ON c.shop_seq = f.shop_seq
+        WHERE f.shop_seq = #{shop_seq}
+        AND DATE(a.reserv_date) = CURDATE()
+        AND reserv_stat not in (4)
+        ORDER BY a.reserv_date ASC, a.reserv_time ASC, a.reserv_stat, d.staff_seq;
+    </select>
+
+    <!--실시간(금일) 예약 + 현재시간 기준 남아있는 예약 완료-->
+    <select id="realtimeFindCurrent" resultType="ReservationDTO">
+        SELECT a.reserv_seq
+        , d.staff_seq
+        , d.staff_nickname
+        , a.reserv_date
+        , a.reserv_time
+        , c.style_time
+        , TIME_FORMAT(SEC_TO_TIME( (TIME_TO_SEC(a.reserv_time) + TIME_TO_SEC(c.style_time)) MOD (24 * 60 *
+        60)),'%H:%i:%s' ) AS end_time
+        , b.cust_name
+        , c.style_name
+        , b.cust_phone
+        , a.reserv_request
+        , a.reserv_stat
+        FROM T_RESERVATION AS a
+        INNER JOIN T_CUSTOMER AS b ON a.cust_seq = b.cust_seq
+        INNER JOIN T_HAIRSTYLE AS c ON a.style_seq = c.style_seq
+        INNER JOIN T_STAFF AS d ON a.staff_seq = d.staff_seq
+        INNER JOIN T_HAIRSHOP AS f ON c.shop_seq = f.shop_seq
+        WHERE f.shop_seq = #{shop_seq} AND a.reserv_time > now() AND a.reserv_stat = 0
+        AND DATE(a.reserv_date) = CURDATE()
+        ORDER BY a.reserv_date ASC, a.reserv_time ASC, a.reserv_stat, d.staff_seq;
+    </select>
+</mapper>

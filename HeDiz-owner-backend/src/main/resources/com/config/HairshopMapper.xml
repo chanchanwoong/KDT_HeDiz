@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.HairshopMapper">
+
+    <!--특정 미용실 조회-->
+    <select id="hairshopFind" resultType="HairshopDTO" parameterType="int">
+        select shop_seq, shop_name, shop_register, shop_id, shop_pw, shop_address, shop_intro, shop_image, shop_start, shop_end, shop_phone, shop_regular, shop_tag
+        from T_HAIRSHOP
+        where shop_seq=#{shop_seq}
+    </select>
+
+    <!--미용실 데이터 수정-->
+    <update id="hairshopUpdate" parameterType="HairshopDTO">
+        update T_HAIRSHOP set
+        shop_regular=#{shop_regular},
+        shop_address=#{shop_address},
+        shop_phone=#{shop_phone},
+        shop_start=#{shop_start},
+        shop_end=#{shop_end},
+        shop_image=#{shop_image},
+        shop_intro=#{shop_intro},
+        shop_tag=#{shop_tag}
+        where shop_seq=#{shop_seq}
+    </update>
+
+    <!--회원가입-->
+    <insert id="signUp" parameterType="HairshopDTO">
+        INSERT INTO T_HAIRSHOP (shop_name, shop_register, shop_id, shop_pw, shop_address, shop_intro, shop_image, shop_start, shop_end, shop_phone, shop_regular, shop_tag)
+        VALUES (#{shop_name}, #{shop_register}, #{shop_id}, #{shop_pw}, #{shop_address}, #{shop_intro}, #{shop_image}, #{shop_start}, #{shop_end}, #{shop_phone}, #{shop_regular}, #{shop_tag})
+    </insert>
+
+    <!--미용실 임시 휴무일 조회 -->
+    <select id="shopTempdayFind" resultType="TempdayDTO">
+        select shop_seq, temp_start, temp_end, shop_regular, temp_memo
+        from T_TEMPDAY_SHOP
+        inner join T_HAIRSHOP using(shop_seq)
+        where shop_seq=#{shop_seq}
+    </select>
+
+    <!--직원 임시 휴무일 조회 -->
+    <select id="staffTempdayFind" resultType="TempdayDTO">
+        select shop_seq, staff_seq, staff_nickname, temp_start, temp_end, temp_memo
+        from T_TEMPDAY_STAFF
+        inner join T_STAFF using(staff_seq)
+        where shop_seq = #{shop_seq}
+    </select>
+
+    <!--직원 휴무일 추가-->
+    <insert id="staffTempdayAdd" parameterType="TempdayDTO">
+        insert into T_TEMPDAY_STAFF(staff_seq, temp_start, temp_end, temp_memo)
+        values (#{staff_seq}, #{temp_start}, #{temp_end}, #{temp_memo})
+    </insert>
+
+
+    <!--미용실 휴무일 추가-->
+    <insert id="shopTempdayAdd" parameterType="TempdayDTO">
+        insert into T_TEMPDAY_SHOP(shop_seq, temp_start, temp_end, temp_memo)
+        values (#{shop_seq}, #{temp_start}, #{temp_end}, #{temp_memo})
+    </insert>
+</mapper>

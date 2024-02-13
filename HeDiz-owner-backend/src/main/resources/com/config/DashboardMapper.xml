@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.DashboardMapper">
+
+    <!--금일 예약상태별 카운트 개수-->
+    <select id="countByReservationStatusPerDay" parameterType="int" resultType="DashboardDTO">
+        WITH DEF_DATA
+        AS(SELECT A.shop_seq
+        ,C.*
+        FROM T_HAIRSHOP AS A
+        INNER JOIN T_HAIRSTYLE AS B
+        ON A.shop_seq = B.shop_seq
+        AND A.shop_seq = #{shop_seq}
+        INNER JOIN T_RESERVATION AS C
+        ON B.style_seq = C.style_seq)
+        ,DEF_RESERV_STAT
+        AS(SELECT 0 AS RESERV_STAT FROM DUAL
+        UNION ALL
+        SELECT 1 AS RESERV_STAT FROM DUAL
+        UNION ALL
+        SELECT 2 AS RESERV_STAT FROM DUAL
+        UNION ALL
+        SELECT 3 AS RESERV_STAT FROM DUAL
+        UNION ALL
+        SELECT 4 AS RESERV_STAT FROM DUAL)
+
+        SELECT DISTINCT A.RESERV_STAT AS reserv_stat
+        ,IFNULL(B.CNT, 0) AS count
+        FROM DEF_RESERV_STAT AS A
+        LEFT OUTER JOIN(SELECT RESERV_STAT
+        ,COUNT(RESERV_STAT) AS CNT
+        FROM DEF_DATA
+        WHERE RESERV_DATE = CURDATE()
+        GROUP BY RESERV_STAT) AS B
+        ON A.RESERV_STAT = B.RESERV_STAT
+        ORDER BY RESERV_STAT
+    </select>
+
+    <!--최근 6개월 매출-->
+    <select id="salesLastSixMonths" resultType="DashboardDTO" parameterType="int">
+        WITH RECURSIVE DUMMY_LEVEL
+        AS(SELECT 0 AS LEVEL
+        UNION ALL
+        SELECT 1 + DUMMY_LEVEL.LEVEL
+        FROM DUMMY_LEVEL
+        WHERE DUMMY_LEVEL.LEVEL <![CDATA[ < (SELECT DATEDIFF(NOW(), NOW() - interval 6 month))) ]]>
+        ,DEF_MONTH
+        AS(SELECT DISTINCT #{shop_seq} AS shop_seq
+        ,DATE_FORMAT(ADDDATE(NOW(), INTERVAL (LEVEL * -1) DAY), '%Y%m') AS DUMMY_DATE
+        FROM DUMMY_LEVEL)
+        ,DEF_DATA
+        AS(SELECT A.shop_seq
+        ,C.*
+        FROM T_HAIRSHOP AS A
+        INNER JOIN T_HAIRSTYLE AS B
+        ON A.shop_seq = B.shop_seq
+        AND A.shop_seq = #{shop_seq}
+        INNER JOIN T_RESERVATION AS C
+        ON B.style_seq = C.style_seq)
+        SELECT A.DUMMY_DATE AS date
+        ,IFNULL(B.SALES_AMOUNT, 0) AS sales_amount
+        FROM DEF_MONTH AS A
+        LEFT OUTER JOIN(SELECT A.shop_seq
+        ,DATE_FORMAT(B.PAY_DATE, '%Y%m') as PAY_MONTH
+        ,SUM(pay_price) AS SALES_AMOUNT
+        FROM DEF_DATA AS A
+        INNER JOIN T_PAYMENT AS B
+        ON A.reserv_seq = B.reserv_seq
+        WHERE B.pay_date >= (SELECT LAST_DAY(NOW() - interval 6 month) + interval 1 day FROM DUAL) AND B.pay_date <![CDATA[ <= NOW() ]]>
+        GROUP BY A.shop_seq, DATE_FORMAT(B.PAY_DATE, '%Y%m')) AS B
+        ON A.shop_seq = B.shop_seq
+        AND A.DUMMY_DATE = B.PAY_MONTH
+        ORDER BY PAY_MONTH
+        LIMIT 6
+    </select>
+
+    <!--고객 방문 현황-->
+    <select id="customerVisitStatus" parameterType="int" resultType="DashboardDTO">
+        WITH RECURSIVE DUMMY_LEVEL
+        AS (
+        SELECT 0 AS LEVEL
+        UNION ALL
+        SELECT 1 + DUMMY_LEVEL.LEVEL
+        FROM DUMMY_LEVEL
+        WHERE DUMMY_LEVEL.LEVEL <![CDATA[ < (SELECT DATEDIFF(NOW(), NOW() - interval 6 day)) ]]>
+        ),
+        DEF_DATE AS (
+        SELECT DISTINCT 1 AS shop_seq, DATE_FORMAT(ADDDATE(NOW(), INTERVAL (LEVEL * -1) DAY), '%Y%m%d') AS DUMMY_DATE
+        FROM DUMMY_LEVEL
+        ),
+        DEF_DATA AS (
+        SELECT A.shop_seq, C.*
+        FROM T_HAIRSHOP AS A
+        INNER JOIN T_HAIRSTYLE AS B ON A.shop_seq = B.shop_seq AND A.shop_seq = #{shop_seq}
+        INNER JOIN T_RESERVATION AS C ON B.style_seq = C.style_seq
+        WHERE C.RESERV_STAT IN (1, 2, 3)
+        AND C.RESERV_DATE BETWEEN DATE_ADD(CURDATE(), INTERVAL -7 DAY) AND CURDATE()
+        )
+        SELECT A.DUMMY_DATE AS date,
+        SUM(CASE WHEN B.RESERV_STAT = 1 THEN 1 ELSE 0 END) AS count_stat_1,
+        SUM(CASE WHEN B.RESERV_STAT = 2 THEN 1 ELSE 0 END) AS count_stat_2,
+        SUM(CASE WHEN B.RESERV_STAT = 3 THEN 1 ELSE 0 END) AS count_stat_3
+        FROM DEF_DATE AS A
+        LEFT OUTER JOIN DEF_DATA B ON A.DUMMY_DATE = B.RESERV_DATE
+        GROUP BY A.DUMMY_DATE
+        ORDER BY A.DUMMY_DATE
+    </select>
+
+</mapper>
