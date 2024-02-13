@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.config.AuthMapper">
+
+    <!--id를 이용해 user 찾기-->
+    <select id="getUserById" parameterType="string" resultType="CustomerDTO">
+        SELECT cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender
+        FROM T_CUSTOMER WHERE cust_id=#{cust_id}
+    </select>
+
+    <!--회원가입-->
+    <insert id="signUp" parameterType="CustomerDTO">
+        INSERT INTO T_CUSTOMER (cust_name, cust_id, cust_pw, cust_phone, cust_gender, cust_level)
+        VALUES (#{cust_name}, #{cust_id}, #{cust_pw}, #{cust_phone}, #{cust_gender}, 0)
+    </insert>
+
+    <!--id 중복 체크-->
+    <select id="duplicateCheck" parameterType="string" resultType="int">
+        SELECT COUNT(cust_id) FROM T_CUSTOMER WHERE cust_id=#{cust_id}
+    </select>
+
+    <!--id 찾기-->
+    <select id="findId" parameterType="hashmap" resultType="string">
+        SELECT cust_id FROM T_CUSTOMER WHERE cust_name=#{cust_name} AND cust_phone=#{cust_phone}
+    </select>
+
+    <!--id와 cust_name을 이용해서 DB에 있는지 확인-->
+    <select id="checkPassword" parameterType="hashmap" resultType="int">
+        SELECT count('cust_id') FROM T_CUSTOMER WHERE cust_id=#{cust_id} and cust_name=#{cust_name}
+    </select>
+
+    <!--비밀번호 변경-->
+    <update id="changePassword" parameterType="hashmap">
+        UPDATE T_CUSTOMER SET cust_pw=#{cust_pw}
+        WHERE cust_id=#{cust_id}
+    </update>
+</mapper>

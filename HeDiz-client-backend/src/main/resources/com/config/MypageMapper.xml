@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.MypageMapper">
+
+    <!--mypage 조회-->
+    <select id="findMypage" resultType="CustomerDTO">
+        select cust_seq, cust_name, cust_id, cust_pw, cust_phone, cust_gender, cust_level from T_CUSTOMER where cust_seq=#{cust_seq}
+    </select>
+
+    <!--예약 정보 조회-->
+    <select id="reservation" resultType="ReservationDTO">
+        SELECT
+        tr.reserv_seq,
+        tr.reserv_request,
+        tr.reserv_date,
+        tr.reserv_time,
+        tr.reserv_stat,
+        st.style_name,
+        hs.shop_name,
+        hs.shop_image,
+        s.staff_nickname
+        FROM T_RESERVATION tr
+        LEFT JOIN T_HAIRSTYLE st ON tr.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
+        LEFT JOIN T_CUSTOMER cu ON tr.cust_seq = cu.cust_seq
+        LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
+        WHERE tr.cust_seq = #{cust_seq} and tr.reserv_stat not in (4)
+        ORDER BY tr.reserv_date DESC, tr.reserv_time DESC;
+    </select>
+
+    <!--mypage 수정-->
+    <update id="updateMypage" parameterType="CustomerDTO">
+        update T_CUSTOMER set
+        cust_phone = #{cust_phone}
+        where cust_seq = #{cust_seq}
+    </update>
+
+    <!--cust_seq에 따른 review 조회-->
+    <select id="review" resultType="ReviewDTO">
+        select tr.review_seq, ha.shop_seq, ha.shop_name, re.reserv_seq, tr.review_score,
+        tr.review_content, tr.review_photo, tr.review_date, tr.review_reply, st.style_name, s.staff_nickname
+
+        from T_REVIEW tr
+        LEFT JOIN T_RESERVATION re ON tr.reserv_seq = re.reserv_seq
+        LEFT JOIN T_HAIRSTYLE st ON re.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP ha ON st.shop_seq = ha.shop_seq
+        LEFT JOIN T_CUSTOMER cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN T_STAFF s ON re.staff_seq = s.staff_seq
+        where re.cust_seq=#{cust_seq}
+        order by review_date desc, review_score desc;
+    </select>
+
+    <!--reserv_stat 조회-->
+    <select id="getReservStat" parameterType="int" resultType="int">
+        SELECT reserv_stat FROM T_RESERVATION where cust_seq = #{cust_seq} AND reserv_seq = #{reserv_seq}
+    </select>
+
+    <!--review 작성-->
+    <insert id="reviewWrite">
+        insert into T_REVIEW (reserv_seq, review_score, review_content, review_photo, review_date)
+        values (#{reserv_seq}, #{review_score}, #{review_content}, #{review_photo}, #{review_date})
+    </insert>
+
+    <!--review 수정-->
+    <update id="reviewUpdate" parameterType="ReviewDTO">
+        update T_REVIEW set review_score=#{review_score}, review_content=#{review_content}, review_photo=#{review_photo}
+        where review_seq = #{review_seq}
+    </update>
+
+    <!--review 삭제-->
+    <delete id="reviewDelete">
+        delete from T_REVIEW where review_seq=#{review_seq};
+    </delete>
+</mapper>

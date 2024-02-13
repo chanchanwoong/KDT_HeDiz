@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.HairshopMapper">
+
+
+    <!--모든 미용실 조회-->
+    <select id="findAllHairshop" resultType="HairshopDTO">
+        SELECT
+        a.shop_seq,
+        a.shop_name,
+        a.shop_address,
+        a.shop_intro,
+        a.shop_image,
+        a.shop_start,
+        a.shop_end,
+        a.shop_phone,
+        a.shop_regular,
+        a.shop_tag,
+        (
+        SELECT AVG(b.review_score)
+        FROM T_REVIEW AS b
+        INNER JOIN T_RESERVATION AS c ON b.reserv_seq = c.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS f ON c.style_seq = f.style_seq
+        WHERE f.shop_seq = a.shop_seq
+        GROUP BY a.shop_seq
+        ) AS avg_review_score,
+        (
+        SELECT COUNT(d.review_score)
+        FROM T_REVIEW AS d
+        INNER JOIN T_RESERVATION AS e ON d.reserv_seq = e.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS h ON e.style_seq = h.style_seq
+        INNER JOIN T_HAIRSHOP AS i ON h.shop_seq = i.shop_seq
+        WHERE i.shop_seq = a.shop_seq
+        GROUP BY a.shop_seq
+        ) AS counT_REVIEW
+        FROM T_HAIRSHOP AS a;
+    </select>
+
+    <!--특정 미용실 조회-->
+    <select id="findHairshop" resultType="HairshopDTO">
+        SELECT
+        a.shop_seq,
+        a.shop_name,
+        a.shop_address,
+        a.shop_intro,
+        a.shop_image,
+        a.shop_start,
+        a.shop_end,
+        a.shop_phone,
+        a.shop_regular,
+        a.shop_tag,
+        (
+        SELECT AVG(b.review_score)
+        FROM T_REVIEW AS b
+        INNER JOIN T_RESERVATION AS c ON b.reserv_seq = c.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS f ON c.style_seq = f.style_seq
+        WHERE f.shop_seq = a.shop_seq
+        GROUP BY f.shop_seq
+        ) AS avg_review_score,
+        (
+        SELECT COUNT(d.review_score)
+        FROM T_REVIEW AS d
+        INNER JOIN T_RESERVATION AS e ON d.reserv_seq = e.reserv_seq
+        INNER JOIN T_HAIRSTYLE AS h ON e.style_seq = h.style_seq
+        INNER JOIN T_HAIRSHOP AS i ON h.shop_seq = i.shop_seq
+        WHERE i.shop_seq = a.shop_seq
+        GROUP BY i.shop_seq
+        ) AS counT_REVIEW
+        FROM T_HAIRSHOP AS a
+        WHERE a.shop_seq = #{shop_seq};
+    </select>
+
+    <!--특정 미용실의 헤어스타일 조회-->
+    <select id="findHairstyle" resultType="HairstyleDTO">
+        SELECT style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
+        FROM T_HAIRSTYLE
+        INNER JOIN T_CATEGORY USING(cate_seq)
+        WHERE shop_seq = #{shop_seq}
+        ORDER BY cate_seq, style_name;
+
+    </select>
+
+    <!--특정 미용실 헤어스타일 중 특정 헤어스타일 정보 조회-->
+    <select id="findHairstyleInfor" resultType="HairstyleDTO" parameterType="hashmap">
+        SELECT b.shop_name, style_seq, style_name, style_gender, style_time, style_price, style_intro, style_image, cate_name
+        FROM T_HAIRSTYLE AS a
+        INNER JOIN T_HAIRSHOP AS b
+        ON a.shop_seq = b.shop_seq
+        INNER JOIN T_CATEGORY USING(cate_seq)
+        WHERE b.shop_seq = #{shop_seq} AND style_seq = #{style_seq}
+        ORDER BY cate_seq, style_name;
+    </select>
+
+    <!--특정 미용실의 직원 조회-->
+    <select id="findAllStaff" resultType="StaffDTO">
+        select staff_seq, staff_role, staff_image, staff_intro, staff_nickname
+        from T_STAFF
+        where shop_seq=#{shop_seq}
+        order by FIELD(`staff_role`, '원장', '부원장', '점장', '부점장', '실장', '디자이너')
+    </select>
+
+    <!--특정 직원 조회-->
+    <select id="findStaff" parameterType="hashmap" resultType="StaffDTO">
+        select staff_role, staff_nickname
+        from T_STAFF
+        where staff_seq=#{staff_seq}
+    </select>
+
+    <!--특정 미용실 리뷰 조회-->
+    <select id="findReview" resultType="ReviewDTO">
+        SELECT
+        tr.review_seq,
+        hs.shop_name,
+        cust_id,
+        cu.cust_name,
+        tr.review_score,
+        tr.review_content,
+        tr.review_photo,
+        tr.review_date,
+        tr.review_reply,
+        s.staff_nickname,
+        st.style_name
+        FROM
+        T_REVIEW tr
+        LEFT JOIN T_RESERVATION re ON tr.reserv_seq = re.reserv_seq
+        LEFT JOIN T_HAIRSTYLE st ON re.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
+        LEFT JOIN T_CUSTOMER cu ON re.cust_seq = cu.cust_seq
+        LEFT JOIN T_STAFF s ON re.staff_seq = s.staff_seq
+        WHERE
+        hs.shop_seq = #{shop_seq}
+        ORDER BY review_date DESC, review_score DESC;
+    </select>
+
+    <!--shop_seq와 day를 통해 미용실 휴무일인지 조회-->
+    <select id="isShopTempday" parameterType="hashmap" resultType="int">
+        SELECT count(temp_shop_seq)
+        FROM T_TEMPDAY_SHOP
+        WHERE shop_seq = #{shop_seq} and #{day} >= temp_start
+        AND temp_end >= #{day}
+    </select>
+
+    <!--staff_seq와 day를 통해 직원 휴무일인지 조회-->
+    <select id="isStaffTempday" parameterType="hashmap" resultType="int">
+        select count(temp_staff_seq) from T_TEMPDAY_STAFF where staff_seq=#{staff_seq} and #{day} >= temp_start
+        AND temp_end >= #{day}
+    </select>
+
+    <!--예약_날짜 눌렀을 때 예약 가능 시간 확인-->
+    <select id="reservationFilter" parameterType="hashmap" resultType="ReservationDTO">
+        SELECT
+        a.reserv_seq,
+        a.cust_seq,
+        c.staff_seq,
+        c.staff_nickname,
+        b.shop_start,
+        a.reserv_date,
+        a.reserv_time,
+        d.style_time,
+        TIME_FORMAT(
+        SEC_TO_TIME( (TIME_TO_SEC(a.reserv_time) + TIME_TO_SEC(d.style_time)) MOD (24 * 60 * 60)),
+        '%H:%i:%s'
+        ) AS reserv_end_time,
+        b.shop_end,
+        (
+        SELECT d.style_time
+        FROM T_HAIRSTYLE d
+        WHERE d.style_seq = #{style_seq}
+        ) AS hope_style_time
+        FROM
+        T_STAFF c
+        LEFT JOIN T_RESERVATION a ON c.staff_seq = a.staff_seq AND a.reserv_date = #{day} AND a.reserv_stat = 0
+        LEFT JOIN T_HAIRSHOP b ON c.shop_seq = b.shop_seq
+        LEFT JOIN T_HAIRSTYLE d ON a.style_seq = d.style_seq
+        WHERE
+        c.shop_seq = #{shop_seq}
+        ORDER BY
+        a.reserv_date,
+        a.reserv_time
+    </select>
+
+    <!--중복 예약 확인-->
+    <select id="duplicateCheck" parameterType="PayinfoDTO" resultType="int">
+        SELECT count(cust_seq) FROM T_RESERVATION WHERE cust_seq=#{cust_seq} AND staff_seq=#{staff_seq}
+        AND style_seq=#{style_seq} AND reserv_date=#{reserv_date} AND reserv_time=#{reserv_time} AND reserv_stat = 0
+    </select>
+
+    <!--예약_예약 테이블에 저장-->
+    <insert id="reservation" parameterType="PayinfoDTO">
+        insert into T_RESERVATION (style_seq, cust_seq, reserv_request, reserv_date, reserv_time, staff_seq, receipt_id, reserv_stat)
+        values (#{style_seq}, #{cust_seq}, #{reserv_request}, #{reserv_date}, #{reserv_time}, #{staff_seq}, #{receipt_id}, #{reserv_stat})
+    </insert>
+
+    <!--예약 테이블에 저장한 reserv_seq 조회-->
+    <select id="findReservSeq" parameterType="PayinfoDTO" resultType="int">
+        select reserv_seq from T_RESERVATION where receipt_id=#{receipt_id}
+    </select>
+
+    <!--최종 결제 정보 조회-->
+    <select id="getPayinfo" parameterType="PayinfoDTO" resultType="PayinfoDTO">
+        SELECT T_CUSTOMER.cust_name, T_CUSTOMER.cust_phone,
+        #{reserv_date} AS reserv_date,
+        #{reserv_time} AS reserv_time,
+        T_HAIRSHOP.shop_name, T_STAFF.staff_name, T_HAIRSTYLE.style_name, T_HAIRSTYLE.style_price,
+        (CASE
+        WHEN T_CUSTOMER.cust_level = 1
+        THEN T_HAIRSTYLE.style_price * 0.9
+        ELSE T_HAIRSTYLE.style_price
+        END) AS pay_price
+        FROM T_CUSTOMER
+        JOIN T_HAIRSHOP ON T_CUSTOMER.cust_seq = #{cust_seq} AND T_HAIRSHOP.shop_seq = #{shop_seq}
+        JOIN T_STAFF ON T_STAFF.staff_seq = #{staff_seq}
+        JOIN T_HAIRSTYLE ON T_HAIRSTYLE.style_seq = #{style_seq}
+    </select>
+
+    <!--결제 내역 저장-->
+    <insert id="payment" parameterType="PayinfoDTO">
+        insert into T_PAYMENT(  reserv_seq, pay_price, pay_date)
+        values(  #{reserv_seq}, #{pay_price}, now())
+    </insert>
+
+    <!--고객 등급 갱신-->
+    <update id="levelUpdate" parameterType="int">
+        UPDATE T_CUSTOMER
+        SET cust_level = 1
+        WHERE cust_seq IN (
+        SELECT T_RESERVATION.cust_seq
+        FROM T_PAYMENT
+        INNER JOIN T_RESERVATION ON T_PAYMENT.reserv_seq = T_RESERVATION.reserv_seq
+        WHERE pay_stat = 0 AND cust_seq = #{cust_seq}
+        GROUP BY T_RESERVATION.cust_seq
+        HAVING SUM(pay_price) >= 1000000
+        )
+    </update>
+
+    <!--중복 대기 방지-->
+    <select id="isDuplicated" parameterType="PayinfoDTO" resultType="int">
+        SELECT count(reserv_seq)
+        FROM T_RESERVATION
+        WHERE cust_seq = #{cust_seq} and staff_seq = #{staff_seq} and style_seq = #{style_seq}
+        and reserv_date = #{reserv_date} and reserv_time = #{reserv_time} and reserv_stat = 4
+    </select>
+
+    <!--대기 고객 ctoken 값 저장-->
+    <insert id="insertCToken" parameterType="PayinfoDTO">
+        INSERT INTO T_CTOKEN(cust_seq, ctoken_value) VALUES(#{cust_seq}, #{ctoken_value})
+    </insert>
+</mapper>

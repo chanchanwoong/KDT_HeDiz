@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.config.ReservationMapper">
+    <!--예약 상황 조회-->
+    <select id="currentReservation" resultType="ReservationDTO">
+        select reserv_seq, shop_name, shop_address, staff_nickname, style_name, style_price, reserv_request, reserv_date, reserv_time, receipt_id, reserv_stat
+        FROM T_RESERVATION tr
+        LEFT JOIN T_HAIRSTYLE st ON tr.style_seq = st.style_seq
+        LEFT JOIN T_HAIRSHOP hs ON st.shop_seq = hs.shop_seq
+        LEFT JOIN T_CUSTOMER cu ON tr.cust_seq = cu.cust_seq
+        LEFT JOIN T_STAFF s ON tr.staff_seq = s.staff_seq
+        where cu.cust_seq = #{cust_seq} and concat(reserv_date, ' ', reserv_time) > now() and (reserv_stat = 0 or reserv_stat = 4)
+        and STR_TO_DATE(CONCAT(reserv_date, ' ', reserv_time), '%Y-%m-%d %H:%i:%s') > NOW()
+        order by reserv_date, reserv_time, reserv_stat;
+    </select>
+
+    <!--receipt_id 조회-->
+    <select id="getReceiptId">
+        select receipt_id from T_RESERVATION where reserv_seq=#{reserv_seq}
+    </select>
+
+    <!--reserv_stat 취소로 변경 -->
+    <update id="changeReservStat" parameterType="int">
+        update T_RESERVATION set reserv_stat=2, receipt_id='cancel' where reserv_seq=#{reserv_seq}
+    </update>
+
+    <!--pay_stat 취소로 변경-->
+    <update id="changePayStat" parameterType="int">
+        update T_PAYMENT set pay_stat=1 where reserv_seq=#{reserv_seq}
+    </update>
+
+    <!--대기 고객 중 예약 가능한 cust_seq 조회-->
+    <select id="getStandByCustListUsingFilter" parameterType="int" resultType="int">
+        SELECT A.cust_seq
+        FROM T_RESERVATION AS A
+        JOIN T_HAIRSTYLE AS HA ON A.style_seq = HA.style_seq
+        WHERE A.reserv_date = (SELECT reserv_date FROM T_RESERVATION WHERE reserv_seq = #{reserv_seq})
+        AND A.reserv_stat = 4
+        AND NOT EXISTS (
+        SELECT 1 FROM T_RESERVATION AS B
+        JOIN T_HAIRSTYLE AS HB ON B.style_seq = HB.style_seq
+        WHERE A.reserv_date = B.reserv_date
+        AND B.reserv_stat = 0
+        AND (
+        (A.reserv_time >= B.reserv_time AND A.reserv_time <![CDATA[< ADDTIME(B.reserv_time, HB.style_time))]]>
+        OR
+        (ADDTIME(A.reserv_time, HA.style_time) > B.reserv_time AND ADDTIME(A.reserv_time, HA.style_time) <![CDATA[<= ADDTIME(B.reserv_time, HB.style_time))]]>
+        )
+        )
+    </select>
+
+    <!--CToken 값 반환-->
+    <select id="getCToken" parameterType="list" resultType="java.lang.String">
+        select distinct ctoken_value from T_CTOKEN where cust_seq in
+        <foreach collection="list" item="ctoken_seq" open="(" separator="," close=")">
+            #{ctoken_seq}
+        </foreach>
+    </select>
+
+    <!--푸시 알림 후 대기 예약 삭제-->
+    <delete id="deleteStandByCustList" parameterType="list">
+        DELETE FROM T_RESERVATION WHERE reserv_stat = 4 AND cust_seq in
+        <foreach collection="list" item="cust_seq" open="(" separator="," close=")">
+            #{cust_seq}
+        </foreach>
+    </delete>
+
+    <!--대기 예약 삭제-->
+    <delete id="deleteStandBy" parameterType="int">
+        DELETE FROM T_RESERVATION WHERE reserv_seq = #{reserv_seq} AND reserv_stat = 4
+    </delete>
+</mapper>
