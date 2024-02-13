@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+:root {
+  --font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+a {
+  text-decoration-line: none;
+  color: inherit;
+}
+
+p {
+  margin: 0.4rem 0;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-family: 'Lobster', sans-serif;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f3f3f3;
+  padding: 6px 16px;
+  border-radius: 20px;
+  width: 80px;
+  display: inline-block;
+}
+
+.label__vip {
+  background-color: #ffaa00;
+}
+.label__default {
+  background-color: #8b5cf6;
+}
+.p-inputtext.p-component.p-password-input.p-password-input {
+  width: 100%;
+}
+
+.p-menubar-button {
+  display: none !important;
+}
+
+.p-inputgroup-addon {
+  min-width: 180px;
+  justify-content: start;
+}
+.p-tag {
+  padding: 6px 0;
+}
+
+.p-panel-header {
+  display: block;
+}
+.p-inputtext {
+  width: 100%;
+}
+.p-menu {
+  padding: 0;
+}
+.p-tabview-panels {
+  padding: 0;
+  padding-top: 2rem;
+}
+.p-tabview .p-tabview-nav li {
+  width: 50%;
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  justify-content: center;
+}
+.p-datatable .p-column-header-content {
+  justify-content: center;
+}
+.fc-v-event {
+  border: none;
+  background-color: #eff3f7;
+  color: #282c34;
+}
+.fc-timegrid-event-harness {
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+.fc .fc-toolbar-title {
+  font-size: 1.4rem;
+}
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: #fff;
+  color: #356eff;
+}
+
+.fc .fc-timegrid-slot {
+  background-color: #fff;
+}
+
+.fc-v-event .fc-event-main {
+  width: 100%;
+  height: 100%;
+}
+.fc-h-event {
+  border: none !important;
+  padding: 4px 6px;
+  font-weight: 600;
+}
+.card {
+  background-color: #fff;
+  box-shadow: 0px 4px 30px rgba(221, 224, 255, 0.54);
+  padding: 2rem !important;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.dashboard .fc-h-event {
+  padding: 0;
+  padding-left: 4px;
+  font-size: 0.75rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
