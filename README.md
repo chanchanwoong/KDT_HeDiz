@@ -4,18 +4,21 @@
 
 <p align="center"><img width="60%" alt="HeDiz" src="https://github.com/gahui-dev/hediz/assets/139962408/d706b014-0715-4357-8f29-e08675dd3cdf"></p>
 
-미용실 예약할 때, 어떻게 하시나요? <br />
-예약 서비스에는 항상 예약 부도, 즉 `노쇼` 문제가 발생합니다.
+예약 서비스에는 항상 예약 부도, 즉 `노쇼` 문제가 발생합니다.  
+노쇼가 발생하면 서비스 품질과 사전 준비 등의 기회비용을 고려했을 때 점주 입장에서는 무시하지 못할 타격입니다.  
 
-고객님은 정상 예약과 더불어 
-원하는 시간에 예약이 되어있더라도 `대기 예약`을 이용해보세요 🙆🏻‍♂️ <br />
-
-점주님은 `예약 취소`와 `노쇼`가 발생하더라도 당황하지 마세요 🙅🏻‍♀️ <br /> 
-HeDiz는 `푸시 알림 서비스`를 통해 대기 고객에게 알림을 보냅니다 <br />
-
-대기 고객님을 예약으로 유도할 수 있는 HeDiz를 만나보세요 🙌🏼 <br /><br />
+HeDiz는 이러한 문제점을 고민하다 진행된 프로젝트입니다.  
 
 ### 🤔 HeDiz에서는 무엇을 할 수 있나요?
+
+기존의 예약 시스템과 다르게 예약 취소가 발생했을 때 대기 고객에게 `알림`을 주고  
+고객 방문 이력 페이지를 통해 고객들의 정상 방문, 예약 취소, `노쇼 횟수`를 확인하여 사전에 방지할 수 있습니다.  
+
+> 🙆🏻‍♂️ 고객님은 정상 예약과 더불어 원하는 시간에 예약이 되어있더라도 `대기 예약`을 이용해보세요  
+🙅🏻‍♀️ 점주님은 `예약 취소`와 `노쇼`가 발생하더라도 당황하지 마세요 
+
+🙌🏼 `푸시 알림 서비스`를 통해 대기 고객님을 예약으로 유도할 수 있는 HeDiz를 만나보세요
+
 #### 📱 고객 프로그램
 - 로그인 없이 원하는 `미용실의 정보를 조회`할 수 있습니다
 - `예약 서비스`를 이용할 때는 로그인을 통해 원하는 예약 정보를 선택한 후 진행합니다
@@ -33,9 +36,37 @@ HeDiz는 `푸시 알림 서비스`를 통해 대기 고객에게 알림을 보�
 ## 📌 HeDiz's Stack
 
 #### Front-End
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
+![Context-API](https://img.shields.io/badge/Context--Api-000000?style=for-the-badge&logo=react)
+![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-B31B1B.svg?&style=for-the-badge&logo=Axios&logoColor=fff)
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=000)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+
 #### Back-End
+![springboot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![springsecurity](https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
+
 #### Deploy
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Jenkins](https://img.shields.io/badge/jenkins-%232C5263.svg?style=for-the-badge&logo=jenkins&logoColor=white)
+![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+![Apache Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black)
+
 #### Collaboration Tools
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)
+![diagramsdotnet](https://img.shields.io/badge/draw.io-F08705.svg?style=for-the-badge&logo=diagramsdotnet&logoColor=white)
+![googlesheets](https://img.shields.io/badge/googleSheets-34A853.svg?style=for-the-badge&logo=googleSheets&logoColor=white)
+![microsoftpowerpoint](https://img.shields.io/badge/powerpoint-B7472A.svg?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white)
 
 <br />
 
