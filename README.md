@@ -2,7 +2,7 @@
 
 ## 🤗 HeDiz's About
 
-<p align="center"><img width="60%" alt="HeDiz" src="https://github.com/gahui-dev/hediz/assets/139962408/d706b014-0715-4357-8f29-e08675dd3cdf"></p>
+<p align="center"><img width="60%" alt="HeDiz" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/696b3178-b4a5-433e-8053-a0a57c65366a"></p>
 
 예약 서비스에는 항상 예약 부도, 즉 `노쇼` 문제가 발생합니다.  
 노쇼가 발생하면 서비스 품질과 사전 준비 등의 기회비용을 고려했을 때 점주 입장에서는 무시하지 못할 타격입니다.  
@@ -100,62 +100,62 @@ HeDiz는 이러한 문제점을 고민하다 진행된 프로젝트입니다.
 ### 1. 미용실 조회 및 예약하기
 | 메인화면 | 미용실 선택 |
 |:---:|:---:|
-| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/9873393c-3b39-4f86-a6d0-644a275e05ec" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/bdb00976-4f5e-4d25-a1b6-9b78e875f6a6" > |
+| <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/4ae04208-f7f0-427a-a824-57dcf79d7be1" > | <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/ed3b8f22-9cb0-4597-af5b-8e6f703739f4" > |
 | HeDiz 가입된 모든 미용실 목록을 조회합니다  | 미용실 정보를 확인할 수 있습니다 | 
 
 | 헤어스타일 선택 | 예약하기 |
 |:---:|:---:|
-| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ce2dfc23-ef42-4433-b4c7-026bd0f9e4e5" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/8c40e950-bbbc-4d3e-a493-9ba9acaa8c72" > | 
+| <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/eccf819d-3162-47d9-b09b-c7a1659c848c" > | <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/f112991c-3be1-4b14-b2d4-fca096803763" > | 
 | 예약하고자 하는 헤어스타일을 선택합니다 | 원하는 디자이너와 날짜, 시간을 선택합니다 |
 
 ### 2. 결제하기
 | 결제하기(1/2) | 결제하기(2/2)|
 |:---:|:---:|
-| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/caea1902-c574-47e5-b488-bc154d9f6b58" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/46acfc8b-db66-4d53-b7dd-7a5944e860c1" > |
+| <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/3f00305a-7b81-4d98-84c8-2422b3f3a89f" > | <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/e2aa5365-fa08-4eaa-b414-49e20305176e" > |
 | 예약 정보 확인 후 결제하기를 진행합니다 | 결제를 진행합니다 | 
 
 
 ### 3. 예약확인 및 마이페이지
 | 예약확인 | 마이페이지 | 
 |:---:|:---:|
-| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/14171c6a-3368-4603-8305-d2c93402adcf" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/ad9a43ae-3f8c-46b1-b15a-33c6a2d76e86" >  |
+| <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/1e2541cc-472a-4b17-9712-baf8f224859a" > | <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/10a040ce-77c7-463b-b30f-c1ff1d840e93" >  |
 | 현재 예약 목록을 조회하고 예약을 취소할 수 있습니다 | 지난 예약 목록을 조회하고 리뷰를 작성할 수 있습니다 | 
 
 ### 4. 인증
 | 로그인 | 회원가입 | 
 |:---:|:---:|
-| <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/f0ab20e2-eafd-47d7-9401-1d7a3e3ce985" > | <img width="100%" src="https://github.com/gahui-dev/hediz/assets/139962408/bc07d130-92e2-4213-99bb-b239b27161dc" > | 
+| <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/88623086-795b-4bc4-99cf-c660c1857441" > | <img width="100%" src="https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/c2e8068c-0334-4f2b-9630-d4ff63d16ba4" > | 
 
 ## 💇🏻‍♀️ 점주 프로그램
 
 ### 1. 인증
 #### 1.1. 로그인
-https://github.com/gahui-dev/hediz/assets/139962408/29c4537f-87fa-4ce4-8fbd-941a69415f23
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/871326ce-22d1-4af4-a51e-8ed357b894a2
 
 #### 1.2. 회원가입
-https://github.com/gahui-dev/hediz/assets/139962408/a78899c7-f8db-4854-955b-3ef24ad90b6c
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/5ec0fbef-530c-46b8-9945-87bb988eac2e
 
 ### 2. 예약 관리
 #### 2.1 금일 예약
-https://github.com/gahui-dev/hediz/assets/139962408/5e8fcb32-5bdc-480a-94df-daa3929ed422
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/87a3eafd-5cad-4e57-b3c4-7a93955c8078
 
 #### 2.2 전체 예약 내역
-https://github.com/gahui-dev/hediz/assets/139962408/366a2cee-3cd0-4ac9-9b4a-f256b19c1bac
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/c10dd61a-ac2f-42b2-aacd-cb1a81aebcdc
 
 ### 3. 미용실 관리
 #### 3.1 미용실 정보
-https://github.com/gahui-dev/hediz/assets/139962408/05761455-8c20-4741-90c0-5527fdd7a1c5
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/693f7d67-5fbc-4d63-b8a1-78e1b0ec6d93
 
 #### 3.2 헤어스타일
-https://github.com/gahui-dev/hediz/assets/139962408/df408cae-5ab9-4b60-b8f8-8d3a73d989cf
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/8a25bd76-ce28-4530-b280-6db2753fb04f
 
 #### 3.3 직원 관리
-https://github.com/gahui-dev/hediz/assets/139962408/704f561d-1073-4f64-926b-eb73253ce534
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/9378f435-c244-4496-b7b7-013b6e0f7f32
 
 #### 3.4 임시 휴무일
-https://github.com/gahui-dev/hediz/assets/139962408/6a630251-6590-46e6-bf80-4a775bbced0a
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/4a7f33b3-b061-42de-83a5-aebb0df9bf1b
 
 ### 4. 고객 관리
 #### 4.1 고객 방문 이력
 #### 4.2 리뷰 관리
-https://github.com/gahui-dev/hediz/assets/139962408/c47585a7-307f-4419-aa1a-095c218b72fa
+https://github.com/3-RACEHORSE/BE_Auction/assets/128444378/2de7c9f3-b570-45f4-824c-03adad1c5879
